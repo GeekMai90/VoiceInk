@@ -91,6 +91,13 @@ class LicenseViewModel: ObservableObject {
     }
     
     func validateLicense() async {
+        #if LOCAL_BUILD
+        licenseState = .licensed
+        validationMessage = "Local build runs with VoiceInk Pro enabled."
+        NotificationCenter.default.post(name: .licenseStatusChanged, object: nil)
+        return
+        #endif
+
         guard !licenseKey.isEmpty else {
             validationMessage = "Please enter a license key"
             return
@@ -176,6 +183,15 @@ class LicenseViewModel: ObservableObject {
     }
     
     func removeLicense() {
+        #if LOCAL_BUILD
+        licenseState = .licensed
+        licenseKey = ""
+        validationMessage = "Local build runs with VoiceInk Pro enabled."
+        activationsLimit = 0
+        NotificationCenter.default.post(name: .licenseStatusChanged, object: nil)
+        return
+        #endif
+
         // Remove all license data from Keychain
         licenseManager.removeAll()
 

@@ -3,8 +3,12 @@ DEPS_DIR := $(HOME)/VoiceInk-Dependencies
 WHISPER_CPP_DIR := $(DEPS_DIR)/whisper.cpp
 FRAMEWORK_PATH := $(WHISPER_CPP_DIR)/build-apple/whisper.xcframework
 LOCAL_DERIVED_DATA := $(CURDIR)/.local-build
+DEV_SIGNED_DERIVED_DATA := $(CURDIR)/.dev-signed-build
+DEV_INSTALL_PATH ?= /Applications/VoiceInk Ultra.app
+DEV_SIGN_HASH ?= $(shell security find-identity -p codesigning -v 2>/dev/null | awk '/Apple Development:.*geekmai/ {print $$2; found=1; exit} /Apple Development:/ && first == "" {first=$$2} END {if (!found) print first}')
+DEV_SIGN_IDENTITY ?= $(shell security find-identity -p codesigning -v 2>/dev/null | awk -F'"' '/Apple Development:.*geekmai/ {print $$2; found=1; exit} /Apple Development:/ && first == "" {first=$$2} END {if (!found) print first}')
 
-.PHONY: all clean whisper setup build local check healthcheck help dev run
+.PHONY: all clean whisper setup build local devsigned check healthcheck help dev run run-devsigned
 
 # Default target
 all: check build
@@ -60,17 +64,58 @@ local: check setup
 		build
 	@APP_PATH="$(LOCAL_DERIVED_DATA)/Build/Products/Debug/VoiceInk.app" && \
 	if [ -d "$$APP_PATH" ]; then \
-		echo "Copying VoiceInk.app to ~/Downloads..."; \
-		rm -rf "$$HOME/Downloads/VoiceInk.app"; \
-		ditto "$$APP_PATH" "$$HOME/Downloads/VoiceInk.app"; \
-		xattr -cr "$$HOME/Downloads/VoiceInk.app"; \
+		echo "Copying VoiceInk.app to ~/Downloads/VoiceInk Ultra.app..."; \
+		rm -rf "$$HOME/Downloads/VoiceInk Ultra.app"; \
+		ditto "$$APP_PATH" "$$HOME/Downloads/VoiceInk Ultra.app"; \
+		xattr -cr "$$HOME/Downloads/VoiceInk Ultra.app"; \
 		echo ""; \
-		echo "Build complete! App saved to: ~/Downloads/VoiceInk.app"; \
-		echo "Run with: open ~/Downloads/VoiceInk.app"; \
+		echo "Build complete! App saved to: ~/Downloads/VoiceInk Ultra.app"; \
+		echo "Run with: open ~/Downloads/VoiceInk\\ Ultra.app"; \
 		echo ""; \
 		echo "Limitations of local builds:"; \
 		echo "  - No iCloud dictionary sync"; \
 		echo "  - No automatic updates (pull new code and rebuild to update)"; \
+	else \
+		echo "Error: Could not find built VoiceInk.app at $$APP_PATH"; \
+		exit 1; \
+	fi
+
+# Build for local development with stable Apple Development signing and fixed install path
+devsigned: check setup
+	@if [ -z "$(DEV_SIGN_IDENTITY)" ]; then \
+		echo "Error: No Apple Development signing identity found in Keychain."; \
+		echo "Open Xcode, sign in with your Apple ID, and ensure an Apple Development certificate is available."; \
+		exit 1; \
+	fi
+	@echo "Building VoiceInk for stable local development signing..."
+	@echo "Signing identity: $(DEV_SIGN_IDENTITY)"
+	@echo "Signing hash: $(DEV_SIGN_HASH)"
+	@echo "Install path: $(DEV_INSTALL_PATH)"
+	xcodebuild -project VoiceInk.xcodeproj -scheme VoiceInk -configuration Debug \
+		-derivedDataPath "$(DEV_SIGNED_DERIVED_DATA)" \
+		-xcconfig LocalBuild.xcconfig \
+		CODE_SIGN_IDENTITY="-" \
+		CODE_SIGNING_REQUIRED=NO \
+		CODE_SIGNING_ALLOWED=YES \
+		DEVELOPMENT_TEAM="" \
+		CODE_SIGN_ENTITLEMENTS=$(CURDIR)/VoiceInk/VoiceInk.local.entitlements \
+		SWIFT_ACTIVE_COMPILATION_CONDITIONS='$$(inherited) LOCAL_BUILD' \
+		build
+	@APP_PATH="$(DEV_SIGNED_DERIVED_DATA)/Build/Products/Debug/VoiceInk.app" && \
+	if [ -d "$$APP_PATH" ]; then \
+		echo "Installing app bundle to $(DEV_INSTALL_PATH)..."; \
+		ditto "$$APP_PATH" "$(DEV_INSTALL_PATH)"; \
+		xattr -cr "$(DEV_INSTALL_PATH)"; \
+		echo "Re-signing app bundle with Apple Development identity..."; \
+		codesign --force --deep --sign "$(DEV_SIGN_HASH)" "$(DEV_INSTALL_PATH)"; \
+		echo ""; \
+		echo "Stable-signed development build installed at: $(DEV_INSTALL_PATH)"; \
+		echo "Run with: open \"$(DEV_INSTALL_PATH)\""; \
+		echo ""; \
+		echo "Why use this target:"; \
+		echo "  - Keeps install path stable"; \
+		echo "  - Keeps signing identity stable"; \
+		echo "  - Reduces repeated Accessibility / Screen Recording re-authorization"; \
 	else \
 		echo "Error: Could not find built VoiceInk.app at $$APP_PATH"; \
 		exit 1; \
@@ -81,6 +126,9 @@ run:
 	@if [ -d "$$HOME/Downloads/VoiceInk.app" ]; then \
 		echo "Opening ~/Downloads/VoiceInk.app..."; \
 		open "$$HOME/Downloads/VoiceInk.app"; \
+	elif [ -d "$$HOME/Downloads/VoiceInk Ultra.app" ]; then \
+		echo "Opening ~/Downloads/VoiceInk Ultra.app..."; \
+		open "$$HOME/Downloads/VoiceInk Ultra.app"; \
 	else \
 		echo "Looking for VoiceInk.app in DerivedData..."; \
 		APP_PATH=$$(find "$$HOME/Library/Developer/Xcode/DerivedData" -name "VoiceInk.app" -type d | head -1) && \
@@ -91,6 +139,15 @@ run:
 			echo "VoiceInk.app not found. Please run 'make build' or 'make local' first."; \
 			exit 1; \
 		fi; \
+	fi
+
+run-devsigned:
+	@if [ -d "$(DEV_INSTALL_PATH)" ]; then \
+		echo "Opening $(DEV_INSTALL_PATH)..."; \
+		open "$(DEV_INSTALL_PATH)"; \
+	else \
+		echo "Stable-signed dev build not found. Please run 'make devsigned' first."; \
+		exit 1; \
 	fi
 
 # Cleanup
@@ -107,7 +164,9 @@ help:
 	@echo "  setup              Copy whisper XCFramework to VoiceInk project"
 	@echo "  build              Build the VoiceInk Xcode project"
 	@echo "  local              Build for local use (no Apple Developer certificate needed)"
+	@echo "  devsigned          Build, install, and re-sign a stable local dev app in /Applications"
 	@echo "  run                Launch the built VoiceInk app"
+	@echo "  run-devsigned      Launch the stable local dev app"
 	@echo "  dev                Build and run the app (for development)"
 	@echo "  all                Run full build process (default)"
 	@echo "  clean              Remove build artifacts"

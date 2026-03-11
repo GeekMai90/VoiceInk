@@ -40,6 +40,7 @@ class TranscriptionPipeline {
         transcription: Transcription,
         audioURL: URL,
         model: any TranscriptionModel,
+        outputMode: OutputMode,
         session: TranscriptionSession?,
         onStateChange: @escaping (RecordingState) -> Void,
         shouldCancel: () -> Bool,
@@ -105,15 +106,40 @@ class TranscriptionPipeline {
             transcription.powerModeEmoji = powerModeEmoji
             finalPastedText = text
 
-            if let enhancementService, enhancementService.isConfigured {
+            if outputMode == .transcription,
+               let enhancementService,
+               enhancementService.isConfigured {
                 let detectionResult = await promptDetectionService.analyzeText(text, with: enhancementService)
                 promptDetectionResult = detectionResult
                 await promptDetectionService.applyDetectionResult(detectionResult, to: enhancementService)
             }
 
-            if let enhancementService,
-               enhancementService.isEnhancementEnabled,
-               enhancementService.isConfigured {
+            if outputMode == .translation {
+                guard let enhancementService, enhancementService.isConfigured else {
+                    throw EnhancementError.notConfigured
+                }
+
+                if shouldCancel() { await onCleanup(); return }
+
+                onStateChange(.enhancing)
+
+                do {
+                    let (translatedText, translationDuration) = try await enhancementService.translate(text)
+                    logger.notice("📝 Translation output: \(translatedText, privacy: .public)")
+                    transcription.enhancedText = translatedText
+                    transcription.aiEnhancementModelName = enhancementService.getAIService()?.currentModel
+                    transcription.promptName = "Translation Mode"
+                    transcription.enhancementDuration = translationDuration
+                    transcription.aiRequestSystemMessage = enhancementService.lastSystemMessageSent
+                    transcription.aiRequestUserMessage = enhancementService.lastUserMessageSent
+                    finalPastedText = translatedText
+                } catch {
+                    transcription.enhancedText = "Translation failed: \(error)"
+                    throw error
+                }
+            } else if let enhancementService,
+                      enhancementService.isEnhancementEnabled,
+                      enhancementService.isConfigured {
                 if shouldCancel() { await onCleanup(); return }
 
                 onStateChange(.enhancing)

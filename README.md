@@ -64,6 +64,19 @@ As an open-source project, you can build VoiceInk yourself by following the inst
 - [Contributing Guidelines](CONTRIBUTING.md) - How to contribute to VoiceInk
 - [Code of Conduct](CODE_OF_CONDUCT.md) - Our community standards
 
+## Fork Notes
+
+This fork includes local customization work and a stable local development install flow for macOS testing.
+
+For this fork, the preferred local dev install command is:
+
+```bash
+make devsigned
+open "/Applications/VoiceInk Ultra.app"
+```
+
+This installs the customized app as `VoiceInk Ultra` at a stable path so permission-heavy features are easier to test repeatedly.
+
 ## Contributing
 
 We welcome contributions! However, please note that all contributions should align with the project's goals and vision. Before starting work on any feature or fix:

@@ -32,6 +32,10 @@ playground.xcworkspace
 .build/
 build/
 .local-build/
+.dev-build/
+.dev-build-user/
+.dev-build-manual/
+.dev-signed-build/
 
 # CocoaPods
 #

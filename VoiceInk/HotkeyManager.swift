@@ -7,6 +7,7 @@ import os
 extension KeyboardShortcuts.Name {
     static let toggleMiniRecorder = Self("toggleMiniRecorder")
     static let toggleMiniRecorder2 = Self("toggleMiniRecorder2")
+    static let toggleTranslationRecorder = Self("toggleTranslationRecorder")
     static let pasteLastTranscription = Self("pasteLastTranscription")
     static let pasteLastEnhancement = Self("pasteLastEnhancement")
     static let retryLastTranscription = Self("retryLastTranscription")
@@ -167,6 +168,14 @@ class HotkeyManager: ObservableObject {
                     modelContainer: self.engine.modelContext.container,
                     engine: self.engine
                 )
+            }
+        }
+
+        KeyboardShortcuts.onKeyUp(for: .toggleTranslationRecorder) { [weak self] in
+            guard let self = self else { return }
+            Task { @MainActor in
+                guard self.canProcessHotkeyAction || self.recorderUIManager.isMiniRecorderVisible else { return }
+                await self.recorderUIManager.toggleMiniRecorder(outputMode: .translation)
             }
         }
 

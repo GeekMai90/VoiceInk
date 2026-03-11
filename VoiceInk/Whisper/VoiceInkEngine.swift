@@ -9,6 +9,7 @@ import os
 class VoiceInkEngine: NSObject, ObservableObject {
     @Published var recordingState: RecordingState = .idle
     @Published var shouldCancelRecording = false
+    @Published var currentOutputMode: OutputMode = .transcription
     var partialTranscript: String = ""
     var currentSession: TranscriptionSession?
 
@@ -78,7 +79,7 @@ class VoiceInkEngine: NSObject, ObservableObject {
 
     // MARK: - Toggle Record
 
-    func toggleRecord(powerModeId: UUID? = nil) async {
+    func toggleRecord(powerModeId: UUID? = nil, outputMode: OutputMode = .transcription) async {
         logger.notice("toggleRecord called – state=\(String(describing: self.recordingState), privacy: .public)")
 
         if recordingState == .recording {
@@ -122,6 +123,7 @@ class VoiceInkEngine: NSObject, ObservableObject {
                 NotificationManager.shared.showNotification(title: "No AI Model Selected", type: .error)
                 return
             }
+            currentOutputMode = outputMode
             shouldCancelRecording = false
             partialTranscript = ""
 
@@ -240,6 +242,7 @@ class VoiceInkEngine: NSObject, ObservableObject {
             transcription: transcription,
             audioURL: audioURL,
             model: model,
+            outputMode: currentOutputMode,
             session: session,
             onStateChange: { [weak self] state in self?.recordingState = state },
             shouldCancel: { [weak self] in self?.shouldCancelRecording ?? false },
@@ -248,6 +251,7 @@ class VoiceInkEngine: NSObject, ObservableObject {
         )
 
         shouldCancelRecording = false
+        currentOutputMode = .transcription
         if recordingState != .idle {
             recordingState = .idle
         }

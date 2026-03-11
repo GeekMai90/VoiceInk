@@ -79,6 +79,11 @@ struct SettingsView: View {
 
             // MARK: - Additional Shortcuts
             Section("Additional Shortcuts") {
+                LabeledContent("Translation Mode") {
+                    KeyboardShortcuts.Recorder(for: .toggleTranslationRecorder)
+                        .controlSize(.small)
+                }
+
                 LabeledContent("Paste Last Transcription (Original)") {
                     KeyboardShortcuts.Recorder(for: .pasteLastTranscription)
                         .controlSize(.small)

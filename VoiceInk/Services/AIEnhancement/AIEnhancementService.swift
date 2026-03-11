@@ -7,6 +7,7 @@ import LLMkit
 enum EnhancementPrompt {
     case transcriptionEnhancement
     case aiAssistant
+    case translation
 }
 
 @MainActor
@@ -141,6 +142,21 @@ class AIEnhancementService: ObservableObject {
     }
 
     private func getSystemMessage(for mode: EnhancementPrompt) async -> String {
+        if mode == .translation {
+            return """
+            You are a translation assistant for a voice dictation workflow.
+
+            Convert the Chinese speech transcript into polished, natural English.
+
+            Rules:
+            - Preserve the original meaning.
+            - Prefer fluent English over literal translation.
+            - Remove obvious spoken filler when helpful.
+            - Do not add facts, claims, or intent that were not present.
+            - Return only the final English text.
+            """
+        }
+
         let selectedTextContext: String
         if AXIsProcessTrusted() {
             if let selectedText = await SelectedTextService.fetchSelectedText(), !selectedText.isEmpty {
@@ -342,6 +358,13 @@ class AIEnhancementService: ObservableObject {
         } catch {
             throw error
         }
+    }
+
+    func translate(_ text: String) async throws -> (String, TimeInterval) {
+        let startTime = Date()
+        let result = try await makeRequestWithRetry(text: text, mode: .translation)
+        let endTime = Date()
+        return (result, endTime.timeIntervalSince(startTime))
     }
 
     func captureScreenContext() async {
