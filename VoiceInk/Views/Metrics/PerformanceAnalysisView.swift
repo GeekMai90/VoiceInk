@@ -44,7 +44,7 @@ struct PerformanceAnalysisView: View {
 
     private var header: some View {
         HStack {
-            Text("Performance Analysis")
+            Text("性能分析")
                 .font(.title2)
                 .fontWeight(.bold)
             Spacer()
@@ -62,19 +62,19 @@ struct PerformanceAnalysisView: View {
             SummaryCard(
                 icon: "doc.text.fill", 
                 value: "\(analysis.totalTranscripts)", 
-                label: "Total Transcripts",
+                label: "总转写数",
                 color: .indigo
             )
             SummaryCard(
                 icon: "waveform.path.ecg", 
                 value: "\(analysis.totalWithTranscriptionData)", 
-                label: "Analyzable",
+                label: "可分析",
                 color: .teal
             )
             SummaryCard(
                 icon: "sparkles", 
                 value: "\(analysis.totalEnhancedFiles)", 
-                label: "Enhanced",
+                label: "已增强",
                 color: .mint
             )
         }
@@ -82,21 +82,21 @@ struct PerformanceAnalysisView: View {
 
     private var systemInfoSection: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("System Information")
+            Text("系统信息")
                 .font(.system(.title2, design: .default, weight: .bold))
                 .foregroundColor(.primary)
 
             HStack(spacing: 12) {
-                SystemInfoCard(label: "Device", value: getMacModel())
-                SystemInfoCard(label: "Processor", value: getCPUInfo())
-                SystemInfoCard(label: "Memory", value: getMemoryInfo())
+                SystemInfoCard(label: "设备", value: getMacModel())
+                SystemInfoCard(label: "处理器", value: getCPUInfo())
+                SystemInfoCard(label: "内存", value: getMemoryInfo())
             }
         }
     }
 
     private var transcriptionPerformanceSection: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Transcription Models")
+            Text("转写模型")
                 .font(.system(.title2, design: .default, weight: .bold))
                 .foregroundColor(.primary)
 
@@ -110,7 +110,7 @@ struct PerformanceAnalysisView: View {
 
     private var enhancementPerformanceSection: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Enhancement Models")
+            Text("增强模型")
                 .font(.system(.title2, design: .default, weight: .bold))
                 .foregroundColor(.primary)
 
@@ -189,7 +189,7 @@ struct PerformanceAnalysisView: View {
         }
         
         let groupedByModel = Dictionary(grouping: relevantTranscriptions) {
-            $0[keyPath: modelNameKeyPath] ?? "Unknown"
+            $0[keyPath: modelNameKeyPath] ?? "未知"
         }
         
         return groupedByModel.map { modelName, items in
@@ -326,7 +326,7 @@ struct TranscriptionModelCard: View {
 
                 Spacer()
                 
-                Text("\(modelStat.fileCount) transcripts")
+                Text("\(modelStat.fileCount) 条")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
@@ -339,7 +339,7 @@ struct TranscriptionModelCard: View {
                     Text(String(format: "%.1fx", modelStat.speedFactor))
                         .font(.system(size: 24, weight: .bold, design: .rounded))
                         .foregroundColor(.mint)
-                    Text("Faster than Real-time")
+                    Text("快于实时")
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
@@ -356,8 +356,8 @@ struct TranscriptionModelCard: View {
                     )
                     Spacer()
                     MetricDisplay(
-                        title: "Avg. Process Time",
-                        value: String(format: "%.2f s", modelStat.avgProcessingTime),
+                        title: "平均处理时间",
+                        value: String(format: "%.2f 秒", modelStat.avgProcessingTime),
                         color: .teal
                     )
                 }
@@ -372,7 +372,7 @@ struct TranscriptionModelCard: View {
         let formatter = DateComponentsFormatter()
         formatter.allowedUnits = [.minute, .second]
         formatter.unitsStyle = .abbreviated
-        return formatter.string(from: duration) ?? "0s"
+        return formatter.string(from: duration) ?? "0秒"
     }
 }
 
@@ -391,7 +391,7 @@ struct EnhancementModelCard: View {
 
                 Spacer()
                 
-                Text("\(modelStat.fileCount) transcripts")
+                Text("\(modelStat.fileCount) 条")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
@@ -399,10 +399,10 @@ struct EnhancementModelCard: View {
             Divider()
             
             VStack(alignment: .center) {
-                Text(String(format: "%.2f s", modelStat.avgProcessingTime))
+                Text(String(format: "%.2f 秒", modelStat.avgProcessingTime))
                     .font(.system(size: 24, weight: .bold, design: .rounded))
                     .foregroundColor(.indigo)
-                Text("Avg. Enhancement Time")
+                Text("平均增强时间")
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
@@ -457,7 +457,6 @@ struct MetricDisplay: View {
             Text(title)
                 .font(.caption)
                 .foregroundColor(.secondary)
-                .textCase(.uppercase)
                 .tracking(0.5)
             
             Text(value)

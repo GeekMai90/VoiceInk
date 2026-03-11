@@ -27,14 +27,14 @@ struct OnboardingView: View {
                                 
                                 // Title and subtitle
                                 VStack(spacing: 16) {
-                                    Text("Welcome to the Future of Typing")
+                                    Text("欢迎来到 VoiceInk")
                                         .font(.system(size: min(geometry.size.width * 0.055, 42), weight: .bold, design: .rounded))
                                         .foregroundColor(.white)
                                         .opacity(textOpacity)
                                         .multilineTextAlignment(.center)
                                         .padding(.horizontal)
                                     
-                                    Text("A New Way to Type")
+                                    Text("一种全新的语音输入方式")
                                         .font(.system(size: min(geometry.size.width * 0.032, 24), weight: .medium, design: .rounded))
                                         .foregroundColor(.white.opacity(0.7))
                                         .opacity(textOpacity)
@@ -61,7 +61,7 @@ struct OnboardingView: View {
                                             showPermissions = true
                                         }
                                     }) {
-                                        Text("Get Started")
+                                        Text("开始使用")
                                             .font(.system(size: 18, weight: .semibold))
                                             .foregroundColor(.black)
                                             .frame(width: min(geometry.size.width * 0.3, 200), height: 50)
@@ -70,7 +70,7 @@ struct OnboardingView: View {
                                     }
                                     .buttonStyle(ScaleButtonStyle())
                                     
-                                    SkipButton(text: "Skip Tour") {
+                                    SkipButton(text: "跳过引导") {
                                         hasCompletedOnboarding = true
                                     }
                                 }
@@ -110,10 +110,10 @@ struct OnboardingView: View {
 // MARK: - Supporting Views
 struct TypewriterRoles: View {
     private let roles = [
-        "Your Writing Assistant",
-        "Your Vibe-Coding Assistant",
-        "Works Everywhere on Mac with a click",
-        "100% offline & private",
+        "你的语音写作助手",
+        "你的语音工作流助手",
+        "在 Mac 上几乎处处可用",
+        "100% 本地运行，更重视隐私",
        
     ]
     
@@ -370,4 +370,3 @@ struct ScaleButtonStyle: ButtonStyle {
 #Preview {
     OnboardingView(hasCompletedOnboarding: .constant(false))
 } 
-

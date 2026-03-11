@@ -143,25 +143,25 @@ class ImportExportService {
             let savePanel = NSSavePanel()
             savePanel.allowedContentTypes = [UTType.json]
             savePanel.nameFieldStringValue = "VoiceInk_Settings_Backup.json"
-            savePanel.title = "Export VoiceInk Settings"
-            savePanel.message = "Choose a location to save your settings."
+            savePanel.title = "导出 VoiceInk 设置"
+            savePanel.message = "选择一个位置来保存你的设置。"
 
             DispatchQueue.main.async {
                 if savePanel.runModal() == .OK {
                     if let url = savePanel.url {
                         do {
                             try jsonData.write(to: url)
-                            self.showAlert(title: "Export Successful", message: "Your settings have been successfully exported to \(url.lastPathComponent).")
+                            self.showAlert(title: "导出成功", message: "设置已成功导出到 \(url.lastPathComponent)。")
                         } catch {
-                            self.showAlert(title: "Export Error", message: "Could not save settings to file: \(error.localizedDescription)")
+                            self.showAlert(title: "导出失败", message: "无法将设置保存到文件：\(error.localizedDescription)")
                         }
                     }
                 } else {
-                    self.showAlert(title: "Export Canceled", message: "The settings export operation was canceled.")
+                    self.showAlert(title: "已取消导出", message: "设置导出操作已取消。")
                 }
             }
         } catch {
-            self.showAlert(title: "Export Error", message: "Could not encode settings to JSON: \(error.localizedDescription)")
+            self.showAlert(title: "导出失败", message: "无法将设置编码为 JSON：\(error.localizedDescription)")
         }
     }
 
@@ -172,13 +172,13 @@ class ImportExportService {
         openPanel.canChooseFiles = true
         openPanel.canChooseDirectories = false
         openPanel.allowsMultipleSelection = false
-        openPanel.title = "Import VoiceInk Settings"
-        openPanel.message = "Choose a settings file to import. This will overwrite ALL settings (prompts, power modes, dictionary, general app settings)."
+        openPanel.title = "导入 VoiceInk 设置"
+        openPanel.message = "选择要导入的设置文件。这会覆盖全部设置（提示词、场景模式、词典和通用应用设置）。"
 
         DispatchQueue.main.async {
             if openPanel.runModal() == .OK {
                 guard let url = openPanel.url else {
-                    self.showAlert(title: "Import Error", message: "Could not get the file URL from the open panel.")
+                    self.showAlert(title: "导入失败", message: "无法从打开面板中获取文件 URL。")
                     return
                 }
 
@@ -188,7 +188,7 @@ class ImportExportService {
                     let importedSettings = try decoder.decode(VoiceInkExportedSettings.self, from: jsonData)
                     
                     if importedSettings.version != self.currentSettingsVersion {
-                        self.showAlert(title: "Version Mismatch", message: "The imported settings file (version \(importedSettings.version)) is from a different version than your application (version \(self.currentSettingsVersion)). Proceeding with import, but be aware of potential incompatibilities.")
+                        self.showAlert(title: "版本不匹配", message: "导入的设置文件版本为 \(importedSettings.version)，与当前应用版本 \(self.currentSettingsVersion) 不一致。仍会继续导入，但请注意可能存在兼容性问题。")
                     }
 
                     let predefinedPrompts = enhancementService.customPrompts.filter { $0.isPredefined }
@@ -344,13 +344,13 @@ class ImportExportService {
                         }
                     }
 
-                    self.showRestartAlert(message: "Settings imported successfully from \(url.lastPathComponent). All settings (including general app settings) have been applied.")
+                    self.showRestartAlert(message: "已成功从 \(url.lastPathComponent) 导入设置。所有设置（包括通用应用设置）都已应用。")
 
                 } catch {
-                    self.showAlert(title: "Import Error", message: "Error importing settings: \(error.localizedDescription). The file might be corrupted or not in the correct format.")
+                    self.showAlert(title: "导入失败", message: "导入设置时出错：\(error.localizedDescription)。文件可能已损坏或格式不正确。")
                 }
             } else {
-                self.showAlert(title: "Import Canceled", message: "The settings import operation was canceled.")
+                self.showAlert(title: "已取消导入", message: "设置导入操作已取消。")
             }
         }
     }
@@ -361,7 +361,7 @@ class ImportExportService {
             alert.messageText = title
             alert.informativeText = message
             alert.alertStyle = .informational
-            alert.addButton(withTitle: "OK")
+            alert.addButton(withTitle: "确定")
             alert.runModal()
         }
     }
@@ -369,11 +369,11 @@ class ImportExportService {
     private func showRestartAlert(message: String) {
         DispatchQueue.main.async {
             let alert = NSAlert()
-            alert.messageText = "Import Successful"
-            alert.informativeText = message + "\n\nIMPORTANT: If you were using AI enhancement features, please make sure to reconfigure your API keys in the Enhancement section.\n\nIt is recommended to restart VoiceInk for all changes to take full effect."
+            alert.messageText = "导入成功"
+            alert.informativeText = message + "\n\n重要：如果你之前在使用 AI 增强功能，请前往增强页面重新配置 API Key。\n\n建议重启 VoiceInk，以确保所有变更完全生效。"
             alert.alertStyle = .informational
-            alert.addButton(withTitle: "OK")
-            alert.addButton(withTitle: "Configure API Keys")
+            alert.addButton(withTitle: "确定")
+            alert.addButton(withTitle: "配置 API Key")
             
             let response = alert.runModal()
             if response == .alertSecondButtonReturn {

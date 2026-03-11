@@ -45,8 +45,8 @@ struct AnimatedCopyButton: View {
 struct AnimatedCopyButton_Previews: PreviewProvider {
     static var previews: some View {
         VStack(spacing: 20) {
-            AnimatedCopyButton(textToCopy: "Sample text")
-            Text("Before Copy")
+            AnimatedCopyButton(textToCopy: "示例文本")
+            Text("复制前")
                 .padding()
         }
         .padding()

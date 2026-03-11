@@ -38,7 +38,7 @@ struct AnnouncementView: View {
 
             HStack(spacing: 8) {
                 Button(action: onLearnMore) {
-                    Text("Learn more")
+                    Text("了解更多")
                         .font(.system(size: 12, weight: .medium))
                         .foregroundColor(.black)
                         .padding(.horizontal, 10)
@@ -49,7 +49,7 @@ struct AnnouncementView: View {
                 .buttonStyle(PlainButtonStyle())
 
                 Button(action: onClose) {
-                    Text("Dismiss")
+                    Text("关闭")
                         .font(.system(size: 12, weight: .medium))
                         .foregroundColor(.white.opacity(0.9))
                         .padding(.horizontal, 8)
@@ -91,4 +91,3 @@ struct AnnouncementView: View {
 
 
  
-

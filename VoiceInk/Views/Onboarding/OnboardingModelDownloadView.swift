@@ -47,12 +47,12 @@ struct OnboardingModelDownloadView: View {
                             
                             // Title and description
                             VStack(spacing: 12) {
-                                Text("Download AI Model")
+                                Text("下载 AI 模型")
                                     .font(.title2)
                                     .fontWeight(.bold)
                                     .foregroundColor(.white)
                                 
-                                Text("We'll download the optimized model to get you started.")
+                                Text("我们会先下载一套优化好的模型，帮助你快速开始。")
                                     .font(.body)
                                     .foregroundColor(.white.opacity(0.7))
                                     .multilineTextAlignment(.center)
@@ -80,8 +80,8 @@ struct OnboardingModelDownloadView: View {
                             
                             // Performance indicators in a more compact layout
                             HStack(spacing: 20) {
-                                performanceIndicator(label: "Speed", value: turboModel.speed)
-                                performanceIndicator(label: "Accuracy", value: turboModel.accuracy)
+                                performanceIndicator(label: "速度", value: turboModel.speed)
+                                performanceIndicator(label: "准确度", value: turboModel.accuracy)
                                 ramUsageLabel(gb: turboModel.ramUsage)
                             }
                             .frame(maxWidth: .infinity, alignment: .center)
@@ -120,7 +120,7 @@ struct OnboardingModelDownloadView: View {
                             .disabled(isDownloading)
                             
                             if !isModelSet {
-                                SkipButton(text: "Skip for now") {
+                                SkipButton(text: "暂时跳过") {
                                     withAnimation {
                                         showTutorial = true
                                     }
@@ -189,13 +189,13 @@ struct OnboardingModelDownloadView: View {
 
     private func getButtonTitle() -> String {
         if isModelSet {
-            return "Continue"
+            return "继续"
         } else if isDownloading {
-            return "Downloading..."
+            return "下载中…"
         } else if whisperModelManager.availableModels.contains(where: { $0.name == turboModel.name }) {
-            return "Set as Default"
+            return "设为默认"
         } else {
-            return "Download Model"
+            return "下载模型"
         }
     }
     
@@ -217,7 +217,7 @@ struct OnboardingModelDownloadView: View {
     
     private func ramUsageLabel(gb: Double) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("RAM")
+            Text("内存")
                 .font(.caption)
                 .foregroundColor(.white.opacity(0.7))
             

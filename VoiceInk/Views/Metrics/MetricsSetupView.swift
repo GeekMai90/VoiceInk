@@ -17,11 +17,11 @@ struct MetricsSetupView: View {
                         .padding(.bottom, 20)
                        
                     VStack(spacing: 4) {
-                        Text("Welcome to VoiceInk")
+                        Text("欢迎使用 VoiceInk")
                             .font(.system(size: 28, weight: .bold, design: .rounded))
                             .multilineTextAlignment(.center)
                         
-                        Text("Complete the setup to get started")
+                        Text("完成基础设置后即可开始使用")
                             .font(.system(size: 16))
                             .foregroundColor(.secondary)
                             .multilineTextAlignment(.center)
@@ -70,29 +70,29 @@ struct MetricsSetupView: View {
             stepInfo = (
                 isCompleted: hotkeyManager.selectedHotkey1 != .none,
                 icon: "command",
-                title: "Set Keyboard Shortcut",
-                description: "Use VoiceInk anywhere with a shortcut."
+                title: "设置快捷键",
+                description: "通过快捷键在任意位置唤起 VoiceInk。"
             )
         case 1:
             stepInfo = (
                 isCompleted: isAccessibilityEnabled,
                 icon: "hand.raised.fill",
-                title: "Enable Accessibility",
-                description: "Paste transcribed text at your cursor."
+                title: "启用辅助功能",
+                description: "将转写文字粘贴到当前光标位置。"
             )
         case 2:
             stepInfo = (
                 isCompleted: isScreenRecordingEnabled,
                 icon: "video.fill",
-                title: "Enable Screen Recording",
-                description: "Get better transcriptions with screen context."
+                title: "启用屏幕录制",
+                description: "借助屏幕上下文获得更好的转写效果。"
             )
         default:
             stepInfo = (
                 isCompleted: transcriptionModelManager.currentTranscriptionModel != nil,
                 icon: "arrow.down.to.line",
-                title: "Download Model",
-                description: "Choose an AI model to start transcribing."
+                title: "下载模型",
+                description: "选择一个 AI 模型后开始转写。"
             )
         }
         
@@ -168,19 +168,19 @@ struct MetricsSetupView: View {
     
     private func getActionButtonTitle() -> String {
         if hotkeyManager.selectedHotkey1 == .none {
-            return "Configure Shortcut"
+            return "配置快捷键"
         } else if !AXIsProcessTrusted() {
-            return "Enable Accessibility"
+            return "启用辅助功能"
         } else if !CGPreflightScreenCaptureAccess() {
-            return "Enable Screen Recording"
+            return "启用屏幕录制"
         } else if transcriptionModelManager.currentTranscriptionModel == nil {
-            return "Download Model"
+            return "下载模型"
         }
-        return "Get Started"
+        return "开始使用"
     }
     
     private var helpText: some View {
-        Text("Need help? Check the Help menu for support options")
+        Text("如果需要帮助，请查看帮助菜单中的支持选项。")
             .font(.caption)
             .foregroundColor(.secondary)
     }
@@ -207,4 +207,3 @@ struct MetricsSetupView: View {
         )
     }
 }
-

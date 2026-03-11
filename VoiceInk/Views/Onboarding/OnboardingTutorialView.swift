@@ -22,11 +22,11 @@ struct OnboardingTutorialView: View {
                     VStack(alignment: .leading, spacing: 40) {
                         // Title and description
                         VStack(alignment: .leading, spacing: 16) {
-                            Text("Try It Out!")
+                            Text("试试看")
                                 .font(.system(size: 44, weight: .bold, design: .rounded))
                                 .foregroundColor(.white)
                             
-                            Text("Let's test your VoiceInk setup.")
+                            Text("来测试一下你的 VoiceInk 设置。")
                                 .font(.system(size: 24, weight: .medium, design: .rounded))
                                 .foregroundColor(.white.opacity(0.7))
                                 .lineSpacing(4)
@@ -35,7 +35,7 @@ struct OnboardingTutorialView: View {
                         // Keyboard shortcut display
                         VStack(alignment: .leading, spacing: 20) {
                             HStack {
-                                Text("Your Shortcut")
+                                Text("你的快捷键")
                                     .font(.system(size: 28, weight: .semibold, design: .rounded))
                                     .foregroundColor(.white)
                                 
@@ -70,7 +70,7 @@ struct OnboardingTutorialView: View {
                         Button(action: {
                             hasCompletedOnboarding = true
                         }) {
-                            Text("Complete Setup")
+                            Text("完成设置")
                                 .font(.system(size: 18, weight: .semibold, design: .rounded))
                                 .foregroundColor(.white)
                                 .frame(width: 200, height: 50)
@@ -81,7 +81,7 @@ struct OnboardingTutorialView: View {
                         .opacity(transcribedText.isEmpty ? 0.5 : 1)
                         .disabled(transcribedText.isEmpty)
                         
-                        SkipButton(text: "Skip for now") {
+                        SkipButton(text: "暂时跳过") {
                             hasCompletedOnboarding = true
                         }
                     }
@@ -128,7 +128,7 @@ struct OnboardingTutorialView: View {
                                         .font(.system(size: 36))
                                         .foregroundColor(.white.opacity(0.3))
                                     
-                                    Text("Click here and start speaking...")
+                                    Text("点击这里，然后开始说话…")
                                         .font(.system(size: 28, weight: .semibold, design: .rounded))
                                         .foregroundColor(.white.opacity(0.5))
                                         .multilineTextAlignment(.center)
@@ -167,10 +167,10 @@ struct OnboardingTutorialView: View {
     
     private func getInstructionText(for step: Int) -> String {
         switch step {
-        case 1: return "Click the text area on the right"
-        case 2: return "Press your shortcut key"
-        case 3: return "Speak something"
-        case 4: return "Press your shortcut key again"
+        case 1: return "点击右侧文本区域"
+        case 2: return "按下你的快捷键"
+        case 3: return "说一句话"
+        case 4: return "再次按下快捷键"
         default: return ""
         }
     }

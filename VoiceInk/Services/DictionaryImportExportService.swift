@@ -50,25 +50,25 @@ class DictionaryImportExportService {
             let savePanel = NSSavePanel()
             savePanel.allowedContentTypes = [UTType.json]
             savePanel.nameFieldStringValue = "VoiceInk_Dictionary.json"
-            savePanel.title = "Export Dictionary Data"
-            savePanel.message = "Choose a location to save your vocabulary and word replacements."
+            savePanel.title = "导出词典数据"
+            savePanel.message = "选择一个位置来保存你的词汇表和词语替换规则。"
 
             DispatchQueue.main.async {
                 if savePanel.runModal() == .OK {
                     if let url = savePanel.url {
                         do {
                             try jsonData.write(to: url)
-                            self.showAlert(title: "Export Successful", message: "Dictionary data exported successfully to \(url.lastPathComponent).")
+                            self.showAlert(title: "导出成功", message: "词典数据已成功导出到 \(url.lastPathComponent)。")
                         } catch {
-                            self.showAlert(title: "Export Error", message: "Could not save dictionary data: \(error.localizedDescription)")
+                            self.showAlert(title: "导出失败", message: "无法保存词典数据：\(error.localizedDescription)")
                         }
                     }
                 } else {
-                    self.showAlert(title: "Export Canceled", message: "Export operation was canceled.")
+                    self.showAlert(title: "已取消导出", message: "导出操作已取消。")
                 }
             }
         } catch {
-            self.showAlert(title: "Export Error", message: "Could not encode dictionary data: \(error.localizedDescription)")
+            self.showAlert(title: "导出失败", message: "无法编码词典数据：\(error.localizedDescription)")
         }
     }
 
@@ -78,13 +78,13 @@ class DictionaryImportExportService {
         openPanel.canChooseFiles = true
         openPanel.canChooseDirectories = false
         openPanel.allowsMultipleSelection = false
-        openPanel.title = "Import Dictionary Data"
-        openPanel.message = "Choose a dictionary file to import. New items will be added, existing items will be kept."
+        openPanel.title = "导入词典数据"
+        openPanel.message = "选择要导入的词典文件。新条目会被添加，已有条目会保留。"
 
         DispatchQueue.main.async {
             if openPanel.runModal() == .OK {
                 guard let url = openPanel.url else {
-                    self.showAlert(title: "Import Error", message: "Could not get the file URL.")
+                    self.showAlert(title: "导入失败", message: "无法获取文件 URL。")
                     return
                 }
 
@@ -152,19 +152,19 @@ class DictionaryImportExportService {
                     // Save all changes
                     try context.save()
 
-                    var message = "Dictionary data imported successfully from \(url.lastPathComponent).\n\n"
-                    message += "Vocabulary Words: \(newWordsAdded) added, \(originalExistingCount) kept\n"
-                    message += "Word Replacements: \(addedCount) added, \(updatedCount) updated"
+                    var message = "已成功从 \(url.lastPathComponent) 导入词典数据。\n\n"
+                    message += "词汇表：新增 \(newWordsAdded) 条，保留 \(originalExistingCount) 条\n"
+                    message += "词语替换：新增 \(addedCount) 条，更新 \(updatedCount) 条"
 
-                    self.showAlert(title: "Import Successful", message: message)
+                    self.showAlert(title: "导入成功", message: message)
 
                 } catch {
                     // Rollback any unsaved changes to maintain consistency
                     context.rollback()
-                    self.showAlert(title: "Import Error", message: "Error importing dictionary data: \(error.localizedDescription). The file might be corrupted or not in the correct format.")
+                    self.showAlert(title: "导入失败", message: "导入词典数据时出错：\(error.localizedDescription)。文件可能已损坏或格式不正确。")
                 }
             } else {
-                self.showAlert(title: "Import Canceled", message: "Import operation was canceled.")
+                self.showAlert(title: "已取消导入", message: "导入操作已取消。")
             }
         }
     }
@@ -187,7 +187,7 @@ class DictionaryImportExportService {
             alert.messageText = title
             alert.informativeText = message
             alert.alertStyle = .informational
-            alert.addButton(withTitle: "OK")
+            alert.addButton(withTitle: "确定")
             alert.runModal()
         }
     }

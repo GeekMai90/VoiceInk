@@ -65,10 +65,10 @@ struct VoiceInkApp: App {
             // Show alert to user about storage issue
             DispatchQueue.main.async {
                 let alert = NSAlert()
-                alert.messageText = "Storage Warning"
-                alert.informativeText = "VoiceInk couldn't access its storage location. Your transcriptions will not be saved between sessions."
+                alert.messageText = "存储警告"
+                alert.informativeText = "VoiceInk 无法访问它的存储位置。你的转写内容将不会在会话之间保存。"
                 alert.alertStyle = .warning
-                alert.addButton(withTitle: "OK")
+                alert.addButton(withTitle: "确定")
                 alert.runModal()
             }
         }
@@ -262,10 +262,10 @@ struct VoiceInkApp: App {
                         // Check if container initialization failed
                         if containerInitializationFailed {
                             let alert = NSAlert()
-                            alert.messageText = "Critical Storage Error"
-                            alert.informativeText = "VoiceInk cannot initialize its storage system. The app cannot continue.\n\nPlease try reinstalling the app or contact support if the issue persists."
+                            alert.messageText = "严重存储错误"
+                            alert.informativeText = "VoiceInk 无法初始化它的存储系统，应用无法继续运行。\n\n请尝试重新安装应用；如果问题仍然存在，请联系支持。"
                             alert.alertStyle = .critical
-                            alert.addButton(withTitle: "Quit")
+                            alert.addButton(withTitle: "退出")
                             alert.runModal()
 
                             NSApplication.shared.terminate(nil)

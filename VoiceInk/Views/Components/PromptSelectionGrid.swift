@@ -32,7 +32,7 @@ struct PromptSelectionGrid: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             if prompts.isEmpty {
-                Text("No prompts available")
+                Text("暂无可用提示词")
                     .foregroundColor(.secondary)
                     .font(.caption)
             } else {
@@ -58,7 +58,7 @@ struct PromptSelectionGrid: View {
                         CustomPrompt.addNewButton {
                             onAddNewPrompt()
                         }
-                        .help("Add new prompt")
+                        .help("添加提示词")
                     }
                 }
                 .padding(.vertical, 12)
@@ -70,7 +70,7 @@ struct PromptSelectionGrid: View {
                         .font(.caption)
                         .foregroundColor(.secondary)
                     
-                    Text("Double-click to edit • Right-click for more options")
+                    Text("双击可编辑，右键可查看更多操作")
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }

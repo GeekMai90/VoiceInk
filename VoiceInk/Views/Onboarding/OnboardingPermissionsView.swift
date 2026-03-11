@@ -42,32 +42,32 @@ struct OnboardingPermissionsView: View {
     
     private let permissions: [OnboardingPermission] = [
         OnboardingPermission(
-            title: "Microphone Access",
-            description: "Enable your microphone to start speaking and converting your voice to text instantly.",
+            title: "麦克风权限",
+            description: "启用麦克风后，你就可以开始说话，并即时把语音转成文字。",
             icon: "waveform",
             type: .microphone
         ),
         OnboardingPermission(
-            title: "Microphone Selection",
-            description: "Select the audio input device you want to use with VoiceInk.",
+            title: "麦克风选择",
+            description: "选择你希望与 VoiceInk 搭配使用的音频输入设备。",
             icon: "headphones",
             type: .audioDeviceSelection
         ),
         OnboardingPermission(
-            title: "Accessibility Access",
-            description: "Allow VoiceInk to help you type anywhere in your Mac.",
+            title: "辅助功能权限",
+            description: "允许 VoiceInk 在 Mac 的任意输入位置帮助你粘贴转写内容。",
             icon: "accessibility",
             type: .accessibility
         ),
         OnboardingPermission(
-            title: "Screen Recording",
-            description: "This helps to improve the accuracy of transcription.",
+            title: "屏幕录制权限",
+            description: "这有助于提升转写准确度。",
             icon: "rectangle.inset.filled.and.person.filled",
             type: .screenRecording
         ),
         OnboardingPermission(
-            title: "Keyboard Shortcut",
-            description: "Set up a keyboard shortcut to quickly access VoiceInk from anywhere.",
+            title: "键盘快捷键",
+            description: "设置一个全局快捷键，随时快速唤起 VoiceInk。",
             icon: "keyboard",
             type: .keyboardShortcut
         )
@@ -125,7 +125,7 @@ struct OnboardingPermissionsView: View {
                                     
                                     if permissions[currentPermissionIndex].type == .screenRecording {
                                         InfoTip(
-                                            "VoiceInk captures on-screen text to understand the context of your voice input, which significantly improves transcription accuracy. Your privacy is important: this data is processed locally and is not stored.",
+                                            "VoiceInk 会读取屏幕上的文本来理解你的语音上下文，这能显著提升转写准确度。你的隐私仍然重要：这些数据仅在本地处理，不会被保存。",
                                             learnMoreURL: "https://tryvoiceink.com/docs/contextual-awareness"
                                         )
                                     }
@@ -150,19 +150,19 @@ struct OnboardingPermissionsView: View {
                                                 .symbolRenderingMode(.hierarchical)
                                                 .foregroundStyle(.secondary)
                                             
-                                            Text("No microphones found")
+                                            Text("未找到麦克风")
                                                 .font(.subheadline)
                                                 .foregroundStyle(.secondary)
                                         }
                                         .padding()
                                     } else {
                                         styledPicker(
-                                            label: "Microphone:",
+                                            label: "麦克风：",
                                             selectedValue: audioDeviceManager.selectedDeviceID ?? 0,
-                                            displayValue: audioDeviceManager.availableDevices.first { $0.id == audioDeviceManager.selectedDeviceID }?.name ?? "Select Device",
+                                            displayValue: audioDeviceManager.availableDevices.first { $0.id == audioDeviceManager.selectedDeviceID }?.name ?? "选择设备",
                                             options: audioDeviceManager.availableDevices.map { $0.id },
                                             optionDisplayName: { deviceId in
-                                                audioDeviceManager.availableDevices.first { $0.id == deviceId }?.name ?? "Unknown Device"
+                                                audioDeviceManager.availableDevices.first { $0.id == deviceId }?.name ?? "未知设备"
                                             },
                                             onSelection: { deviceId in
                                                 audioDeviceManager.selectDevice(id: deviceId)
@@ -187,7 +187,7 @@ struct OnboardingPermissionsView: View {
                                         }
                                     }
                                     
-                                    Text("For best results, using your Mac's built-in microphone is recommended.")
+                                    Text("为了获得更好的效果，建议优先使用 Mac 内建麦克风。")
                                         .font(.caption)
                                         .foregroundColor(.white.opacity(0.7))
                                         .multilineTextAlignment(.center)
@@ -230,7 +230,7 @@ struct OnboardingPermissionsView: View {
                             if !permissionStates[currentPermissionIndex] && 
                                permissions[currentPermissionIndex].type != .keyboardShortcut &&
                                permissions[currentPermissionIndex].type != .audioDeviceSelection {
-                                SkipButton(text: "Skip for now") {
+                                SkipButton(text: "暂时跳过") {
                                     moveToNext()
                                 }
                             }
@@ -384,11 +384,11 @@ struct OnboardingPermissionsView: View {
     private func getButtonTitle() -> String {
         switch permissions[currentPermissionIndex].type {
         case .keyboardShortcut:
-            return permissionStates[currentPermissionIndex] ? "Continue" : "Set Shortcut"
+            return permissionStates[currentPermissionIndex] ? "继续" : "设置快捷键"
         case .audioDeviceSelection:
-            return "Continue"
+            return "继续"
         default:
-            return permissionStates[currentPermissionIndex] ? "Continue" : "Enable Access"
+            return permissionStates[currentPermissionIndex] ? "继续" : "授予权限"
         }
     }
 
@@ -459,7 +459,7 @@ struct OnboardingPermissionsView: View {
     ) -> some View {
         VStack(spacing: 16) {
             styledPicker(
-                label: "Shortcut:",
+                label: "快捷键：",
                 selectedValue: binding.wrappedValue,
                 displayValue: binding.wrappedValue.displayName,
                 options: HotkeyManager.HotkeyOption.allCases.filter { $0 != .none && $0 != .custom },
