@@ -10,11 +10,11 @@ enum VoiceCommandExecutorType: String, Codable, CaseIterable, Identifiable {
     var displayName: String {
         switch self {
         case .shortcuts:
-            return "Apple Shortcuts"
+            return "快捷指令"
         case .script:
-            return "Script"
+            return "脚本"
         case .alfred:
-            return "Alfred URL"
+            return "Alfred"
         }
     }
 }
@@ -28,9 +28,9 @@ enum VoiceCommandPayloadMode: String, Codable, CaseIterable, Identifiable {
     var displayName: String {
         switch self {
         case .argument:
-            return "Argument"
+            return "参数"
         case .stdin:
-            return "Standard Input"
+            return "标准输入"
         }
     }
 }
@@ -62,10 +62,12 @@ struct VoiceCommandAction: Identifiable, Codable, Equatable {
         self.isEnabled = isEnabled
     }
 
-    static let empty = VoiceCommandAction(
-        name: "",
-        spokenAliases: [],
-        executorType: .shortcuts,
-        target: ""
-    )
+    static var empty: VoiceCommandAction {
+        VoiceCommandAction(
+            name: "",
+            spokenAliases: [],
+            executorType: .shortcuts,
+            target: ""
+        )
+    }
 }

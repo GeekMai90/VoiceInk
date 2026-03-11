@@ -2,55 +2,39 @@ import SwiftUI
 
 struct VoiceCommandSettingsView: View {
     @StateObject private var manager = VoiceCommandManager.shared
-    @State private var editingAction = VoiceCommandAction.empty
-    @State private var isPresentingEditor = false
+    @Binding var editingAction: VoiceCommandAction?
+    @Binding var isPresentingEditor: Bool
 
     var body: some View {
-        Group {
-            ForEach(manager.actions) { action in
-                VStack(alignment: .leading, spacing: 6) {
-                    HStack(spacing: 8) {
-                        Toggle(action.name.isEmpty ? "Untitled Command" : action.name, isOn: binding(for: action))
-                            .toggleStyle(.checkbox)
-
-                        Spacer()
-
-                        Button("Edit") {
-                            editingAction = action
-                            isPresentingEditor = true
-                        }
-                        .buttonStyle(.link)
-
-                        Button("Delete", role: .destructive) {
-                            manager.delete(action)
-                        }
-                        .buttonStyle(.link)
-                    }
-
-                    Text("\(action.spokenAliases.joined(separator: ", ")) -> \(action.executorType.displayName)")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-
-                    Text(targetSummary(for: action))
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
+        VStack(alignment: .leading, spacing: 14) {
+            if manager.actions.isEmpty {
+                VoiceCommandEmptyStateView {
+                    editingAction = .empty
+                    isPresentingEditor = true
                 }
-                .padding(.vertical, 4)
-            }
-
-            Button("Add Voice Command") {
-                editingAction = .empty
-                isPresentingEditor = true
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 20)
+            } else {
+                LazyVStack(spacing: 12) {
+                    ForEach(manager.actions) { action in
+                        VoiceCommandActionCard(
+                            action: action,
+                            isEnabled: binding(for: action),
+                            onEdit: {
+                                editingAction = action
+                                isPresentingEditor = true
+                            },
+                            onDelete: {
+                                manager.delete(action)
+                            }
+                        )
+                    }
+                }
             }
 
             Text("命令词必须放在开头。脚本模式支持把 payload 当作参数或标准输入传入；Alfred URL 支持 `{{payload}}` 占位符。")
                 .font(.caption)
                 .foregroundStyle(.secondary)
-        }
-        .sheet(isPresented: $isPresentingEditor) {
-            VoiceCommandActionEditorSheet(action: editingAction) { savedAction in
-                manager.upsert(savedAction)
-            }
         }
     }
 
@@ -77,7 +61,145 @@ struct VoiceCommandSettingsView: View {
     }
 }
 
-private struct VoiceCommandActionEditorSheet: View {
+private struct VoiceCommandEmptyStateView: View {
+    let action: () -> Void
+
+    var body: some View {
+        VStack(spacing: 16) {
+            Image(systemName: "waveform.badge.mic")
+                .font(.system(size: 48))
+                .foregroundColor(.secondary)
+
+            Text("还没有语音命令")
+                .font(.title2)
+                .fontWeight(.semibold)
+
+            Text("新增第一条语音命令，用一句话触发 Alfred、快捷指令或本地脚本。")
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+
+            VoiceInkButton(
+                title: "新增语音命令",
+                action: action
+            )
+            .frame(maxWidth: 260)
+        }
+    }
+}
+
+private struct VoiceCommandActionCard: View {
+    let action: VoiceCommandAction
+    @Binding var isEnabled: Bool
+    let onEdit: () -> Void
+    let onDelete: () -> Void
+
+    var body: some View {
+        VStack(spacing: 0) {
+            HStack(spacing: 12) {
+                ZStack {
+                    Circle()
+                        .fill(Color(NSColor.controlBackgroundColor))
+                        .frame(width: 40, height: 40)
+
+                    Image(systemName: iconName)
+                        .font(.system(size: 18, weight: .medium))
+                        .foregroundStyle(.secondary)
+                }
+
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack(spacing: 6) {
+                        Text(action.name.isEmpty ? "未命名命令" : action.name)
+                            .font(.system(size: 15, weight: .semibold))
+
+                        Text(action.executorType.displayName)
+                            .font(.system(size: 11, weight: .medium))
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(Capsule().fill(Color.accentColor.opacity(0.16)))
+                            .foregroundColor(.accentColor)
+
+                        if !action.isEnabled {
+                            Text("已停用")
+                                .font(.system(size: 11, weight: .medium))
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
+                                .background(Capsule().fill(Color(NSColor.controlBackgroundColor)))
+                                .overlay(
+                                    Capsule().stroke(Color(NSColor.separatorColor), lineWidth: 0.5)
+                                )
+                                .foregroundColor(.secondary)
+                        }
+                    }
+
+                    HStack(spacing: 10) {
+                        Label(action.spokenAliases.joined(separator: ", "), systemImage: "mic")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+
+                        if action.executorType == .script {
+                            Label(action.payloadMode.displayName, systemImage: "arrow.right.to.line.compact")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+
+                Spacer()
+
+                Toggle("", isOn: $isEnabled)
+                    .toggleStyle(SwitchToggleStyle(tint: .accentColor))
+                    .labelsHidden()
+            }
+            .padding(.vertical, 12)
+            .padding(.horizontal, 14)
+
+            Divider()
+
+            HStack(spacing: 8) {
+                Text(targetSummary)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                    .truncationMode(.middle)
+
+                Spacer()
+
+                Button("编辑", action: onEdit)
+                    .buttonStyle(.link)
+
+                Button("删除", role: .destructive, action: onDelete)
+                    .buttonStyle(.link)
+            }
+            .padding(.horizontal, 14)
+            .padding(.vertical, 10)
+        }
+        .background(CardBackground(isSelected: false))
+    }
+
+    private var iconName: String {
+        switch action.executorType {
+        case .shortcuts:
+            return "square.stack.3d.up.fill"
+        case .script:
+            return "terminal.fill"
+        case .alfred:
+            return "bolt.horizontal.circle.fill"
+        }
+    }
+
+    private var targetSummary: String {
+        switch action.executorType {
+        case .shortcuts:
+            return "快捷指令：\(action.target)"
+        case .alfred:
+            return "Alfred：\(action.target)"
+        case .script:
+            return "脚本：\(action.target)"
+        }
+    }
+}
+
+struct VoiceCommandActionEditorSheet: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var name: String
@@ -117,44 +239,106 @@ private struct VoiceCommandActionEditorSheet: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text(isNewAction ? "Add Voice Command" : "Edit Voice Command")
-                .font(.headline)
+        VStack(alignment: .leading, spacing: 24) {
+            VStack(alignment: .leading, spacing: 8) {
+                Text(isNewAction ? "新增语音命令" : "编辑语音命令")
+                    .font(.system(size: 28, weight: .bold))
+                    .foregroundStyle(.primary)
 
-            Form {
-                TextField("Name", text: $name)
-                TextField("Spoken aliases, comma separated", text: $aliasesText)
+                Text("设置触发词、执行器和目标，让一句话直接触发动作。")
+                    .font(.system(size: 14))
+                    .foregroundStyle(.secondary)
+            }
 
-                Picker("Executor", selection: $executorType) {
-                    ForEach(VoiceCommandExecutorType.allCases) { executor in
-                        Text(executor.displayName).tag(executor)
-                    }
+            VStack(spacing: 0) {
+                editorField(title: "命令名称") {
+                    TextField("例如：每日笔记", text: $name)
+                        .textFieldStyle(.plain)
                 }
 
-                TextField(targetLabel, text: $target)
+                divider()
 
-                if executorType == .script {
-                    Picker("Payload", selection: $payloadMode) {
-                        ForEach(VoiceCommandPayloadMode.allCases) { mode in
-                            Text(mode.displayName).tag(mode)
+                editorField(title: "触发词") {
+                    TextField("多个触发词用中文逗号或英文逗号分隔", text: $aliasesText)
+                        .textFieldStyle(.plain)
+                }
+
+                divider()
+
+                editorField(title: "执行器", contentAlignment: .trailing) {
+                    Picker("", selection: $executorType) {
+                        ForEach(VoiceCommandExecutorType.allCases) { executor in
+                            Text(executorDisplayName(for: executor)).tag(executor)
                         }
                     }
+                    .labelsHidden()
+                    .pickerStyle(.menu)
+                    .frame(width: 180, alignment: .trailing)
+                    .fixedSize()
                 }
 
-                Toggle("Enabled", isOn: $isEnabled)
+                divider()
+
+                editorField(title: targetTitle) {
+                    TextField(targetPlaceholder, text: $target)
+                        .textFieldStyle(.plain)
+                }
+
+                if executorType == .script {
+                    divider()
+
+                    editorField(title: "传参方式", contentAlignment: .trailing) {
+                        Picker("", selection: $payloadMode) {
+                            ForEach(VoiceCommandPayloadMode.allCases) { mode in
+                                Text(payloadModeDisplayName(for: mode)).tag(mode)
+                            }
+                        }
+                        .labelsHidden()
+                        .pickerStyle(.menu)
+                        .frame(width: 180, alignment: .trailing)
+                        .fixedSize()
+                    }
+                }
+
+                divider()
+
+                editorField(title: "启用状态", contentAlignment: .trailing) {
+                    Toggle("", isOn: $isEnabled)
+                        .labelsHidden()
+                        .toggleStyle(SwitchToggleStyle(tint: .accentColor))
+                }
             }
-            .formStyle(.grouped)
+            .background(Color(NSColor.controlBackgroundColor).opacity(0.72))
+            .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: 22, style: .continuous)
+                    .stroke(Color.white.opacity(0.5), lineWidth: 0.8)
+            )
 
-            Text(helpText)
-                .font(.caption)
-                .foregroundStyle(.secondary)
+            VStack(alignment: .leading, spacing: 10) {
+                Text("说明")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(.secondary)
 
-            HStack {
+                Text(helpText)
+                    .font(.system(size: 14))
+                    .foregroundStyle(.secondary)
+                    .lineSpacing(3)
+            }
+
+            HStack(spacing: 12) {
                 Spacer()
-                Button("Cancel") {
+
+                Button("取消") {
                     dismiss()
                 }
-                Button("Save") {
+                .buttonStyle(.plain)
+                .padding(.horizontal, 18)
+                .padding(.vertical, 10)
+                .background(Color(NSColor.controlBackgroundColor))
+                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+
+                Button("保存") {
                     onSave(
                         VoiceCommandAction(
                             id: actionID,
@@ -168,33 +352,108 @@ private struct VoiceCommandActionEditorSheet: View {
                     )
                     dismiss()
                 }
+                .buttonStyle(.plain)
+                .foregroundStyle(.white)
+                .padding(.horizontal, 20)
+                .padding(.vertical, 10)
+                .background(canSave ? Color.accentColor : Color.accentColor.opacity(0.35))
+                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                 .keyboardShortcut(.defaultAction)
                 .disabled(!canSave)
             }
         }
-        .padding(20)
-        .frame(width: 480)
+        .padding(28)
+        .frame(width: 560)
+        .background(
+            LinearGradient(
+                colors: [
+                    Color(NSColor.windowBackgroundColor),
+                    Color(NSColor.controlBackgroundColor).opacity(0.96)
+                ],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        )
     }
 
-    private var targetLabel: String {
+    private var targetTitle: String {
         switch executorType {
         case .shortcuts:
-            return "Shortcut name"
+            return "快捷指令名称"
         case .script:
-            return "Script path"
+            return "脚本路径"
         case .alfred:
-            return "alfred:// URL"
+            return "Alfred URL"
+        }
+    }
+
+    private var targetPlaceholder: String {
+        switch executorType {
+        case .shortcuts:
+            return "例如：Roam Daily Capture"
+        case .script:
+            return "例如：/Users/geekmai/scripts/capture.sh"
+        case .alfred:
+            return "例如：alfred://runtrigger/..."
         }
     }
 
     private var helpText: String {
         switch executorType {
         case .shortcuts:
-            return "This runs `shortcuts run <name>`. If payload exists, VoiceInk sends it through standard input."
+            return "会执行 `shortcuts run <名称>`。如果你在说出触发词后继续说内容，VoiceInk Ultra 会把这段内容通过标准输入传给快捷指令。"
         case .script:
-            return "Use an absolute script path. Argument mode passes the payload as the first argument; Standard Input mode writes the payload to stdin."
+            return "请填写绝对路径。参数模式会把后续语音内容作为第一个参数传入；标准输入模式会把内容写入 stdin。"
         case .alfred:
-            return "Use a full `alfred://` URL. Add `{{payload}}` if the payload should be inserted into the URL."
+            return "请填写完整的 `alfred://` URL。如果需要把后续语音内容拼进 URL，请使用 `{{payload}}` 占位符。"
+        }
+    }
+
+    @ViewBuilder
+    private func editorField<Content: View>(
+        title: String,
+        contentAlignment: Alignment = .leading,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        HStack(alignment: .center, spacing: 20) {
+            Text(title)
+                .font(.system(size: 15, weight: .medium))
+                .foregroundStyle(.primary)
+                .frame(width: 108, alignment: .leading)
+
+            content()
+                .font(.system(size: 15))
+                .frame(maxWidth: .infinity, alignment: contentAlignment)
+        }
+        .padding(.horizontal, 20)
+        .padding(.vertical, 18)
+    }
+
+    @ViewBuilder
+    private func divider() -> some View {
+        Rectangle()
+            .fill(Color(NSColor.separatorColor).opacity(0.45))
+            .frame(height: 1)
+            .padding(.horizontal, 20)
+    }
+
+    private func executorDisplayName(for executor: VoiceCommandExecutorType) -> String {
+        switch executor {
+        case .shortcuts:
+            return "快捷指令"
+        case .script:
+            return "脚本"
+        case .alfred:
+            return "Alfred"
+        }
+    }
+
+    private func payloadModeDisplayName(for mode: VoiceCommandPayloadMode) -> String {
+        switch mode {
+        case .argument:
+            return "参数"
+        case .stdin:
+            return "标准输入"
         }
     }
 }

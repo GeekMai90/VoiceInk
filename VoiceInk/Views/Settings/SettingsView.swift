@@ -84,11 +84,6 @@ struct SettingsView: View {
                         .controlSize(.small)
                 }
 
-                LabeledContent("语音命令") {
-                    KeyboardShortcuts.Recorder(for: .toggleVoiceCommandRecorder)
-                        .controlSize(.small)
-                }
-
                 LabeledContent("Paste Last Transcription (Original)") {
                     KeyboardShortcuts.Recorder(for: .pasteLastTranscription)
                         .controlSize(.small)
@@ -209,11 +204,6 @@ struct SettingsView: View {
                 .pickerStyle(.segmented)
 
             }
-
-            Section("语音命令") {
-                VoiceCommandSettingsView()
-            }
-
             // MARK: - Experimental
             ExperimentalSection()
 
