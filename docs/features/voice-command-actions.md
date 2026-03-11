@@ -4,6 +4,29 @@
 
 Add a dedicated voice command mode that turns spoken phrases into executable actions instead of pasted text.
 
+## Current Implementation Status
+
+Implemented in the current fork:
+
+- dedicated global shortcut for voice command mode
+- shared recorder pipeline routing through `OutputMode.voiceCommand`
+- local command registry stored in `UserDefaults`
+- command matching by exact utterance prefix
+- executor support for:
+  - Apple Shortcuts
+  - local scripts
+  - Alfred URL schemes
+- no transcript paste on successful command execution
+- success and failure notifications
+
+Current first-version limitations:
+
+- command aliases must be configured manually in Settings
+- first exact-prefix match wins
+- payload is always plain text
+- no fuzzy matching or follow-up clarification
+- no dedicated standalone command management screen yet; configuration lives inside Settings
+
 User intent:
 
 - press a dedicated shortcut

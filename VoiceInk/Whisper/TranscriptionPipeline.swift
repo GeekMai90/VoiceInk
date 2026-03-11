@@ -10,6 +10,7 @@ class TranscriptionPipeline {
     private let modelContext: ModelContext
     private let serviceRegistry: TranscriptionServiceRegistry
     private let enhancementService: AIEnhancementService?
+    private let voiceCommandManager = VoiceCommandManager.shared
     private let promptDetectionService = PromptDetectionService()
     private let logger = Logger(subsystem: "com.prakashjoshipax.voiceink", category: "TranscriptionPipeline")
 
@@ -135,6 +136,36 @@ class TranscriptionPipeline {
                     finalPastedText = translatedText
                 } catch {
                     transcription.enhancedText = "Translation failed: \(error)"
+                    throw error
+                }
+            } else if outputMode == .voiceCommand {
+                if shouldCancel() { await onCleanup(); return }
+
+                onStateChange(.enhancing)
+
+                do {
+                    let executionStart = Date()
+                    let result = try await voiceCommandManager.execute(transcript: text)
+                    let executionDuration = Date().timeIntervalSince(executionStart)
+
+                    transcription.promptName = "Voice Command: \(result.action.name)"
+                    transcription.enhancedText = result.payload.isEmpty
+                        ? "Executed voice command '\(result.action.name)'"
+                        : "Executed voice command '\(result.action.name)' with payload: \(result.payload)"
+                    transcription.enhancementDuration = executionDuration
+                    finalPastedText = nil
+
+                    await NotificationManager.shared.showNotification(
+                        title: "Ran \(result.action.name)",
+                        type: .success
+                    )
+                } catch {
+                    transcription.enhancedText = "Voice command failed: \(error.localizedDescription)"
+                    finalPastedText = nil
+                    await NotificationManager.shared.showNotification(
+                        title: error.localizedDescription,
+                        type: .error
+                    )
                     throw error
                 }
             } else if let enhancementService,
