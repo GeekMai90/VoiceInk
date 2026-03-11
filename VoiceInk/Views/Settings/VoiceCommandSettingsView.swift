@@ -55,16 +55,6 @@ struct VoiceCommandSettingsView: View {
         )
     }
 
-    private func targetSummary(for action: VoiceCommandAction) -> String {
-        switch action.executorType {
-        case .shortcuts:
-            return "Shortcut: \(action.target)"
-        case .alfred:
-            return "URL: \(action.target)"
-        case .script:
-            return "Script: \(action.target) • Payload: \(action.payloadMode.displayName)"
-        }
-    }
 }
 
 private struct VoiceCommandEmptyStateView: View {
@@ -161,15 +151,31 @@ private struct VoiceCommandActionCard: View {
 
                 Spacer()
 
-                KeyboardShortcuts.Recorder(for: .voiceCommandAction(id: action.id)) { shortcut in
-                    onShortcutChange(shortcut)
-                }
-                .controlSize(.small)
-                .frame(minWidth: 112)
+                HStack(spacing: 12) {
+                    ZStack(alignment: .leading) {
+                        if KeyboardShortcuts.getShortcut(for: .voiceCommandAction(id: action.id)) == nil {
+                            HStack(spacing: 6) {
+                                Image(systemName: "keyboard")
+                                    .font(.system(size: 11, weight: .medium))
+                                Text("设置快捷键")
+                                    .font(.system(size: 12, weight: .medium))
+                            }
+                            .foregroundStyle(.secondary)
+                            .padding(.leading, 10)
+                            .allowsHitTesting(false)
+                        }
 
-                Toggle("", isOn: $isEnabled)
-                    .toggleStyle(SwitchToggleStyle(tint: .accentColor))
-                    .labelsHidden()
+                        KeyboardShortcuts.Recorder(for: .voiceCommandAction(id: action.id)) { shortcut in
+                            onShortcutChange(shortcut)
+                        }
+                        .labelsHidden()
+                    }
+                    .frame(width: 132)
+
+                    Toggle("", isOn: $isEnabled)
+                        .toggleStyle(SwitchToggleStyle(tint: .accentColor))
+                        .labelsHidden()
+                }
             }
             .padding(.vertical, 12)
             .padding(.horizontal, 14)
@@ -213,10 +219,24 @@ private struct VoiceCommandActionCard: View {
         case .shortcuts:
             return "快捷指令：\(action.target)"
         case .alfred:
-            return "Alfred：\(action.target)"
+            return "Alfred：\(alfredTargetSummary)"
         case .script:
             return "脚本：\(action.target)"
         }
+    }
+
+    private var alfredTargetSummary: String {
+        if let components = URLComponents(string: action.target) {
+            let path = components.path.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+            let segments = path.split(separator: "/")
+            if segments.count >= 3 {
+                return "\(segments[0]) / \(segments[1])"
+            }
+            if !path.isEmpty {
+                return path
+            }
+        }
+        return action.target
     }
 }
 
