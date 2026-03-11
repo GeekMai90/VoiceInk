@@ -8,7 +8,7 @@ DEV_INSTALL_PATH ?= /Applications/VoiceInk Ultra.app
 DEV_SIGN_HASH ?= $(shell security find-identity -p codesigning -v 2>/dev/null | awk '/Apple Development:.*geekmai/ {print $$2; found=1; exit} /Apple Development:/ && first == "" {first=$$2} END {if (!found) print first}')
 DEV_SIGN_IDENTITY ?= $(shell security find-identity -p codesigning -v 2>/dev/null | awk -F'"' '/Apple Development:.*geekmai/ {print $$2; found=1; exit} /Apple Development:/ && first == "" {first=$$2} END {if (!found) print first}')
 
-.PHONY: all clean whisper setup build local devsigned check healthcheck help dev run run-devsigned
+.PHONY: all clean whisper setup build local devsigned check healthcheck help dev run run-devsigned stop-running-apps
 
 # Default target
 all: check build
@@ -48,8 +48,24 @@ setup: whisper
 build: setup
 	xcodebuild -project VoiceInk.xcodeproj -scheme VoiceInk -configuration Debug CODE_SIGN_IDENTITY="" build
 
+stop-running-apps:
+	@echo "Stopping any running VoiceInk app instances..."
+	@osascript -e 'tell application "VoiceInk Ultra" to quit' >/dev/null 2>&1 || true
+	@osascript -e 'tell application "VoiceInk" to quit' >/dev/null 2>&1 || true
+	@sleep 1
+	@pkill -f '/Applications/VoiceInk Ultra.app/Contents/MacOS/VoiceInk' >/dev/null 2>&1 || true
+	@pkill -f '/Applications/VoiceInk Dev.app/Contents/MacOS/VoiceInk' >/dev/null 2>&1 || true
+	@pkill -f '/Applications/VoiceInk.app/Contents/MacOS/VoiceInk' >/dev/null 2>&1 || true
+	@pkill -f '/Users/.*/Downloads/VoiceInk Ultra.app/Contents/MacOS/VoiceInk' >/dev/null 2>&1 || true
+	@pkill -f '/Users/.*/Downloads/VoiceInk.app/Contents/MacOS/VoiceInk' >/dev/null 2>&1 || true
+	@pkill -f '/Applications/VoiceInk Ultra.app/.*/MediaRemoteAdapter.*run.pl' >/dev/null 2>&1 || true
+	@pkill -f '/Applications/VoiceInk Dev.app/.*/MediaRemoteAdapter.*run.pl' >/dev/null 2>&1 || true
+	@pkill -f '/Applications/VoiceInk.app/.*/MediaRemoteAdapter.*run.pl' >/dev/null 2>&1 || true
+	@pkill -f '/Users/.*/Downloads/VoiceInk Ultra.app/.*/MediaRemoteAdapter.*run.pl' >/dev/null 2>&1 || true
+	@pkill -f '/Users/.*/Downloads/VoiceInk.app/.*/MediaRemoteAdapter.*run.pl' >/dev/null 2>&1 || true
+
 # Build for local use without Apple Developer certificate
-local: check setup
+local: check setup stop-running-apps
 	@echo "Building VoiceInk for local use (no Apple Developer certificate required)..."
 	@rm -rf "$(LOCAL_DERIVED_DATA)"
 	xcodebuild -project VoiceInk.xcodeproj -scheme VoiceInk -configuration Debug \
@@ -68,6 +84,8 @@ local: check setup
 		rm -rf "$$HOME/Downloads/VoiceInk Ultra.app"; \
 		ditto "$$APP_PATH" "$$HOME/Downloads/VoiceInk Ultra.app"; \
 		xattr -cr "$$HOME/Downloads/VoiceInk Ultra.app"; \
+		echo "Launching ~/Downloads/VoiceInk Ultra.app..."; \
+		open "$$HOME/Downloads/VoiceInk Ultra.app"; \
 		echo ""; \
 		echo "Build complete! App saved to: ~/Downloads/VoiceInk Ultra.app"; \
 		echo "Run with: open ~/Downloads/VoiceInk\\ Ultra.app"; \
@@ -81,7 +99,7 @@ local: check setup
 	fi
 
 # Build for local development with stable Apple Development signing and fixed install path
-devsigned: check setup
+devsigned: check setup stop-running-apps
 	@if [ -z "$(DEV_SIGN_IDENTITY)" ]; then \
 		echo "Error: No Apple Development signing identity found in Keychain."; \
 		echo "Open Xcode, sign in with your Apple ID, and ensure an Apple Development certificate is available."; \
@@ -108,6 +126,8 @@ devsigned: check setup
 		xattr -cr "$(DEV_INSTALL_PATH)"; \
 		echo "Re-signing app bundle with Apple Development identity..."; \
 		codesign --force --deep --sign "$(DEV_SIGN_HASH)" "$(DEV_INSTALL_PATH)"; \
+		echo "Launching $(DEV_INSTALL_PATH)..."; \
+		open "$(DEV_INSTALL_PATH)"; \
 		echo ""; \
 		echo "Stable-signed development build installed at: $(DEV_INSTALL_PATH)"; \
 		echo "Run with: open \"$(DEV_INSTALL_PATH)\""; \

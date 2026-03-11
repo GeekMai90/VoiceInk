@@ -92,13 +92,7 @@ struct ContentView: View {
                             .font(.system(size: 14, weight: .semibold))
 
                         if case .licensed = licenseViewModel.licenseState {
-                            Text("PRO")
-                                .font(.system(size: 9, weight: .heavy))
-                                .foregroundStyle(.white)
-                                .padding(.horizontal, 4)
-                                .padding(.vertical, 2)
-                                .background(Color.blue)
-                                .cornerRadius(4)
+                            ProBadge()
                         }
 
                         Spacer()
@@ -225,4 +219,3 @@ private struct SidebarItemView: View {
         .padding(.horizontal, 2)
     }
 }
-
