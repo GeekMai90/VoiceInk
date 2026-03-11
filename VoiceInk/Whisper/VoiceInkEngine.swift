@@ -10,6 +10,7 @@ class VoiceInkEngine: NSObject, ObservableObject {
     @Published var recordingState: RecordingState = .idle
     @Published var shouldCancelRecording = false
     @Published var currentOutputMode: OutputMode = .transcription
+    @Published var currentVoiceCommandActionId: UUID?
     var partialTranscript: String = ""
     var currentSession: TranscriptionSession?
 
@@ -79,7 +80,11 @@ class VoiceInkEngine: NSObject, ObservableObject {
 
     // MARK: - Toggle Record
 
-    func toggleRecord(powerModeId: UUID? = nil, outputMode: OutputMode = .transcription) async {
+    func toggleRecord(
+        powerModeId: UUID? = nil,
+        outputMode: OutputMode = .transcription,
+        voiceCommandActionId: UUID? = nil
+    ) async {
         logger.notice("toggleRecord called – state=\(String(describing: self.recordingState), privacy: .public)")
 
         if recordingState == .recording {
@@ -108,6 +113,7 @@ class VoiceInkEngine: NSObject, ObservableObject {
                     currentSession = nil
                     try? FileManager.default.removeItem(at: recordedFile)
                     recordingState = .idle
+                    currentVoiceCommandActionId = nil
                     await cleanupResources()
                 }
             } else {
@@ -115,6 +121,7 @@ class VoiceInkEngine: NSObject, ObservableObject {
                 currentSession?.cancel()
                 currentSession = nil
                 recordingState = .idle
+                currentVoiceCommandActionId = nil
                 await cleanupResources()
             }
         } else {
@@ -124,6 +131,7 @@ class VoiceInkEngine: NSObject, ObservableObject {
                 return
             }
             currentOutputMode = outputMode
+            currentVoiceCommandActionId = voiceCommandActionId
             shouldCancelRecording = false
             partialTranscript = ""
 
@@ -211,6 +219,7 @@ class VoiceInkEngine: NSObject, ObservableObject {
                             self.logger.notice("toggleRecord: calling dismissMiniRecorder from error handler")
                             await self.recorderUIManager?.dismissMiniRecorder()
                             self.recordedFile = nil
+                            self.currentVoiceCommandActionId = nil
                         }
                     }
                 } else {
@@ -243,6 +252,7 @@ class VoiceInkEngine: NSObject, ObservableObject {
             audioURL: audioURL,
             model: model,
             outputMode: currentOutputMode,
+            directVoiceCommandActionId: currentVoiceCommandActionId,
             session: session,
             onStateChange: { [weak self] state in self?.recordingState = state },
             shouldCancel: { [weak self] in self?.shouldCancelRecording ?? false },
@@ -252,6 +262,7 @@ class VoiceInkEngine: NSObject, ObservableObject {
 
         shouldCancelRecording = false
         currentOutputMode = .transcription
+        currentVoiceCommandActionId = nil
         if recordingState != .idle {
             recordingState = .idle
         }

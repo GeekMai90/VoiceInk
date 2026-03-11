@@ -49,6 +49,7 @@ class HotkeyManager: ObservableObject {
     private var recorderUIManager: RecorderUIManager
     private var miniRecorderShortcutManager: MiniRecorderShortcutManager
     private var powerModeShortcutManager: PowerModeShortcutManager
+    private var voiceCommandShortcutManager: VoiceCommandShortcutManager
 
     // MARK: - Helper Properties
     private var canProcessHotkeyAction: Bool {
@@ -135,6 +136,7 @@ class HotkeyManager: ObservableObject {
         self.recorderUIManager = recorderUIManager
         self.miniRecorderShortcutManager = MiniRecorderShortcutManager(engine: engine, recorderUIManager: recorderUIManager)
         self.powerModeShortcutManager = PowerModeShortcutManager(engine: engine)
+        self.voiceCommandShortcutManager = VoiceCommandShortcutManager(engine: engine, recorderUIManager: recorderUIManager)
 
         KeyboardShortcuts.onKeyUp(for: .pasteLastTranscription) { [weak self] in
             guard let self = self else { return }

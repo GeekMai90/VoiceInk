@@ -1,4 +1,5 @@
 import SwiftUI
+import KeyboardShortcuts
 
 struct VoiceCommandSettingsView: View {
     @StateObject private var manager = VoiceCommandManager.shared
@@ -20,6 +21,11 @@ struct VoiceCommandSettingsView: View {
                         VoiceCommandActionCard(
                             action: action,
                             isEnabled: binding(for: action),
+                            onShortcutChange: { shortcut in
+                                var updated = action
+                                updated.hotkeyShortcut = shortcut != nil ? "configured" : nil
+                                manager.upsert(updated)
+                            },
                             onEdit: {
                                 editingAction = action
                                 isPresentingEditor = true
@@ -90,6 +96,7 @@ private struct VoiceCommandEmptyStateView: View {
 private struct VoiceCommandActionCard: View {
     let action: VoiceCommandAction
     @Binding var isEnabled: Bool
+    let onShortcutChange: (KeyboardShortcuts.Shortcut?) -> Void
     let onEdit: () -> Void
     let onDelete: () -> Void
 
@@ -132,12 +139,20 @@ private struct VoiceCommandActionCard: View {
                     }
 
                     HStack(spacing: 10) {
-                        Label(action.spokenAliases.joined(separator: ", "), systemImage: "mic")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                        if !action.spokenAliases.isEmpty {
+                            Label(action.spokenAliases.joined(separator: ", "), systemImage: "mic")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
 
                         if action.executorType == .script {
                             Label(action.payloadMode.displayName, systemImage: "arrow.right.to.line.compact")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+
+                        if action.hotkeyShortcut != nil {
+                            Label("专属快捷键", systemImage: "keyboard")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
@@ -145,6 +160,12 @@ private struct VoiceCommandActionCard: View {
                 }
 
                 Spacer()
+
+                KeyboardShortcuts.Recorder(for: .voiceCommandAction(id: action.id)) { shortcut in
+                    onShortcutChange(shortcut)
+                }
+                .controlSize(.small)
+                .frame(minWidth: 112)
 
                 Toggle("", isOn: $isEnabled)
                     .toggleStyle(SwitchToggleStyle(tint: .accentColor))
@@ -233,9 +254,10 @@ struct VoiceCommandActionEditorSheet: View {
     }
 
     private var canSave: Bool {
-        !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
+        let hasDedicatedHotkey = KeyboardShortcuts.getShortcut(for: .voiceCommandAction(id: actionID)) != nil
+        return !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
         !target.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
-        !normalizedAliases.isEmpty
+        (!normalizedAliases.isEmpty || hasDedicatedHotkey)
     }
 
     var body: some View {
@@ -259,7 +281,7 @@ struct VoiceCommandActionEditorSheet: View {
                 divider()
 
                 editorField(title: "触发词") {
-                    TextField("多个触发词用中文逗号或英文逗号分隔", text: $aliasesText)
+                    TextField("多个触发词用中文逗号或英文逗号分隔；可与专属快捷键同时使用", text: $aliasesText)
                         .textFieldStyle(.plain)
                 }
 
@@ -275,6 +297,13 @@ struct VoiceCommandActionEditorSheet: View {
                     .pickerStyle(.menu)
                     .frame(width: 180, alignment: .trailing)
                     .fixedSize()
+                }
+
+                divider()
+
+                editorField(title: "专属快捷键", contentAlignment: .trailing) {
+                    KeyboardShortcuts.Recorder(for: .voiceCommandAction(id: actionID))
+                        .labelsHidden()
                 }
 
                 divider()
@@ -347,7 +376,8 @@ struct VoiceCommandActionEditorSheet: View {
                             executorType: executorType,
                             target: target.trimmingCharacters(in: .whitespacesAndNewlines),
                             payloadMode: payloadMode,
-                            isEnabled: isEnabled
+                            isEnabled: isEnabled,
+                            hotkeyShortcut: KeyboardShortcuts.getShortcut(for: .voiceCommandAction(id: actionID)) != nil ? "configured" : nil
                         )
                     )
                     dismiss()
@@ -401,11 +431,11 @@ struct VoiceCommandActionEditorSheet: View {
     private var helpText: String {
         switch executorType {
         case .shortcuts:
-            return "会执行 `shortcuts run <名称>`。如果你在说出触发词后继续说内容，VoiceInk Ultra 会把这段内容通过标准输入传给快捷指令。"
+            return "会执行 `shortcuts run <名称>`。普通模式下需要先说触发词；如果设置了专属快捷键，按下快捷键后整段语音会直接作为内容传给这条命令。"
         case .script:
-            return "请填写绝对路径。参数模式会把后续语音内容作为第一个参数传入；标准输入模式会把内容写入 stdin。"
+            return "请填写绝对路径。普通模式下需要先说触发词；如果设置了专属快捷键，按下快捷键后整段语音会直接作为内容发送。参数模式会把内容作为第一个参数传入；标准输入模式会把内容写入 stdin。"
         case .alfred:
-            return "请填写完整的 `alfred://` URL。如果需要把后续语音内容拼进 URL，请使用 `{{payload}}` 占位符。"
+            return "请填写完整的 `alfred://` URL。普通模式下需要先说触发词；如果设置了专属快捷键，按下快捷键后整段语音会直接作为内容发送。如果需要把内容拼进 URL，请使用 `{{payload}}` 占位符。"
         }
     }
 

@@ -1,5 +1,6 @@
 import Foundation
 import AppKit
+import KeyboardShortcuts
 
 struct VoiceCommandMatch {
     let action: VoiceCommandAction
@@ -16,6 +17,7 @@ struct VoiceCommandExecutionResult {
 enum VoiceCommandError: LocalizedError {
     case noCommandsConfigured
     case noMatchingCommand
+    case unavailableCommand
     case invalidURL
     case invalidTarget(String)
     case commandFailed(String)
@@ -23,11 +25,13 @@ enum VoiceCommandError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .noCommandsConfigured:
-            return "No voice commands are configured."
+            return "还没有可用的语音命令。"
         case .noMatchingCommand:
-            return "No matching voice command was found."
+            return "没有找到匹配的语音命令。"
+        case .unavailableCommand:
+            return "这条语音命令不可用。"
         case .invalidURL:
-            return "The Alfred URL is invalid."
+            return "Alfred 链接无效。"
         case .invalidTarget(let message):
             return message
         case .commandFailed(let message):
@@ -65,6 +69,7 @@ final class VoiceCommandManager: ObservableObject {
     }
 
     func delete(_ action: VoiceCommandAction) {
+        KeyboardShortcuts.setShortcut(nil, for: .voiceCommandAction(id: action.id))
         actions.removeAll { $0.id == action.id }
     }
 
@@ -94,9 +99,34 @@ final class VoiceCommandManager: ObservableObject {
         )
     }
 
+    func executeDirect(actionId: UUID, transcript: String) async throws -> VoiceCommandExecutionResult {
+        let payload = transcript.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard let action = actions.first(where: { $0.id == actionId && $0.isEnabled }) else {
+            throw VoiceCommandError.unavailableCommand
+        }
+
+        let match = VoiceCommandMatch(action: action, matchedAlias: "", payload: payload)
+
+        switch action.executorType {
+        case .alfred:
+            try await executeAlfredURL(match)
+        case .shortcuts:
+            try await executeShortcut(match)
+        case .script:
+            try await executeScript(match)
+        }
+
+        return VoiceCommandExecutionResult(
+            action: action,
+            matchedAlias: "",
+            payload: payload
+        )
+    }
+
     private func save() {
         guard let data = try? JSONEncoder().encode(actions) else { return }
         UserDefaults.standard.set(data, forKey: defaultsKey)
+        NotificationCenter.default.post(name: .voiceCommandActionsDidChange, object: nil)
     }
 
     private func resolveMatch(from transcript: String, in actions: [VoiceCommandAction]) -> VoiceCommandMatch? {
@@ -121,7 +151,10 @@ final class VoiceCommandManager: ObservableObject {
             if trimmedTranscript.count > alias.count {
                 let nextIndex = trimmedTranscript.index(trimmedTranscript.startIndex, offsetBy: alias.count)
                 let nextCharacter = trimmedTranscript[nextIndex]
-                guard String(nextCharacter).rangeOfCharacter(from: separatorCharacters) != nil else {
+                let hasSeparator = String(nextCharacter).rangeOfCharacter(from: separatorCharacters) != nil
+                let canOmitSeparator = alias.containsCJKCharacters
+
+                guard hasSeparator || canOmitSeparator else {
                     continue
                 }
             }
@@ -142,7 +175,7 @@ final class VoiceCommandManager: ObservableObject {
         }
 
         guard NSWorkspace.shared.open(url) else {
-            throw VoiceCommandError.commandFailed("Failed to open the Alfred URL.")
+            throw VoiceCommandError.commandFailed("无法打开 Alfred 链接。")
         }
     }
 
@@ -164,7 +197,7 @@ final class VoiceCommandManager: ObservableObject {
         let expandedPath = NSString(string: match.action.target).expandingTildeInPath
         let targetURL = URL(fileURLWithPath: expandedPath)
         guard FileManager.default.fileExists(atPath: targetURL.path) else {
-            throw VoiceCommandError.invalidTarget("The script path does not exist.")
+            throw VoiceCommandError.invalidTarget("脚本路径不存在。")
         }
 
         let canExecuteDirectly = FileManager.default.isExecutableFile(atPath: targetURL.path)
@@ -260,5 +293,28 @@ final class VoiceCommandManager: ObservableObject {
         }
 
         return target.replacingOccurrences(of: "{{payload}}", with: replacement)
+    }
+}
+
+extension Notification.Name {
+    static let voiceCommandActionsDidChange = Notification.Name("VoiceCommandActionsDidChange")
+}
+
+extension KeyboardShortcuts.Name {
+    static func voiceCommandAction(id: UUID) -> Self {
+        Self("voiceCommandAction_\(id.uuidString)")
+    }
+}
+
+private extension String {
+    var containsCJKCharacters: Bool {
+        unicodeScalars.contains { scalar in
+            switch scalar.value {
+            case 0x4E00...0x9FFF, 0x3400...0x4DBF, 0x3040...0x30FF, 0xAC00...0xD7AF:
+                return true
+            default:
+                return false
+            }
+        }
     }
 }

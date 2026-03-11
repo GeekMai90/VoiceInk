@@ -43,6 +43,7 @@ struct VoiceCommandAction: Identifiable, Codable, Equatable {
     var target: String
     var payloadMode: VoiceCommandPayloadMode
     var isEnabled: Bool
+    var hotkeyShortcut: String?
 
     init(
         id: UUID = UUID(),
@@ -51,7 +52,8 @@ struct VoiceCommandAction: Identifiable, Codable, Equatable {
         executorType: VoiceCommandExecutorType,
         target: String,
         payloadMode: VoiceCommandPayloadMode = .argument,
-        isEnabled: Bool = true
+        isEnabled: Bool = true,
+        hotkeyShortcut: String? = nil
     ) {
         self.id = id
         self.name = name
@@ -60,6 +62,7 @@ struct VoiceCommandAction: Identifiable, Codable, Equatable {
         self.target = target
         self.payloadMode = payloadMode
         self.isEnabled = isEnabled
+        self.hotkeyShortcut = hotkeyShortcut
     }
 
     static var empty: VoiceCommandAction {

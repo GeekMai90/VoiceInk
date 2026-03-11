@@ -42,6 +42,7 @@ class TranscriptionPipeline {
         audioURL: URL,
         model: any TranscriptionModel,
         outputMode: OutputMode,
+        directVoiceCommandActionId: UUID?,
         session: TranscriptionSession?,
         onStateChange: @escaping (RecordingState) -> Void,
         shouldCancel: () -> Bool,
@@ -145,18 +146,28 @@ class TranscriptionPipeline {
 
                 do {
                     let executionStart = Date()
-                    let result = try await voiceCommandManager.execute(transcript: text)
+                    let result: VoiceCommandExecutionResult
+                    if let directVoiceCommandActionId {
+                        result = try await voiceCommandManager.executeDirect(
+                            actionId: directVoiceCommandActionId,
+                            transcript: text
+                        )
+                    } else {
+                        result = try await voiceCommandManager.execute(transcript: text)
+                    }
                     let executionDuration = Date().timeIntervalSince(executionStart)
 
-                    transcription.promptName = "Voice Command: \(result.action.name)"
+                    transcription.promptName = directVoiceCommandActionId == nil
+                        ? "Voice Command: \(result.action.name)"
+                        : "快捷命令: \(result.action.name)"
                     transcription.enhancedText = result.payload.isEmpty
-                        ? "Executed voice command '\(result.action.name)'"
-                        : "Executed voice command '\(result.action.name)' with payload: \(result.payload)"
+                        ? "已执行语音命令「\(result.action.name)」"
+                        : "已执行语音命令「\(result.action.name)」，内容：\(result.payload)"
                     transcription.enhancementDuration = executionDuration
                     finalPastedText = nil
 
                     await NotificationManager.shared.showNotification(
-                        title: "Ran \(result.action.name)",
+                        title: "已执行 \(result.action.name)",
                         type: .success
                     )
                 } catch {
@@ -199,8 +210,16 @@ class TranscriptionPipeline {
             let recoverySuggestion = (error as? LocalizedError)?.recoverySuggestion ?? ""
             let fullErrorText = recoverySuggestion.isEmpty ? errorDescription : "\(errorDescription) \(recoverySuggestion)"
 
-            transcription.text = "Transcription Failed: \(fullErrorText)"
-            transcription.transcriptionStatus = TranscriptionStatus.failed.rawValue
+            if transcription.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                transcription.text = "Transcription Failed: \(fullErrorText)"
+            }
+
+            if outputMode == .voiceCommand {
+                transcription.enhancedText = "语音命令执行失败：\(fullErrorText)"
+                transcription.transcriptionStatus = TranscriptionStatus.completed.rawValue
+            } else {
+                transcription.transcriptionStatus = TranscriptionStatus.failed.rawValue
+            }
         }
 
         try? modelContext.save()
