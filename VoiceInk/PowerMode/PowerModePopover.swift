@@ -6,7 +6,7 @@ struct PowerModePopover: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Select Power Mode")
+            Text("选择场景模式")
                 .font(.headline)
                 .foregroundColor(.white.opacity(0.9))
                 .padding(.horizontal)
@@ -23,7 +23,7 @@ struct PowerModePopover: View {
                             Image(systemName: "sparkles")
                                 .foregroundColor(.white.opacity(0.6))
                                 .font(.system(size: 16))
-                            Text("No Power Modes Available")
+                            Text("暂无可用场景模式")
                                 .foregroundColor(.white.opacity(0.8))
                                 .font(.system(size: 13))
                                 .lineLimit(1)

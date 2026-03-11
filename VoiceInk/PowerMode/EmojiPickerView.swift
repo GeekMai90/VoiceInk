@@ -61,22 +61,22 @@ struct EmojiPickerView: View {
                                     newEmojiText = cleaned
                                 }
                                 if !newEmojiText.isEmpty && emojiManager.allEmojis.contains(newEmojiText) {
-                                    inputFeedbackMessage = "Emoji already exists!"
+                                    inputFeedbackMessage = "这个表情已存在"
                                 } else if !newEmojiText.isEmpty && !newEmojiText.isValidEmoji {
-                                    inputFeedbackMessage = "Invalid emoji."
+                                    inputFeedbackMessage = "无效的表情"
                                 } else {
                                     inputFeedbackMessage = ""
                                 }
                             }
                             .onSubmit(attemptAddCustomEmoji)
 
-                        Button("Add") {
+                        Button("添加") {
                             attemptAddCustomEmoji()
                         }
                         .buttonStyle(.borderedProminent)
                         .disabled(newEmojiText.isEmpty || !newEmojiText.isValidEmoji || emojiManager.allEmojis.contains(newEmojiText))
 
-                        Button("Cancel") {
+                        Button("取消") {
                             isAddingCustomEmoji = false
                             newEmojiText = ""
                             inputFeedbackMessage = ""
@@ -86,10 +86,10 @@ struct EmojiPickerView: View {
                     if !inputFeedbackMessage.isEmpty {
                         Text(inputFeedbackMessage)
                             .font(.caption)
-                            .foregroundColor(inputFeedbackMessage == "Emoji already exists!" || inputFeedbackMessage == "Invalid emoji." ? .red : .secondary)
+                            .foregroundColor(inputFeedbackMessage == "这个表情已存在" || inputFeedbackMessage == "无效的表情" ? .red : .secondary)
                             .transition(.opacity)
                     }
-                    Text("Tip: Use ⌃⌘Space for emoji picker.")
+                    Text("提示：可使用 ⌃⌘Space 打开系统表情选择器。")
                         .font(.caption2)
                         .foregroundColor(.secondary)
                         .padding(.top, 2)
@@ -100,25 +100,25 @@ struct EmojiPickerView: View {
         }
         .padding()
         .frame(minWidth: 260, idealWidth: 300, maxWidth: 320, minHeight: 150, idealHeight: 280, maxHeight: 350)
-        .alert("Emoji in Use", isPresented: $showingEmojiInUseAlert, presenting: emojiForAlert) { emojiStr in
-            Button("OK", role: .cancel) { }
+        .alert("表情正在使用中", isPresented: $showingEmojiInUseAlert, presenting: emojiForAlert) { emojiStr in
+            Button("确定", role: .cancel) { }
         } message: { emojiStr in
-            Text("The emoji \"\(emojiStr)\" is currently used by one or more Power Modes and cannot be removed.")
+            Text("表情“\(emojiStr)”正在被一个或多个场景模式使用，暂时无法删除。")
         }
     }
 
     private func attemptAddCustomEmoji() {
         let trimmedEmoji = newEmojiText.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedEmoji.isEmpty else {
-            inputFeedbackMessage = "Emoji cannot be empty."
+            inputFeedbackMessage = "表情不能为空"
             return
         }
         guard trimmedEmoji.isValidEmoji else {
-            inputFeedbackMessage = "Invalid emoji character."
+            inputFeedbackMessage = "无效的表情字符"
             return
         }
         guard !emojiManager.allEmojis.contains(trimmedEmoji) else {
-            inputFeedbackMessage = "Emoji already exists!"
+            inputFeedbackMessage = "这个表情已存在"
             return
         }
 
@@ -128,7 +128,7 @@ struct EmojiPickerView: View {
             isAddingCustomEmoji = false
             newEmojiText = ""
         } else {
-            inputFeedbackMessage = "Could not add emoji."
+            inputFeedbackMessage = "无法添加表情"
         }
     }
 
@@ -187,7 +187,7 @@ private struct AddEmojiButton: View {
 
     var body: some View {
         Button(action: action) {
-            Label("Add Emoji", systemImage: "plus.circle.fill")
+            Label("添加表情", systemImage: "plus.circle.fill")
                 .font(.title2)
                 .labelStyle(.iconOnly)
                 .foregroundColor(.accentColor)
@@ -198,7 +198,7 @@ private struct AddEmojiButton: View {
                 )
         }
         .buttonStyle(.plain)
-        .help("Add custom emoji")
+        .help("添加自定义表情符号")
     }
 }
 

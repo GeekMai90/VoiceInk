@@ -34,14 +34,14 @@ struct AudioInputSettingsView: View {
     private var heroSection: some View {
         CompactHeroSection(
             icon: "waveform",
-            title: "Audio Input",
-            description: "Configure your microphone preferences"
+            title: "音频输入",
+            description: "配置你的麦克风与输入设备偏好"
         )
     }
     
     private var inputModeSection: some View {
         VStack(alignment: .leading, spacing: 20) {
-            Text("Input Mode")
+            Text("输入模式")
                 .font(.title2)
                 .fontWeight(.semibold)
             
@@ -59,7 +59,7 @@ struct AudioInputSettingsView: View {
     
     private var systemDefaultSection: some View {
         VStack(alignment: .leading, spacing: 20) {
-            Text("Current Device")
+            Text("当前设备")
                 .font(.title2)
                 .fontWeight(.semibold)
 
@@ -67,12 +67,12 @@ struct AudioInputSettingsView: View {
                 Image(systemName: "display")
                     .foregroundStyle(.secondary)
 
-                Text(audioDeviceManager.getSystemDefaultDeviceName() ?? "No device available")
+                Text(audioDeviceManager.getSystemDefaultDeviceName() ?? "暂无可用设备")
                     .foregroundStyle(.primary)
 
                 Spacer()
 
-                Label("Active", systemImage: "wave.3.right")
+                Label("已启用", systemImage: "wave.3.right")
                     .font(.caption)
                     .foregroundStyle(.green)
                     .padding(.horizontal, 10)
@@ -90,14 +90,14 @@ struct AudioInputSettingsView: View {
     private var customDeviceSection: some View {
         VStack(alignment: .leading, spacing: 20) {
             HStack {
-                Text("Available Devices")
+                Text("可用设备")
                     .font(.title2)
                     .fontWeight(.semibold)
 
                 Spacer()
 
                 Button(action: { audioDeviceManager.loadAvailableDevices() }) {
-                    Label("Refresh", systemImage: "arrow.clockwise")
+                    Label("刷新", systemImage: "arrow.clockwise")
                 }
                 .buttonStyle(.borderless)
             }
@@ -131,17 +131,17 @@ struct AudioInputSettingsView: View {
     private var prioritizedDevicesContent: some View {
         VStack(alignment: .leading, spacing: 12) {
             VStack(alignment: .leading, spacing: 4) {
-                Text("Prioritized Devices")
+                Text("优先设备")
                     .font(.title2)
                     .fontWeight(.semibold)
-                Text("Devices will be used in order of priority. If a device is unavailable, the next one will be tried. If no prioritized device is available, the built-in microphone will be used.")
+                Text("设备会按优先级顺序使用。如果当前设备不可用，就自动尝试下一个；如果优先列表里都不可用，则回退到内置麦克风。")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
             
             if audioDeviceManager.prioritizedDevices.isEmpty {
-                Text("No prioritized devices")
+                Text("还没有设置优先设备")
                     .foregroundStyle(.secondary)
                     .padding(.vertical, 8)
             } else {
@@ -152,7 +152,7 @@ struct AudioInputSettingsView: View {
     
     private var availableDevicesContent: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Available Devices")
+            Text("可添加的设备")
                 .font(.title2)
                 .fontWeight(.semibold)
             
@@ -168,9 +168,9 @@ struct AudioInputSettingsView: View {
                 .foregroundStyle(.secondary)
             
             VStack(spacing: 8) {
-                Text("No Audio Devices")
+                Text("没有音频输入设备")
                     .font(.headline)
-                Text("Connect an audio input device to get started")
+                Text("连接一个音频输入设备后即可开始使用")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
@@ -211,7 +211,7 @@ struct AudioInputSettingsView: View {
         
         return Group {
             if unprioritizedDevices.isEmpty {
-                Text("No additional devices available")
+                Text("没有更多可添加的设备")
                     .foregroundStyle(.secondary)
                     .padding(.vertical, 8)
             } else {
@@ -276,9 +276,17 @@ struct InputModeCard: View {
 
     private var description: String {
         switch mode {
-        case .systemDefault: return "Use your Mac's default input"
-        case .custom: return "Select a specific input device"
-        case .prioritized: return "Set up device priority order"
+        case .systemDefault: return "使用 Mac 当前的默认输入设备"
+        case .custom: return "手动选择一个固定输入设备"
+        case .prioritized: return "按顺序设置设备优先级"
+        }
+    }
+
+    private var title: String {
+        switch mode {
+        case .systemDefault: return "系统默认"
+        case .custom: return "自定义设备"
+        case .prioritized: return "优先级模式"
         }
     }
     
@@ -291,7 +299,7 @@ struct InputModeCard: View {
                     .foregroundStyle(isSelected ? .blue : .secondary)
                 
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(mode.rawValue)
+                    Text(title)
                         .font(.headline)
                     
                     Text(description)
@@ -328,7 +336,7 @@ struct DeviceSelectionCard: View {
                 Spacer()
                 
                 if isActive {
-                    Label("Active", systemImage: "wave.3.right")
+                    Label("已启用", systemImage: "wave.3.right")
                         .font(.caption)
                         .foregroundStyle(.green)
                         .padding(.horizontal, 10)
@@ -383,7 +391,7 @@ struct DevicePriorityCard: View {
             HStack(spacing: 12) {
                 // Active status
                 if isActive {
-                    Label("Active", systemImage: "wave.3.right")
+                    Label("已启用", systemImage: "wave.3.right")
                         .font(.caption)
                         .foregroundStyle(.green)
                         .padding(.horizontal, 10)
@@ -393,7 +401,7 @@ struct DevicePriorityCard: View {
                                 .fill(.green.opacity(0.1))
                         )
                 } else if !isAvailable && isPrioritized {
-                    Label("Unavailable", systemImage: "exclamationmark.triangle")
+                    Label("不可用", systemImage: "exclamationmark.triangle")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .padding(.horizontal, 10)

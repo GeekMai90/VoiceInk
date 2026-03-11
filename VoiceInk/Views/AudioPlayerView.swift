@@ -153,7 +153,7 @@ struct WaveformView: View {
                     HStack {
                         ProgressView()
                             .controlSize(.small)
-                        Text("Loading...")
+                        Text("加载中...")
                             .font(.system(size: 10))
                             .foregroundColor(.secondary)
                     }
@@ -312,7 +312,7 @@ struct AudioPlayerView: View {
                             )
                     }
                     .buttonStyle(.plain)
-                    .help("Show in Finder")
+                    .help("在 Finder 中显示")
 
                     Button(action: {
                         if playerManager.isPlaying {
@@ -353,7 +353,7 @@ struct AudioPlayerView: View {
                     }
                     .buttonStyle(.plain)
                     .opacity(enhancementService.isEnhancementEnabled ? 1.0 : 0.4)
-                    .help("Select enhancement prompt")
+                    .help("选择增强提示词")
                     .popover(isPresented: $showPromptPopover, arrowEdge: .bottom) {
                         EnhancementPromptPopover()
                             .environmentObject(enhancementService)
@@ -382,7 +382,7 @@ struct AudioPlayerView: View {
                     }
                     .buttonStyle(.plain)
                     .disabled(isRetranscribing)
-                    .help("Retranscribe this audio")
+                    .help("重新转写这段音频")
                 }
 
                 Spacer()
@@ -408,7 +408,7 @@ struct AudioPlayerView: View {
                     HStack(spacing: 8) {
                         Image(systemName: "checkmark.circle.fill")
                             .foregroundColor(.green)
-                        Text("Retranscription successful")
+                        Text("重新转写成功")
                             .font(.system(size: 14, weight: .medium))
                     }
                     .padding(.horizontal, 16)
@@ -425,7 +425,7 @@ struct AudioPlayerView: View {
                     HStack(spacing: 8) {
                         Image(systemName: "exclamationmark.circle.fill")
                             .foregroundColor(.red)
-                        Text(errorMessage.isEmpty ? "Retranscription failed" : errorMessage)
+                        Text(errorMessage.isEmpty ? "重新转写失败" : errorMessage)
                             .font(.system(size: 14, weight: .medium))
                     }
                     .padding(.horizontal, 16)
@@ -458,7 +458,7 @@ struct AudioPlayerView: View {
     
     private func retranscribeAudio() {
         guard let currentTranscriptionModel = engine.transcriptionModelManager.currentTranscriptionModel else {
-            errorMessage = "No transcription model selected"
+            errorMessage = "尚未选择转写模型"
             showRetranscribeError = true
             DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                 withAnimation { showRetranscribeError = false }

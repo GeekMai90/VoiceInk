@@ -38,7 +38,7 @@ struct LicenseManagementView: View {
                         .foregroundStyle(.blue)
                     
                     HStack(alignment: .lastTextBaseline, spacing: 8) { 
-                        Text(licenseViewModel.licenseState == .licensed ? "VoiceInk Pro" : "Upgrade to Pro")
+                        Text(licenseViewModel.licenseState == .licensed ? "VoiceInk Ultra" : "升级到 Ultra")
                             .font(.system(size: 32, weight: .bold))
                         
                         Text("v\(appVersion)")
@@ -49,8 +49,8 @@ struct LicenseManagementView: View {
                 }
                 
                 Text(licenseViewModel.licenseState == .licensed ?
-                     "Thank you for supporting VoiceInk" :
-                     "Transcribe what you say to text instantly with AI")
+                     "感谢你支持 VoiceInk Ultra" :
+                     "让 AI 把你的语音即时转成文字")
                     .font(.title3)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
@@ -62,7 +62,7 @@ struct LicenseManagementView: View {
                                 NSWorkspace.shared.open(url)
                             }
                         } label: {
-                            featureItem(icon: "list.bullet.clipboard.fill", title: "Changelog", color: .blue)
+                            featureItem(icon: "list.bullet.clipboard.fill", title: "更新日志", color: .blue)
                         }
                         .buttonStyle(.plain)
                         
@@ -71,14 +71,14 @@ struct LicenseManagementView: View {
                                 NSWorkspace.shared.open(url)
                             }
                         } label: {
-                            featureItem(icon: "bubble.left.and.bubble.right.fill", title: "Discord", color: .purple)
+                            featureItem(icon: "bubble.left.and.bubble.right.fill", title: "Discord 社区", color: .purple)
                         }
                         .buttonStyle(.plain)
                         
                         Button {
                             EmailSupport.openSupportEmail()
                         } label: {
-                            featureItem(icon: "envelope.fill", title: "Email Support", color: .orange)
+                            featureItem(icon: "envelope.fill", title: "邮件支持", color: .orange)
                         }
                         .buttonStyle(.plain)
                         
@@ -87,7 +87,7 @@ struct LicenseManagementView: View {
                                 NSWorkspace.shared.open(url)
                             }
                         } label: {
-                            featureItem(icon: "book.fill", title: "Docs", color: .indigo)
+                            featureItem(icon: "book.fill", title: "文档", color: .indigo)
                         }
                         .buttonStyle(.plain)
                         
@@ -116,7 +116,7 @@ struct LicenseManagementView: View {
                     Image(systemName: "infinity.circle.fill")
                         .font(.system(size: 20))
                         .foregroundStyle(.blue)
-                    Text("Buy Once, Own Forever")
+                    Text("一次购买，永久使用")
                         .font(.headline)
                 }
                 .padding(.vertical, 8)
@@ -130,7 +130,7 @@ struct LicenseManagementView: View {
                         NSWorkspace.shared.open(url)
                     }
                 }) {
-                    Text("Upgrade to VoiceInk Pro")
+                    Text("升级到 VoiceInk Ultra")
                         .font(.headline)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 12)
@@ -139,10 +139,10 @@ struct LicenseManagementView: View {
                 
                 // Features Grid
                 HStack(spacing: 40) {
-                    featureItem(icon: "bubble.left.and.bubble.right.fill", title: "Priority Support", color: .purple)
-                    featureItem(icon: "infinity.circle.fill", title: "Lifetime Access", color: .blue)
-                    featureItem(icon: "arrow.up.circle.fill", title: "Free Updates", color: .green)
-                    featureItem(icon: "macbook.and.iphone", title: "Multiple Devices", color: .orange)
+                    featureItem(icon: "bubble.left.and.bubble.right.fill", title: "优先支持", color: .purple)
+                    featureItem(icon: "infinity.circle.fill", title: "永久使用", color: .blue)
+                    featureItem(icon: "arrow.up.circle.fill", title: "免费更新", color: .green)
+                    featureItem(icon: "macbook.and.iphone", title: "多设备使用", color: .orange)
                 }
                 .frame(maxWidth: .infinity, alignment: .center)
             }
@@ -152,11 +152,11 @@ struct LicenseManagementView: View {
 
             // License Activation
             VStack(spacing: 20) {
-                Text("Already have a license?")
+                Text("已经有许可证了？")
                     .font(.headline)
                 
                 HStack(spacing: 12) {
-                    TextField("Enter your license key", text: $licenseViewModel.licenseKey)
+                    TextField("输入你的许可证密钥", text: $licenseViewModel.licenseKey)
                         .textFieldStyle(.roundedBorder)
                         .font(.system(.body, design: .monospaced))
                         .textCase(.uppercase)
@@ -168,7 +168,7 @@ struct LicenseManagementView: View {
                             ProgressView()
                                 .controlSize(.small)
                         } else {
-                            Text("Activate")
+                            Text("激活")
                                 .frame(width: 80)
                         }
                     }
@@ -188,11 +188,11 @@ struct LicenseManagementView: View {
             
             // Already Purchased Section
             VStack(spacing: 20) {
-                Text("Already purchased?")
+                Text("已经购买了？")
                     .font(.headline)
 
                 HStack(spacing: 12) {
-                    Text("Manage your license and device activations")
+                    Text("管理你的许可证和设备激活情况")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -202,7 +202,7 @@ struct LicenseManagementView: View {
                             NSWorkspace.shared.open(url)
                         }
                     }) {
-                        Text("License Management Portal")
+                        Text("许可证管理门户")
                             .frame(width: 180)
                     }
                     .buttonStyle(.borderedProminent)
@@ -222,10 +222,10 @@ struct LicenseManagementView: View {
                     Image(systemName: "checkmark.circle.fill")
                         .font(.system(size: 24))
                         .foregroundStyle(.green)
-                    Text("License Active")
+                    Text("许可证已激活")
                         .font(.headline)
                     Spacer()
-                    Text("Active")
+                    Text("已激活")
                         .font(.caption)
                         .padding(.horizontal, 12)
                         .padding(.vertical, 4)
@@ -236,11 +236,11 @@ struct LicenseManagementView: View {
                 Divider()
                 
                 if licenseViewModel.activationsLimit > 0 {
-                    Text("This license can be activated on up to \(licenseViewModel.activationsLimit) devices")
+                    Text("这个许可证最多可在 \(licenseViewModel.activationsLimit) 台设备上激活")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 } else {
-                    Text("You can use VoiceInk Pro on all your personal devices")
+                    Text("你可以在所有个人设备上使用 VoiceInk Ultra")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
@@ -251,13 +251,13 @@ struct LicenseManagementView: View {
             
             // Deactivation Card
             VStack(alignment: .leading, spacing: 16) {
-                Text("License Management")
+                Text("许可证管理")
                     .font(.headline)
 
                 Button(role: .destructive, action: {
                     licenseViewModel.removeLicense()
                 }) {
-                    Label("Deactivate License", systemImage: "xmark.circle.fill")
+                    Label("停用许可证", systemImage: "xmark.circle.fill")
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 8)
                 }
@@ -298,11 +298,9 @@ struct LicenseManagementView: View {
                     heartPulse = true
                 }
             
-            Text("Tip Jar")
+            Text("赞助支持")
                 .font(.system(size: 13, weight: .medium))
                 .foregroundStyle(.primary)
         }
     }
 }
-
-

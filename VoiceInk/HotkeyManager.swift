@@ -95,15 +95,15 @@ class HotkeyManager: ObservableObject {
         
         var displayName: String {
             switch self {
-            case .none: return "None"
-            case .rightOption: return "Right Option (⌥)"
-            case .leftOption: return "Left Option (⌥)"
-            case .leftControl: return "Left Control (⌃)"
-            case .rightControl: return "Right Control (⌃)"
+            case .none: return "无"
+            case .rightOption: return "右 Option (⌥)"
+            case .leftOption: return "左 Option (⌥)"
+            case .leftControl: return "左 Control (⌃)"
+            case .rightControl: return "右 Control (⌃)"
             case .fn: return "Fn"
-            case .rightCommand: return "Right Command (⌘)"
-            case .rightShift: return "Right Shift (⇧)"
-            case .custom: return "Custom"
+            case .rightCommand: return "右 Command (⌘)"
+            case .rightShift: return "右 Shift (⇧)"
+            case .custom: return "自定义"
             }
         }
         

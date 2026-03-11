@@ -10,7 +10,7 @@ struct ConfigurationView: View {
     @FocusState private var isNameFieldFocused: Bool
     
     // State for configuration
-    @State private var configName: String = "New Power Mode"
+    @State private var configName: String = "新场景模式"
     @State private var selectedEmoji: String = "💼"
     @State private var isShowingEmojiPicker = false
     @State private var isShowingAppPicker = false
@@ -125,7 +125,7 @@ struct ConfigurationView: View {
     
     var body: some View {
         Form {
-            Section("General") {
+            Section("通用") {
                 HStack(spacing: 12) {
                     Button {
                         isShowingEmojiPicker.toggle()
@@ -146,25 +146,25 @@ struct ConfigurationView: View {
                         )
                     }
 
-                    TextField("Name", text: $configName)
+                    TextField("名称", text: $configName)
                         .textFieldStyle(.roundedBorder)
                         .focused($isNameFieldFocused)
                 }
             }
 
-            Section("Trigger Scenarios") {
+            Section("触发场景") {
                 VStack(alignment: .leading, spacing: 10) {
                     HStack {
-                        Text("Applications")
+                        Text("应用")
                         Spacer()
-                        AddIconButton(helpText: "Add application") {
+                        AddIconButton(helpText: "添加应用") {
                             loadInstalledApps()
                             isShowingAppPicker = true
                         }
                     }
 
                     if selectedAppConfigs.isEmpty {
-                        Text("No applications added")
+                        Text("还没有添加应用")
                             .foregroundColor(.secondary)
                             .font(.subheadline)
                     } else {
@@ -207,20 +207,20 @@ struct ConfigurationView: View {
                 .padding(.vertical, 2)
 
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("Websites")
+                    Text("网站")
 
                     HStack {
-                        TextField("Enter website URL (e.g., google.com)", text: $newWebsiteURL)
+                        TextField("输入网站地址，例如 google.com", text: $newWebsiteURL)
                             .textFieldStyle(.roundedBorder)
                             .onSubmit { addWebsite() }
 
-                        AddIconButton(helpText: "Add website", isDisabled: newWebsiteURL.isEmpty) {
+                        AddIconButton(helpText: "添加网站", isDisabled: newWebsiteURL.isEmpty) {
                             addWebsite()
                         }
                     }
 
                     if websiteConfigs.isEmpty {
-                        Text("No websites added")
+                        Text("还没有添加网站")
                             .foregroundColor(.secondary)
                             .font(.subheadline)
                     } else {
@@ -254,9 +254,9 @@ struct ConfigurationView: View {
                 .padding(.vertical, 2)
             }
 
-            Section("Transcription") {
+            Section("转写") {
                 if transcriptionModelManager.usableModels.isEmpty {
-                    Text("No transcription models available. Please connect to a cloud service or download a local model in the AI Models tab.")
+                    Text("当前没有可用转写模型。请先在 AI 模型页连接云服务或下载本地模型。")
                         .foregroundColor(.secondary)
                 } else {
                     let modelBinding = Binding<String?>(
@@ -264,7 +264,7 @@ struct ConfigurationView: View {
                         set: { selectedTranscriptionModelName = $0 }
                     )
 
-                    Picker("Model", selection: modelBinding) {
+                    Picker("模型", selection: modelBinding) {
                         ForEach(transcriptionModelManager.usableModels, id: \.name) { model in
                             Text(model.displayName).tag(model.name as String?)
                         }
@@ -280,8 +280,8 @@ struct ConfigurationView: View {
                 }
 
                 if languageSelectionDisabled() {
-                    LabeledContent("Language") {
-                        Text("Autodetected")
+                    LabeledContent("语言") {
+                        Text("自动检测")
                             .foregroundColor(.secondary)
                     }
                     .onAppear {
@@ -295,7 +295,7 @@ struct ConfigurationView: View {
                         set: { selectedLanguage = $0 }
                     )
 
-                    Picker("Language", selection: languageBinding) {
+                    Picker("语言", selection: languageBinding) {
                         ForEach(modelInfo.supportedLanguages.sorted(by: {
                             if $0.key == "auto" { return true }
                             if $1.key == "auto" { return false }
@@ -316,8 +316,8 @@ struct ConfigurationView: View {
                 }
             }
 
-            Section("AI Enhancement") {
-                Toggle("Enable AI Enhancement", isOn: $isAIEnhancementEnabled)
+            Section("AI 增强") {
+                Toggle("启用 AI 增强", isOn: $isAIEnhancementEnabled)
                     .onChange(of: isAIEnhancementEnabled) { _, newValue in
                         if newValue {
                             if selectedAIProvider == nil {
@@ -349,13 +349,13 @@ struct ConfigurationView: View {
 
                 if isAIEnhancementEnabled {
                     if aiService.connectedProviders.isEmpty {
-                        LabeledContent("AI Provider") {
-                            Text("No providers connected")
+                        LabeledContent("AI 提供商") {
+                            Text("还没有连接的提供商")
                                 .foregroundColor(.secondary)
                                 .italic()
                         }
                     } else {
-                        Picker("AI Provider", selection: providerBinding) {
+                        Picker("AI 提供商", selection: providerBinding) {
                             ForEach(aiService.connectedProviders.filter { $0 != .elevenLabs && $0 != .deepgram }, id: \.self) { provider in
                                 Text(provider.rawValue).tag(provider)
                             }
@@ -371,8 +371,8 @@ struct ConfigurationView: View {
                     if let provider = AIProvider(rawValue: providerName),
                        provider != .custom {
                         if aiService.availableModels.isEmpty {
-                            LabeledContent("AI Model") {
-                                Text(provider == .openRouter ? "No models loaded" : "No models available")
+                            LabeledContent("AI 模型") {
+                                Text(provider == .openRouter ? "还没有加载模型" : "没有可用模型")
                                     .foregroundColor(.secondary)
                                     .italic()
                             }
@@ -390,56 +390,56 @@ struct ConfigurationView: View {
 
                             let models = provider == .openRouter ? aiService.availableModels : (provider == .ollama ? aiService.availableModels : provider.availableModels)
 
-                            Picker("AI Model", selection: modelBinding) {
+                            Picker("AI 模型", selection: modelBinding) {
                                 ForEach(models, id: \.self) { model in
                                     Text(model).tag(model)
                                 }
                             }
 
                             if provider == .openRouter {
-                                Button("Refresh Models") {
+                                Button("刷新模型") {
                                     Task { await aiService.fetchOpenRouterModels() }
                                 }
-                                .help("Refresh models")
+                                .help("刷新模型列表")
                             }
                         }
                     }
 
                     if enhancementService.allPrompts.isEmpty {
-                        LabeledContent("Enhancement Prompt") {
-                            Text("No prompts available")
+                        LabeledContent("增强提示词") {
+                            Text("没有可用提示词")
                                 .foregroundColor(.secondary)
                         }
                     } else {
-                        Picker("Enhancement Prompt", selection: $selectedPromptId) {
+                        Picker("增强提示词", selection: $selectedPromptId) {
                             ForEach(enhancementService.allPrompts) { prompt in
                                 Text(prompt.title).tag(prompt.id as UUID?)
                             }
                         }
                     }
 
-                    Toggle("Context Awareness", isOn: $useScreenCapture)
+                    Toggle("上下文感知", isOn: $useScreenCapture)
                 }
             }
 
-            Section("Advanced") {
+            Section("高级") {
                 Toggle(isOn: $isDefault) {
                     HStack(spacing: 6) {
-                        Text("Set as default")
-                        InfoTip("Default power mode is used when no specific app or website matches are found.")
+                        Text("设为默认")
+                        InfoTip("当没有匹配到特定应用或网站时，会使用默认场景模式。")
                     }
                 }
 
                 Toggle(isOn: $isAutoSendEnabled) {
                     HStack(spacing: 6) {
-                        Text("Auto Send")
-                        InfoTip("Automatically presses the Return/Enter key after pasting text. Useful for chat applications or forms.")
+                        Text("自动发送")
+                        InfoTip("粘贴文字后自动按下回车键，适合聊天应用或表单场景。")
                     }
                 }
 
                 HStack {
-                    Text("Keyboard Shortcut")
-                    InfoTip("Assign a unique keyboard shortcut to instantly activate this Power Mode and start recording.")
+                    Text("快捷键")
+                    InfoTip("为这个场景模式指定独立快捷键，可直接激活并开始录音。")
 
                     Spacer()
 
@@ -455,7 +455,7 @@ struct ConfigurationView: View {
         .navigationTitle(mode.title)
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
-                Button("Save") {
+                Button("保存") {
                     saveConfiguration()
                 }
                 .keyboardShortcut(.defaultAction)
@@ -467,7 +467,7 @@ struct ConfigurationView: View {
 
             if case .edit = mode {
                 ToolbarItem {
-                    Button("Delete", role: .destructive) {
+                    Button("删除", role: .destructive) {
                         isShowingDeleteConfirmation = true
                     }
                     .buttonStyle(.bordered)
@@ -477,20 +477,20 @@ struct ConfigurationView: View {
             }
         }
         .confirmationDialog(
-            "Delete Power Mode?",
+            "删除场景模式？",
             isPresented: $isShowingDeleteConfirmation,
             titleVisibility: .visible
         ) {
             if case .edit(let config) = mode {
-                Button("Delete", role: .destructive) {
+                Button("删除", role: .destructive) {
                     powerModeManager.removeConfiguration(with: config.id)
                     presentationMode.wrappedValue.dismiss()
                 }
             }
-            Button("Cancel", role: .cancel) { }
+            Button("取消", role: .cancel) { }
         } message: {
             if case .edit(let config) = mode {
-                Text("Are you sure you want to delete the '\(config.name)' power mode? This action cannot be undone.")
+                Text("确定要删除“\(config.name)”场景模式吗？此操作无法撤销。")
             }
         }
         .sheet(isPresented: $isShowingAppPicker) {

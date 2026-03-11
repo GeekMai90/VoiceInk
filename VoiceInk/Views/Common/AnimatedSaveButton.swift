@@ -8,11 +8,11 @@ struct AnimatedSaveButton: View {
     
     var body: some View {
         Menu {
-            Button("Save as TXT") {
+            Button("保存为 TXT") {
                 saveFile(as: .plainText, extension: "txt")
             }
             
-            Button("Save as MD") {
+            Button("保存为 MD") {
                 saveFile(as: .text, extension: "md")
             }
         } label: {
@@ -20,7 +20,7 @@ struct AnimatedSaveButton: View {
                 Image(systemName: isSaved ? "checkmark" : "square.and.arrow.down")
                     .font(.system(size: 12, weight: isSaved ? .bold : .regular))
                     .foregroundColor(.white)
-                Text(isSaved ? "Saved" : "Save")
+                Text(isSaved ? "已保存" : "保存")
                     .font(.system(size: 12, weight: isSaved ? .medium : .regular))
                     .foregroundColor(.white)
             }
@@ -40,7 +40,7 @@ struct AnimatedSaveButton: View {
         let panel = NSSavePanel()
         panel.allowedContentTypes = [contentType]
         panel.nameFieldStringValue = "\(generateFileName()).\(fileExtension)"
-        panel.title = "Save Transcription"
+        panel.title = "保存转写结果"
         
         if panel.runModal() == .OK {
             guard let url = panel.url else { return }
@@ -99,9 +99,9 @@ struct AnimatedSaveButton: View {
     private func formatAsMarkdown(_ text: String) -> String {
         let timestamp = DateFormatter.localizedString(from: Date(), dateStyle: .medium, timeStyle: .short)
         return """
-        # Transcription
+        # 转写结果
         
-        **Date:** \(timestamp)
+        **日期：** \(timestamp)
         
         \(text)
         """

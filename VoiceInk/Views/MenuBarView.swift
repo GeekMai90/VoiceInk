@@ -18,7 +18,7 @@ struct MenuBarView: View {
     
     var body: some View {
         VStack {
-            Button("Toggle Recorder") {
+            Button("切换录音") {
                 recorderUIManager.handleToggleMiniRecorder()
             }
 
@@ -42,12 +42,12 @@ struct MenuBarView: View {
 
                 Divider()
 
-                Button("Manage Models") {
+                Button("管理模型") {
                     menuBarManager.openMainWindowAndNavigate(to: "AI Models")
                 }
             } label: {
                 HStack {
-                    Text("Transcription Model: \(transcriptionModelManager.currentTranscriptionModel?.displayName ?? "None")")
+                    Text("转写模型：\(transcriptionModelManager.currentTranscriptionModel?.displayName ?? "未设置")")
                     Image(systemName: "chevron.up.chevron.down")
                         .font(.system(size: 10))
                 }
@@ -55,7 +55,7 @@ struct MenuBarView: View {
             
             Divider()
             
-            Toggle("AI Enhancement", isOn: $enhancementService.isEnhancementEnabled)
+            Toggle("AI 增强", isOn: $enhancementService.isEnhancementEnabled)
             
             Menu {
                 ForEach(enhancementService.allPrompts) { prompt in
@@ -75,7 +75,7 @@ struct MenuBarView: View {
                 }
             } label: {
                 HStack {
-                    Text("Prompt: \(enhancementService.activePrompt?.title ?? "None")")
+                    Text("提示词：\(enhancementService.activePrompt?.title ?? "未设置")")
                     Image(systemName: "chevron.up.chevron.down")
                         .font(.system(size: 10))
                 }
@@ -96,12 +96,12 @@ struct MenuBarView: View {
                 }
 
                 if aiService.connectedProviders.isEmpty {
-                    Text("No providers connected")
+                    Text("未连接任何提供商")
                         .foregroundColor(.secondary)
                 }
             } label: {
                 HStack {
-                    Text("AI Provider: \(aiService.selectedProvider.rawValue)")
+                    Text("AI 提供商：\(aiService.selectedProvider.rawValue)")
                     Image(systemName: "chevron.up.chevron.down")
                         .font(.system(size: 10))
                 }
@@ -122,12 +122,12 @@ struct MenuBarView: View {
                 }
 
                 if aiService.availableModels.isEmpty {
-                    Text("No models available")
+                    Text("没有可用模型")
                         .foregroundColor(.secondary)
                 }
             } label: {
                 HStack {
-                    Text("AI Model: \(aiService.currentModel)")
+                    Text("AI 模型：\(aiService.currentModel)")
                     Image(systemName: "chevron.up.chevron.down")
                         .font(.system(size: 10))
                 }
@@ -150,24 +150,24 @@ struct MenuBarView: View {
                 }
 
                 if audioDeviceManager.availableDevices.isEmpty {
-                    Text("No devices available")
+                    Text("没有可用设备")
                         .foregroundColor(.secondary)
                 }
             } label: {
                 HStack {
-                    Text("Audio Input")
+                    Text("音频输入")
                     Image(systemName: "chevron.up.chevron.down")
                         .font(.system(size: 10))
                 }
             }
 
-            Menu("Additional") {
+            Menu("附加选项") {
                 Button {
                     enhancementService.useClipboardContext.toggle()
                     menuRefreshTrigger.toggle()
                 } label: {
                     HStack {
-                        Text("Clipboard Context")
+                        Text("剪贴板上下文")
                         Spacer()
                         if enhancementService.useClipboardContext {
                             Image(systemName: "checkmark")
@@ -180,7 +180,7 @@ struct MenuBarView: View {
                     menuRefreshTrigger.toggle()
                 } label: {
                     HStack {
-                        Text("Context Awareness")
+                        Text("屏幕上下文")
                         Spacer()
                         if enhancementService.useScreenCaptureContext {
                             Image(systemName: "checkmark")
@@ -192,7 +192,7 @@ struct MenuBarView: View {
             
             Divider()
 
-            Button("Retry Last Transcription") {
+            Button("重试上次转写") {
                 LastTranscriptionService.retryLastTranscription(
                     from: engine.modelContext,
                     transcriptionModelManager: transcriptionModelManager,
@@ -201,45 +201,45 @@ struct MenuBarView: View {
                 )
             }
 
-            Button("Copy Last Transcription") {
+            Button("复制上次转写") {
                 LastTranscriptionService.copyLastTranscription(from: engine.modelContext)
             }
             .keyboardShortcut("c", modifiers: [.command, .shift])
             
-            Button("History") {
+            Button("历史记录") {
                 menuBarManager.openHistoryWindow()
             }
             .keyboardShortcut("h", modifiers: [.command, .shift])
             
-            Button("Settings") {
+            Button("设置") {
                 menuBarManager.openMainWindowAndNavigate(to: "Settings")
             }
             .keyboardShortcut(",", modifiers: .command)
             
-            Button(menuBarManager.isMenuBarOnly ? "Show Dock Icon" : "Hide Dock Icon") {
+            Button(menuBarManager.isMenuBarOnly ? "显示 Dock 图标" : "隐藏 Dock 图标") {
                 menuBarManager.toggleMenuBarOnly()
             }
             .keyboardShortcut("d", modifiers: [.command, .shift])
             
-            Toggle("Launch at Login", isOn: $launchAtLoginEnabled)
+            Toggle("登录时启动", isOn: $launchAtLoginEnabled)
                 .onChange(of: launchAtLoginEnabled) { oldValue, newValue in
                     LaunchAtLogin.isEnabled = newValue
                 }
             
             Divider()
             
-            Button("Check for Updates") {
+            Button("检查更新") {
                 updaterViewModel.checkForUpdates()
             }
             .disabled(!updaterViewModel.canCheckForUpdates)
             
-            Button("Help and Support") {
+            Button("帮助与支持") {
                 EmailSupport.openSupportEmail()
             }
             
             Divider()
 
-            Button("Quit VoiceInk") {
+            Button("退出 VoiceInk") {
                 NSApplication.shared.terminate(nil)
             }
         }

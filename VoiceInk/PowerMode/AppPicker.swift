@@ -11,12 +11,12 @@ struct AppPickerSheet: View {
         VStack(spacing: 16) {
             // Header
             HStack {
-                Text("Select Applications")
+                Text("选择应用")
                     .font(.headline)
                 
                 Spacer()
                 
-                Button("Done") {
+                Button("完成") {
                     onDismiss()
                 }
                 .keyboardShortcut(.return, modifiers: [])
@@ -28,7 +28,7 @@ struct AppPickerSheet: View {
             HStack {
                 Image(systemName: "magnifyingglass")
                     .foregroundColor(.secondary)
-                TextField("Search applications...", text: $searchText)
+                TextField("搜索应用...", text: $searchText)
                     .textFieldStyle(.roundedBorder)
                 if !searchText.isEmpty {
                     Button(action: { searchText = "" }) {

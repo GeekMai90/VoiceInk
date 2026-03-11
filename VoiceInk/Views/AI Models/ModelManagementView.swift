@@ -4,10 +4,10 @@ import AppKit
 import UniformTypeIdentifiers
 
 enum ModelFilter: String, CaseIterable, Identifiable {
-    case recommended = "Recommended"
-    case local = "Local"
-    case cloud = "Cloud"
-    case custom = "Custom"
+    case recommended = "推荐"
+    case local = "本地"
+    case cloud = "云端"
+    case custom = "自定义"
     var id: String { self.rawValue }
 }
 
@@ -51,7 +51,7 @@ struct ModelManagementView: View {
             Alert(
                 title: Text(alertTitle),
                 message: Text(alertMessage),
-                primaryButton: .destructive(Text("Delete"), action: deleteActionClosure),
+                primaryButton: .destructive(Text("删除"), action: deleteActionClosure),
                 secondaryButton: .cancel()
             )
         }
@@ -59,10 +59,10 @@ struct ModelManagementView: View {
     
     private var defaultModelSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Default Model")
+            Text("默认模型")
                 .font(.headline)
                 .foregroundColor(.secondary)
-            Text(transcriptionModelManager.currentTranscriptionModel?.displayName ?? "No model selected")
+            Text(transcriptionModelManager.currentTranscriptionModel?.displayName ?? "尚未选择模型")
                 .font(.title2)
                 .fontWeight(.bold)
         }
@@ -140,16 +140,16 @@ struct ModelManagementView: View {
                             isWarming: isWarming,
                             deleteAction: {
                                 if let customModel = model as? CustomCloudModel {
-                                    alertTitle = "Delete Custom Model"
-                                    alertMessage = "Are you sure you want to delete the custom model '\(customModel.displayName)'?"
+                                    alertTitle = "删除自定义模型"
+                                    alertMessage = "确定要删除自定义模型“\(customModel.displayName)”吗？"
                                     deleteActionClosure = {
                                         customModelManager.removeCustomModel(withId: customModel.id)
                                         transcriptionModelManager.refreshAllAvailableModels()
                                     }
                                     isShowingDeleteAlert = true
                                 } else if let downloadedModel = whisperModelManager.availableModels.first(where: { $0.name == model.name }) {
-                                    alertTitle = "Delete Model"
-                                    alertMessage = "Are you sure you want to delete the model '\(downloadedModel.name)'?"
+                                    alertTitle = "删除模型"
+                                    alertMessage = "确定要删除模型“\(downloadedModel.name)”吗？"
                                     deleteActionClosure = {
                                         Task {
                                             await whisperModelManager.deleteModel(downloadedModel)
@@ -180,7 +180,7 @@ struct ModelManagementView: View {
                             Button(action: { presentImportPanel() }) {
                                 HStack(spacing: 8) {
                                     Image(systemName: "square.and.arrow.down")
-                                    Text("Import Local Model…")
+                                    Text("导入本地模型…")
                                         .font(.system(size: 12, weight: .semibold))
                                 }
                                 .frame(maxWidth: .infinity)
@@ -191,10 +191,10 @@ struct ModelManagementView: View {
                             .buttonStyle(.plain)
 
                             InfoTip(
-                                "Add a custom fine-tuned whisper model to use with VoiceInk. Select the downloaded .bin file.",
+                                "导入自定义微调后的 whisper 本地模型。请选择已下载的 .bin 文件。",
                                 learnMoreURL: "https://tryvoiceink.com/docs/custom-local-whisper-models"
                             )
-                            .help("Read more about custom local models")
+                            .help("查看自定义本地模型说明")
                         }
                     }
                     
@@ -221,7 +221,7 @@ struct ModelManagementView: View {
                 .font(.system(size: 14, weight: .semibold))
                 .foregroundColor(.orange)
 
-            Text("Local models don't work reliably on Intel Macs")
+            Text("Intel Mac 上的本地模型稳定性较差")
                 .font(.system(size: 13, weight: .medium))
                 .foregroundColor(.primary.opacity(0.85))
 
@@ -233,7 +233,7 @@ struct ModelManagementView: View {
                 }
             }) {
                 HStack(spacing: 4) {
-                    Text("Use Cloud")
+                    Text("切换到云端")
                         .font(.system(size: 12, weight: .semibold))
                     Image(systemName: "arrow.right")
                         .font(.system(size: 10, weight: .bold))
@@ -281,7 +281,7 @@ struct ModelManagementView: View {
         panel.allowsMultipleSelection = false
         panel.canChooseDirectories = false
         panel.resolvesAliases = true
-        panel.title = "Select a Whisper ggml .bin model"
+        panel.title = "选择 Whisper ggml .bin 模型文件"
         if panel.runModal() == .OK, let url = panel.url {
             Task { @MainActor in
                 await whisperModelManager.importLocalModel(from: url)

@@ -47,17 +47,17 @@ struct FillerWordsSettingsView: View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
                 Toggle(isOn: $removeFillerWords) {
-                    Text("Remove filler words")
+                    Text("移除口头语")
                 }
                 .toggleStyle(.switch)
 
-                InfoTip("Automatically remove filler words like 'uh', 'um', 'hmm' from transcriptions.")
+                InfoTip("自动去掉转写里的口头语，比如“uh”“um”“hmm”这类停顿词。")
             }
 
             if removeFillerWords {
                 VStack(alignment: .leading, spacing: 8) {
                     HStack(spacing: 8) {
-                        TextField("Add filler word", text: $newWord)
+                        TextField("添加口头语词条", text: $newWord)
                             .textFieldStyle(.roundedBorder)
                             .font(.system(size: 12))
                             .onSubmit { addWord() }
@@ -69,7 +69,7 @@ struct FillerWordsSettingsView: View {
                                 .font(.system(size: 16, weight: .semibold))
                         }
                         .buttonStyle(.borderless)
-                        .help("Add filler word")
+                        .help("添加口头语词条")
                         .disabled(newWord.trimmingCharacters(in: .whitespaces).isEmpty)
                     }
 
@@ -89,10 +89,10 @@ struct FillerWordsSettingsView: View {
                 .padding(.leading, 4)
             }
         }
-        .alert("Duplicate Word", isPresented: $showDuplicateAlert) {
-            Button("OK", role: .cancel) {}
+        .alert("重复词条", isPresented: $showDuplicateAlert) {
+            Button("确定", role: .cancel) {}
         } message: {
-            Text("This filler word is already in the list.")
+            Text("这个口头语词条已经存在。")
         }
     }
 

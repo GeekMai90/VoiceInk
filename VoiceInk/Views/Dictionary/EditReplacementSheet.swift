@@ -28,8 +28,8 @@ struct EditReplacementSheet: View {
             formContent
         }
         .frame(width: 460, height: 560)
-        .alert("Word Replacement", isPresented: $showAlert) {
-            Button("OK", role: .cancel) {}
+        .alert("词语替换", isPresented: $showAlert) {
+            Button("确定", role: .cancel) {}
         } message: {
             Text(alertMessage)
         }
@@ -38,18 +38,18 @@ struct EditReplacementSheet: View {
     // MARK: – Subviews
     private var header: some View {
         HStack {
-            Button("Cancel", role: .cancel) { dismiss() }
+            Button("取消", role: .cancel) { dismiss() }
                 .buttonStyle(.borderless)
                 .keyboardShortcut(.escape, modifiers: [])
 
             Spacer()
 
-            Text("Edit Word Replacement")
+            Text("编辑替换规则")
                 .font(.headline)
 
             Spacer()
 
-            Button("Save") { saveChanges() }
+            Button("保存") { saveChanges() }
                 .buttonStyle(.borderedProminent)
                 .controlSize(.small)
                 .disabled(originalWord.isEmpty || replacementWord.isEmpty)
@@ -71,7 +71,7 @@ struct EditReplacementSheet: View {
     }
 
     private var descriptionSection: some View {
-        Text("Update the word or phrase that should be automatically replaced.")
+        Text("修改需要被自动替换的词语或短语。")
             .font(.subheadline)
             .foregroundColor(.secondary)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -84,13 +84,13 @@ struct EditReplacementSheet: View {
             // Original Text Field
             VStack(alignment: .leading, spacing: 6) {
                 HStack {
-                    Text("Original Text")
+                    Text("原始词语")
                         .font(.headline)
-                    Text("Required")
+                    Text("必填")
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
-                TextField("Enter word or phrase to replace (use commas for multiple)", text: $originalWord)
+                TextField("输入要被替换的词语或短语（多个请用英文逗号分隔）", text: $originalWord)
                     .textFieldStyle(.roundedBorder)
                 
             }
@@ -99,9 +99,9 @@ struct EditReplacementSheet: View {
             // Replacement Text Field
             VStack(alignment: .leading, spacing: 6) {
                 HStack {
-                    Text("Replacement Text")
+                    Text("替换文本")
                         .font(.headline)
-                    Text("Required")
+                    Text("必填")
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
@@ -148,7 +148,7 @@ struct EditReplacementSheet: View {
 
                 for tokenPair in newTokensPairs {
                     if existingTokens.contains(tokenPair.lowercased) {
-                        alertMessage = "'\(tokenPair.original)' already exists in word replacements"
+                        alertMessage = "“\(tokenPair.original)”已经存在于替换规则中"
                         showAlert = true
                         return
                     }
@@ -164,7 +164,7 @@ struct EditReplacementSheet: View {
             try modelContext.save()
             dismiss()
         } catch {
-            alertMessage = "Failed to save changes: \(error.localizedDescription)"
+            alertMessage = "保存修改失败：\(error.localizedDescription)"
             showAlert = true
         }
     }

@@ -6,13 +6,13 @@ struct TranscriptionMetadataView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 12) {
-                Text("Details")
+                Text("详细信息")
                     .font(.system(size: 14, weight: .semibold))
 
                 VStack(alignment: .leading, spacing: 8) {
                     metadataRow(
                         icon: "calendar",
-                        label: "Date",
+                        label: "日期",
                         value: transcription.timestamp.formatted(date: .abbreviated, time: .shortened)
                     )
 
@@ -20,7 +20,7 @@ struct TranscriptionMetadataView: View {
 
                     metadataRow(
                         icon: "hourglass",
-                        label: "Duration",
+                        label: "时长",
                         value: transcription.duration.formatTiming()
                     )
 
@@ -28,7 +28,7 @@ struct TranscriptionMetadataView: View {
                         Divider()
                         metadataRow(
                             icon: "cpu.fill",
-                            label: "Transcription Model",
+                            label: "转写模型",
                             value: modelName
                         )
 
@@ -36,7 +36,7 @@ struct TranscriptionMetadataView: View {
                             Divider()
                             metadataRow(
                                 icon: "clock.fill",
-                                label: "Transcription Time",
+                                label: "转写耗时",
                                 value: duration.formatTiming()
                             )
                         }
@@ -46,7 +46,7 @@ struct TranscriptionMetadataView: View {
                         Divider()
                         metadataRow(
                             icon: "sparkles",
-                            label: "Enhancement Model",
+                            label: "增强模型",
                             value: aiModel
                         )
 
@@ -54,7 +54,7 @@ struct TranscriptionMetadataView: View {
                             Divider()
                             metadataRow(
                                 icon: "clock.fill",
-                                label: "Enhancement Time",
+                                label: "增强耗时",
                                 value: duration.formatTiming()
                             )
                         }
@@ -64,7 +64,7 @@ struct TranscriptionMetadataView: View {
                         Divider()
                         metadataRow(
                             icon: "text.bubble.fill",
-                            label: "Prompt",
+                            label: "提示词",
                             value: promptName
                         )
                     }
@@ -76,7 +76,7 @@ struct TranscriptionMetadataView: View {
                         Divider()
                         metadataRow(
                             icon: "bolt.fill",
-                            label: "Power Mode",
+                            label: "场景模式",
                             value: powerModeValue
                         )
                     }
@@ -89,14 +89,14 @@ struct TranscriptionMetadataView: View {
 
                 if transcription.aiRequestSystemMessage != nil || transcription.aiRequestUserMessage != nil {
                     VStack(alignment: .leading, spacing: 12) {
-                        Text("AI Request")
+                        Text("AI 请求")
                             .font(.system(size: 14, weight: .semibold))
 
                         ScrollView {
                             VStack(alignment: .leading, spacing: 12) {
                                 if let systemMsg = transcription.aiRequestSystemMessage, !systemMsg.isEmpty {
                                     VStack(alignment: .leading, spacing: 6) {
-                                        Text("System Prompt")
+                                        Text("系统提示词")
                                             .font(.system(size: 11, weight: .semibold))
                                             .foregroundColor(.secondary)
                                         Text(systemMsg)
@@ -109,7 +109,7 @@ struct TranscriptionMetadataView: View {
 
                                 if let userMsg = transcription.aiRequestUserMessage, !userMsg.isEmpty {
                                     VStack(alignment: .leading, spacing: 6) {
-                                        Text("User Message")
+                                        Text("用户消息")
                                             .font(.system(size: 11, weight: .semibold))
                                             .foregroundColor(.secondary)
                                         Text(userMsg)

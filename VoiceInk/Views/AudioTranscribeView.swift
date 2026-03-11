@@ -42,8 +42,8 @@ struct AudioTranscribeView: View {
             }
             return false
         }
-        .alert("Error", isPresented: .constant(transcriptionManager.errorMessage != nil)) {
-            Button("OK", role: .cancel) {
+        .alert("错误", isPresented: .constant(transcriptionManager.errorMessage != nil)) {
+            Button("确定", role: .cancel) {
                 transcriptionManager.errorMessage = nil
             }
         } message: {
@@ -63,14 +63,14 @@ struct AudioTranscribeView: View {
         VStack(spacing: 16) {
             if isAudioFileSelected {
                 VStack(spacing: 16) {
-                    Text("Audio file selected: \(selectedAudioURL?.lastPathComponent ?? "")")
+                    Text("已选择音频文件：\(selectedAudioURL?.lastPathComponent ?? "")")
                         .font(.headline)
                     
                     // AI Enhancement Settings
                     VStack(spacing: 16) {
                             // AI Enhancement and Prompt in the same row
                             HStack(spacing: 16) {
-                                Toggle("AI Enhancement", isOn: $isEnhancementEnabled)
+                                Toggle("AI 增强", isOn: $isEnhancementEnabled)
                                     .toggleStyle(.switch)
                                     .onChange(of: isEnhancementEnabled) { oldValue, newValue in
                                         enhancementService.isEnhancementEnabled = newValue
@@ -82,11 +82,11 @@ struct AudioTranscribeView: View {
                                     
                                     // Prompt Selection
                                     HStack(spacing: 8) {
-                                        Text("Prompt:")
+                                        Text("提示词：")
                                             .font(.subheadline)
                                         
                                         if enhancementService.allPrompts.isEmpty {
-                                            Text("No prompts available")
+                                            Text("暂无可用提示词")
                                                 .foregroundColor(.secondary)
                                                 .italic()
                                                 .font(.caption)
@@ -125,7 +125,7 @@ struct AudioTranscribeView: View {
 
                     // Action Buttons in a row
                     HStack(spacing: 12) {
-                        Button("Start Transcription") {
+                        Button("开始转写") {
                             if let url = selectedAudioURL {
                                 transcriptionManager.startProcessing(
                                     url: url,
@@ -136,7 +136,7 @@ struct AudioTranscribeView: View {
                         }
                         .buttonStyle(.borderedProminent)
                         
-                        Button("Choose Different File") {
+                        Button("重新选择文件") {
                             selectedAudioURL = nil
                             isAudioFileSelected = false
                         }
@@ -164,13 +164,13 @@ struct AudioTranscribeView: View {
                             .font(.system(size: 32))
                             .foregroundColor(isDropTargeted ? .blue : .gray)
                         
-                        Text("Drop audio or video file here")
+                        Text("将音频或视频文件拖到这里")
                             .font(.headline)
                         
-                        Text("or")
+                        Text("或")
                             .foregroundColor(.secondary)
                         
-                        Button("Choose File") {
+                        Button("选择文件") {
                             selectFile()
                         }
                         .buttonStyle(.bordered)
@@ -181,7 +181,7 @@ struct AudioTranscribeView: View {
                 .padding(.horizontal)
             }
             
-            Text("Supported formats: WAV, MP3, M4A, AIFF, MP4, MOV, AAC, FLAC, CAF, AMR, OGG, OPUS, 3GP")
+            Text("支持格式：WAV、MP3、M4A、AIFF、MP4、MOV、AAC、FLAC、CAF、AMR、OGG、OPUS、3GP")
                 .font(.caption)
                 .foregroundColor(.secondary)
         }

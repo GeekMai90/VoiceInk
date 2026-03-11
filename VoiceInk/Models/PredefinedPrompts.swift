@@ -17,20 +17,20 @@ enum PredefinedPrompts {
         [
             CustomPrompt(
                 id: defaultPromptId,
-                title: "Default",
-                promptText: PromptTemplates.all.first { $0.title == "System Default" }?.promptText ?? "",
+                title: "默认",
+                promptText: PromptTemplates.all.first { $0.title == "系统默认" }?.promptText ?? "",
                 icon: "checkmark.seal.fill",
-                description: "Default mode to improved clarity and accuracy of the transcription",
+                description: "默认模式，用于提升转写清晰度和准确度",
                 isPredefined: true,
                 useSystemInstructions: true
             ),
             
             CustomPrompt(
                 id: assistantPromptId,
-                title: "Assistant",
+                title: "助手",
                 promptText: AIPrompts.assistantMode,
                 icon: "bubble.left.and.bubble.right.fill",
-                description: "AI assistant that provides direct answers to queries",
+                description: "用 AI 助手模式直接回答你的问题",
                 isPredefined: true,
                 useSystemInstructions: false
             )

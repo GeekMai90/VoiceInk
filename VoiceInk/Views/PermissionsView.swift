@@ -203,8 +203,8 @@ struct PermissionsView: View {
                 // Header
                 CompactHeroSection(
                     icon: "shield.lefthalf.filled",
-                    title: "App Permissions",
-                    description: "VoiceInk requires the following permissions to function properly"
+                    title: "应用权限",
+                    description: "VoiceInk 需要以下权限才能正常工作"
                 )
                 
                 // Permission Cards
@@ -212,10 +212,10 @@ struct PermissionsView: View {
                     // Keyboard Shortcut Permission
                     PermissionCard(
                         icon: "keyboard",
-                        title: "Keyboard Shortcut",
-                        description: "Set up a keyboard shortcut to use VoiceInk anywhere",
+                        title: "快捷键",
+                        description: "设置全局快捷键后，你可以在任何应用里唤起 VoiceInk",
                         isGranted: hotkeyManager.selectedHotkey1 != .none,
-                        buttonTitle: "Configure Shortcut",
+                        buttonTitle: "前往设置",
                         buttonAction: {
                             NotificationCenter.default.post(
                                 name: .navigateToDestination,
@@ -229,10 +229,10 @@ struct PermissionsView: View {
                     // Audio Permission
                     PermissionCard(
                         icon: "mic",
-                        title: "Microphone Access",
-                        description: "Allow VoiceInk to record your voice for transcription",
+                        title: "麦克风权限",
+                        description: "允许 VoiceInk 录制你的语音并进行转写",
                         isGranted: permissionManager.audioPermissionStatus == .authorized,
-                        buttonTitle: permissionManager.audioPermissionStatus == .notDetermined ? "Request Permission" : "Open System Settings",
+                        buttonTitle: permissionManager.audioPermissionStatus == .notDetermined ? "请求权限" : "打开系统设置",
                         buttonAction: {
                             if permissionManager.audioPermissionStatus == .notDetermined {
                                 permissionManager.requestAudioPermission()
@@ -248,26 +248,26 @@ struct PermissionsView: View {
                     // Accessibility Permission
                     PermissionCard(
                         icon: "hand.raised",
-                        title: "Accessibility Access",
-                        description: "Allow VoiceInk to paste transcribed text directly at your cursor position",
+                        title: "辅助功能权限",
+                        description: "允许 VoiceInk 将转写结果直接粘贴到当前光标位置",
                         isGranted: permissionManager.isAccessibilityEnabled,
-                        buttonTitle: "Open System Settings",
+                        buttonTitle: "打开系统设置",
                         buttonAction: {
                             if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
                                 NSWorkspace.shared.open(url)
                             }
                         },
                         checkPermission: { permissionManager.checkAccessibilityPermissions() },
-                        infoTipMessage: "VoiceInk uses Accessibility permissions to paste the transcribed text directly into other applications at your cursor's position. This allows for a seamless dictation experience across your Mac."
+                        infoTipMessage: "VoiceInk 会借助辅助功能权限，把转写文字直接输入到其他应用的光标位置，让整套语音输入流程更顺畅。"
                     )
                     
                     // Screen Recording Permission
                     PermissionCard(
                         icon: "rectangle.on.rectangle",
-                        title: "Screen Recording Access",
-                        description: "Allow VoiceInk to understand context from your screen for transcript Enhancement",
+                        title: "屏幕录制权限",
+                        description: "允许 VoiceInk 读取屏幕上下文，用于 AI 增强和更准确的转写",
                         isGranted: permissionManager.isScreenRecordingEnabled,
-                        buttonTitle: "Request Permission",
+                        buttonTitle: "请求权限",
                         buttonAction: {
                             permissionManager.requestScreenRecordingPermission()
                             // After requesting, open system preferences as fallback
@@ -276,7 +276,7 @@ struct PermissionsView: View {
                             }
                         },
                         checkPermission: { permissionManager.checkScreenRecordingPermission() },
-                        infoTipMessage: "VoiceInk captures on-screen text to understand the context of your voice input, which significantly improves transcription accuracy. Your privacy is important: this data is processed locally and is not stored.",
+                        infoTipMessage: "VoiceInk 会读取屏幕上的文字上下文，帮助理解你的语音输入场景，从而提升转写和增强效果。你的隐私仍然优先，这些数据只在本地处理，不会被保存。",
                         infoTipLink: "https://tryvoiceink.com/docs/contextual-awareness"
                     )
                 }

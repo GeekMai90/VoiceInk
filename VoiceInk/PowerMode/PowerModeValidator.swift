@@ -19,13 +19,13 @@ enum PowerModeValidationError: Error, Identifiable {
     var localizedDescription: String {
         switch self {
         case .emptyName:
-            return "Power mode name cannot be empty."
+            return "场景模式名称不能为空。"
         case .duplicateName(let name):
-            return "A power mode with the name '\(name)' already exists."
+            return "已存在名为“\(name)”的场景模式。"
         case .duplicateAppTrigger(let appName, let powerModeName):
-            return "The app '\(appName)' is already configured in the '\(powerModeName)' power mode."
+            return "应用“\(appName)”已经配置在“\(powerModeName)”场景模式中。"
         case .duplicateWebsiteTrigger(let website, let powerModeName):
-            return "The website '\(website)' is already configured in the '\(powerModeName)' power mode."
+            return "网站“\(website)”已经配置在“\(powerModeName)”场景模式中。"
         }
     }
 }
@@ -97,18 +97,18 @@ extension View {
         isPresented: Binding<Bool>
     ) -> some View {
         self.alert(
-            "Cannot Save Power Mode", 
+            "无法保存场景模式", 
             isPresented: isPresented,
             actions: {
-                Button("OK", role: .cancel) {}
+                Button("确定", role: .cancel) {}
             },
             message: {
                 if let firstError = errors.first {
                     Text(firstError.localizedDescription)
                 } else {
-                    Text("Please fix the validation errors before saving.")
+                    Text("请先修正校验错误，再保存。")
                 }
             }
         )
     }
-} 
+}

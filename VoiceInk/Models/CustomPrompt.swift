@@ -278,25 +278,25 @@ extension CustomPrompt {
                     Button {
                         onEdit(self)
                     } label: {
-                        Label("Edit", systemImage: "pencil")
+                        Label("编辑", systemImage: "pencil")
                     }
                 }
                 
                 if let onDelete = onDelete, !isPredefined {
                     Button(role: .destructive) {
                         let alert = NSAlert()
-                        alert.messageText = "Delete Prompt?"
-                        alert.informativeText = "Are you sure you want to delete '\(self.title)' prompt? This action cannot be undone."
+                        alert.messageText = "删除提示词？"
+                        alert.informativeText = "确定要删除“\(self.title)”提示词吗？此操作无法撤销。"
                         alert.alertStyle = .warning
-                        alert.addButton(withTitle: "Delete")
-                        alert.addButton(withTitle: "Cancel")
+                        alert.addButton(withTitle: "删除")
+                        alert.addButton(withTitle: "取消")
                         
                         let response = alert.runModal()
                         if response == .alertFirstButtonReturn {
                             onDelete(self)
                         }
                     } label: {
-                        Label("Delete", systemImage: "trash")
+                        Label("删除", systemImage: "trash")
                     }
                 }
             }
@@ -372,7 +372,7 @@ extension CustomPrompt {
             
             // Text label with matching styling
             VStack(spacing: 2) {
-                Text("Add New")
+                Text("新增")
                     .font(.system(size: 11, weight: .medium))
                     .foregroundColor(.secondary)
                     .lineLimit(1)

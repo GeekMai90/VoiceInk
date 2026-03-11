@@ -13,11 +13,11 @@ struct ModelSettingsView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Text("Output Format")
+                Text("输出格式")
                     .font(.headline)
                 
                 InfoTip(
-                    "Unlike GPT, Voice Models(whisper) follows the style of your prompt rather than instructions. Use examples of your desired output format instead of commands.",
+                    "和 GPT 不同，语音模型（Whisper）更依赖提示词示例的风格，而不是命令式指令。请尽量用目标输出示例来引导格式。",
                     learnMoreURL: "https://cookbook.openai.com/examples/whisper_prompting_guide#comparison-with-gpt-prompting"
                 )
                 
@@ -34,7 +34,7 @@ struct ModelSettingsView: View {
                         isEditing = true
                     }
                 }) {
-                    Text(isEditing ? "Save" : "Edit")
+                    Text(isEditing ? "保存" : "编辑")
                         .font(.caption)
                 }
             }
@@ -68,35 +68,35 @@ struct ModelSettingsView: View {
             Divider().padding(.vertical, 4)
 
             Toggle(isOn: $appendTrailingSpace) {
-                Text("Add Space After Paste")
+                Text("粘贴后补一个空格")
             }
             .toggleStyle(.switch)
 
             HStack {
                 Toggle(isOn: $isTextFormattingEnabled) {
-                    Text("Automatic text formatting")
+                    Text("自动文本格式化")
                 }
                 .toggleStyle(.switch)
                 
-                InfoTip("Apply intelligent text formatting to break large block of text into paragraphs.")
+                InfoTip("自动整理文本格式，把大段内容拆分成更自然的段落。")
             }
 
             HStack {
                 Toggle(isOn: $isVADEnabled) {
-                    Text("Voice Activity Detection (VAD)")
+                    Text("语音活动检测（VAD）")
                 }
                 .toggleStyle(.switch)
 
-                InfoTip("Detect speech segments and filter out silence to improve accuracy of local models.")
+                InfoTip("识别语音片段并过滤静音内容，提升本地模型的识别准确度。")
             }
 
             HStack {
                 Toggle(isOn: $prewarmModelOnWake) {
-                    Text("Prewarm model (Experimental)")
+                    Text("模型预热（实验性）")
                 }
                 .toggleStyle(.switch)
 
-                InfoTip("Turn this on if transcriptions with local models are taking longer than expected. Runs silent background transcription on app launch and wake to trigger optimization.")
+                InfoTip("如果本地模型转写速度明显偏慢，可以开启它。应用启动或唤醒时会触发一次静默后台预热。")
             }
 
             FillerWordsSettingsView()

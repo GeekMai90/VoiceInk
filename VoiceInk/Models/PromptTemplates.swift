@@ -29,7 +29,7 @@ enum PromptTemplates {
         [
             TemplatePrompt(
                 id: UUID(),
-                title: "System Default",
+                title: "系统默认",
                 promptText: """
                     - Clean up the <TRANSCRIPT> text for clarity and natural flow while preserving meaning and the original tone.
                     - Use informal, plain language unless the <TRANSCRIPT> clearly uses a professional tone; in that case, match it.
@@ -45,11 +45,11 @@ enum PromptTemplates {
                     - Don't add any information not available in the <TRANSCRIPT> text ever.
                     """,
                 icon: "checkmark.seal.fill",
-                description: "Default system prompt"
+                description: "默认系统提示词"
             ),
             TemplatePrompt(
                 id: UUID(),
-                title: "Chat",
+                title: "聊天",
                 promptText: """
                     - Rewrite the <TRANSCRIPT> text as a chat message: informal, concise, and conversational.
                     - Keep emotive markers and emojis if present; don't invent new ones.
@@ -63,12 +63,12 @@ enum PromptTemplates {
                     - Don't add any information not available in the <TRANSCRIPT> text ever.
                     """,
                 icon: "bubble.left.and.bubble.right.fill",
-                description: "Casual chat-style formatting"
+                description: "适合聊天场景的自然表达"
             ),
             
             TemplatePrompt(
                 id: UUID(),
-                title: "Email",
+                title: "邮件",
                 promptText: """
                     - Rewrite the <TRANSCRIPT> text as a complete email with proper formatting: include a greeting (Hi), body paragraphs (2-4 sentences each), and closing (Thanks).
                     - Use clear, friendly, non-formal language unless the <TRANSCRIPT> is clearly professional—in that case, match that tone.
@@ -79,11 +79,11 @@ enum PromptTemplates {
                     - Don't add any information not available in the <TRANSCRIPT> text ever.
                     """,
                 icon: "envelope.fill",
-                description: "Professional email formatting"
+                description: "适合邮件场景的正式整理"
             ),
             TemplatePrompt(
                 id: UUID(),
-                title: "Rewrite",
+                title: "重写润色",
                 promptText: """
                     - Rewrite the <TRANSCRIPT> text with enhanced clarity, improved sentence structure, and rhythmic flow while preserving the original meaning and tone.
                     - Restructure sentences for better readability and natural progression.
@@ -98,7 +98,7 @@ enum PromptTemplates {
                     - Don't add any information not available in the <TRANSCRIPT> text ever.
                     """,
                 icon: "pencil.circle.fill",
-                description: "Rewrites with better clarity."
+                description: "让表达更清晰、更顺畅。"
             )
         ]
     }

@@ -17,14 +17,14 @@ struct TranscriptionDetailView: View {
             ScrollView {
                 VStack(spacing: 16) {
                     MessageBubble(
-                        label: "Original",
+                        label: "原文",
                         text: transcription.text,
                         isEnhanced: false
                     )
 
                     if let enhancedText = transcription.enhancedText {
                         MessageBubble(
-                            label: "Enhanced",
+                            label: "增强",
                             text: enhancedText,
                             isEnhanced: true
                         )
@@ -105,7 +105,7 @@ private struct MessageBubble: View {
                             .clipShape(Circle())
                     }
                     .buttonStyle(.plain)
-                    .help("Copy to clipboard")
+                    .help("复制到剪贴板")
                     .padding(8)
                 }
             }

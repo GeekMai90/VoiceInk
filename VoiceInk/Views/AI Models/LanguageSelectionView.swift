@@ -43,14 +43,14 @@ struct LanguageSelectionView: View {
     // Function to get current model's supported languages
     private func getCurrentModelLanguages() -> [String: String] {
         guard let currentModel = transcriptionModelManager.currentTranscriptionModel else {
-            return ["en": "English"] // Default to English if no model found
+            return ["en": "英语"]
         }
         return currentModel.supportedLanguages
     }
 
     // Get the display name of the current language
     private func currentLanguageDisplayName() -> String {
-        return getCurrentModelLanguages()[selectedLanguage] ?? "Unknown"
+        return getCurrentModelLanguages()[selectedLanguage] ?? "未知"
     }
 
     var body: some View {
@@ -71,29 +71,29 @@ struct LanguageSelectionView: View {
     
     private var languageSelectionSection: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Transcription Language")
+            Text("转写语言")
                 .font(.headline)
 
             if let currentModel = transcriptionModelManager.currentTranscriptionModel
             {
                 if languageSelectionDisabled() {
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Language: Autodetected")
+                        Text("语言：自动检测")
                             .font(.subheadline)
                             .foregroundColor(.primary)
 
-                        Text("Current model: \(currentModel.displayName)")
+                        Text("当前模型：\(currentModel.displayName)")
                             .font(.caption)
                             .foregroundColor(.secondary)
 
-                        Text("The transcription language is automatically detected by the model.")
+                        Text("当前模型会自动识别转写语言。")
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
                     .disabled(true)
                 } else if isMultilingualModel() {
                     VStack(alignment: .leading, spacing: 8) {
-                        Picker("Select Language", selection: $selectedLanguage) {
+                        Picker("选择语言", selection: $selectedLanguage) {
                             ForEach(
                                 currentModel.supportedLanguages.sorted(by: {
                                     if $0.key == "auto" { return true }
@@ -109,12 +109,12 @@ struct LanguageSelectionView: View {
                             updateLanguage(newValue)
                         }
 
-                        Text("Current model: \(currentModel.displayName)")
+                        Text("当前模型：\(currentModel.displayName)")
                             .font(.caption)
                             .foregroundColor(.secondary)
 
                         Text(
-                            "This model supports multiple languages. Select a specific language or auto-detect(if available)"
+                            "这个模型支持多语言。你可以指定语言，或在支持时使用自动检测。"
                         )
                         .font(.caption)
                         .foregroundColor(.secondary)
@@ -122,16 +122,16 @@ struct LanguageSelectionView: View {
                 } else {
                     // For English-only models, force set language to English
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Language: English")
+                        Text("语言：英语")
                             .font(.subheadline)
                             .foregroundColor(.primary)
 
-                        Text("Current model: \(currentModel.displayName)")
+                        Text("当前模型：\(currentModel.displayName)")
                             .font(.caption)
                             .foregroundColor(.secondary)
 
                         Text(
-                            "This is an English-optimized model and only supports English transcription."
+                            "这是一个英语优化模型，仅支持英文转写。"
                         )
                         .font(.caption)
                         .foregroundColor(.secondary)
@@ -142,7 +142,7 @@ struct LanguageSelectionView: View {
                     }
                 }
             } else {
-                Text("No model selected")
+                Text("尚未选择模型")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
@@ -160,7 +160,7 @@ struct LanguageSelectionView: View {
                 Button {
                     // Do nothing, just showing info
                 } label: {
-                    Text("Language: Autodetected")
+                    Text("语言：自动检测")
                         .foregroundColor(.secondary)
                 }
                 .disabled(true)
@@ -186,7 +186,7 @@ struct LanguageSelectionView: View {
                     }
                 } label: {
                     HStack {
-                        Text("Language: \(currentLanguageDisplayName())")
+                        Text("语言：\(currentLanguageDisplayName())")
                         Image(systemName: "chevron.up.chevron.down")
                             .font(.system(size: 10))
                     }
@@ -196,7 +196,7 @@ struct LanguageSelectionView: View {
                 Button {
                     // Do nothing, just showing info
                 } label: {
-                    Text("Language: English (only)")
+                    Text("语言：仅英语")
                         .foregroundColor(.secondary)
                 }
                 .disabled(true)

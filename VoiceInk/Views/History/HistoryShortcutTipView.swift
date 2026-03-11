@@ -11,9 +11,9 @@ struct HistoryShortcutTipView: View {
                     .frame(width: 24, height: 24)
 
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Quick Access")
+                    Text("快捷入口")
                         .font(.headline)
-                    Text("Open history from anywhere with a global shortcut")
+                    Text("通过全局快捷键可在任意位置打开历史记录")
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                 }
@@ -23,7 +23,7 @@ struct HistoryShortcutTipView: View {
                 .padding(.vertical, 4)
 
             HStack(spacing: 12) {
-                Text("Open History Window")
+                Text("打开历史记录窗口")
                     .font(.system(size: 13, weight: .medium))
                     .foregroundColor(.secondary)
 

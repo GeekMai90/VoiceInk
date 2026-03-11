@@ -39,14 +39,14 @@ struct NativeAppleModelCardView: View {
     private var statusBadge: some View {
         Group {
             if isCurrent {
-                Text("Default")
+                Text("默认")
                     .font(.system(size: 11, weight: .medium))
                     .padding(.horizontal, 6)
                     .padding(.vertical, 2)
                     .background(Capsule().fill(Color.accentColor))
                     .foregroundColor(.white)
             } else {
-                Text("Built-in")
+                Text("内置")
                     .font(.system(size: 11, weight: .medium))
                     .padding(.horizontal, 6)
                     .padding(.vertical, 2)
@@ -59,7 +59,7 @@ struct NativeAppleModelCardView: View {
     private var metadataSection: some View {
         HStack(spacing: 12) {
             // Native Apple
-            Label("Native Apple", systemImage: "apple.logo")
+            Label("Apple 原生", systemImage: "apple.logo")
                 .font(.system(size: 11))
                 .foregroundColor(Color(.secondaryLabelColor))
                 .lineLimit(1)
@@ -71,7 +71,7 @@ struct NativeAppleModelCardView: View {
                 .lineLimit(1)
             
             // On-Device
-            Label("On-Device", systemImage: "checkmark.shield")
+            Label("本机运行", systemImage: "checkmark.shield")
                 .font(.system(size: 11))
                 .foregroundColor(Color(.secondaryLabelColor))
                 .lineLimit(1)
@@ -97,12 +97,12 @@ struct NativeAppleModelCardView: View {
     private var actionSection: some View {
         HStack(spacing: 8) {
             if isCurrent {
-                Text("Default Model")
+                Text("当前默认模型")
                     .font(.system(size: 12))
                     .foregroundColor(Color(.secondaryLabelColor))
             } else {
                 Button(action: setDefaultAction) {
-                    Text("Set as Default")
+                    Text("设为默认")
                         .font(.system(size: 12))
                 }
                 .buttonStyle(.bordered)

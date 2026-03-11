@@ -33,11 +33,11 @@ struct DashboardPromotionsSection: View {
                 if shouldShowUpgradePromotion {
                     DashboardPromotionCard(
                         badge: "30% OFF",
-                        title: "Unlock VoiceInk Pro For Less",
-                        message: "Share VoiceInk on your socials, and instantly unlock a 30% discount on VoiceInk Pro.",
+                        title: "分享 VoiceInk，解锁折扣",
+                        message: "在社交平台分享 VoiceInk，即可立即解锁 VoiceInk Pro 七折优惠。",
                         accentSymbol: "megaphone.fill",
                         glowColor: Color(red: 0.08, green: 0.48, blue: 0.85),
-                        actionTitle: "Share & Unlock",
+                        actionTitle: "立即分享",
                         actionIcon: "arrow.up.right",
                         action: openSocialShare
                     )
@@ -47,11 +47,11 @@ struct DashboardPromotionsSection: View {
                 if shouldShowAffiliatePromotion {
                     DashboardPromotionCard(
                         badge: "AFFILIATE 30%",
-                        title: "Earn With The VoiceInk Affiliate Program",
-                        message: "Share VoiceInk with friends or your audience and receive 30% on every referral that upgrades.",
+                        title: "加入 VoiceInk 推广计划",
+                        message: "把 VoiceInk 分享给朋友或受众，每一次成功升级都可获得 30% 的返佣。",
                         accentSymbol: "link.badge.plus",
                         glowColor: Color(red: 0.08, green: 0.48, blue: 0.85),
-                        actionTitle: "Explore Affiliate",
+                        actionTitle: "查看详情",
                         actionIcon: "arrow.up.right",
                         action: openAffiliateProgram,
                         onDismiss: dismissAffiliatePromotion
@@ -152,7 +152,7 @@ private struct DashboardPromotionCard: View {
                 }
                 .buttonStyle(.plain)
                 .padding(12)
-                .help("Dismiss this promotion")
+                .help("关闭这条推广卡片")
             }
         }
         .background(

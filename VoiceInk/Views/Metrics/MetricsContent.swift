@@ -18,7 +18,7 @@ struct MetricsContent: View {
             if totalCount == 0 && !isLoadingMetrics {
                 emptyStateView
             } else if isLoadingMetrics {
-                ProgressView("Loading metrics...")
+                ProgressView("正在加载概览数据...")
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 GeometryReader { geometry in
@@ -136,9 +136,9 @@ struct MetricsContent: View {
             Image(systemName: "waveform")
                 .font(.system(size: 56, weight: .semibold))
                 .foregroundColor(.secondary)
-            Text("No Transcriptions Yet")
+            Text("还没有转写记录")
                 .font(.title3.weight(.semibold))
-            Text("Start your first recording to unlock value insights.")
+            Text("开始第一次录音后，这里会显示你的使用概览。")
                 .foregroundColor(.secondary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -152,7 +152,7 @@ struct MetricsContent: View {
             HStack {
                 Spacer(minLength: 0)
                 
-                (Text("You have saved ")
+                (Text("你已经节省了 ")
                     .fontWeight(.bold)
                     .foregroundColor(.white.opacity(0.85))
                  +
@@ -161,7 +161,7 @@ struct MetricsContent: View {
                     .font(.system(size: 36, design: .rounded))
                     .foregroundStyle(.white)
                  +
-                 Text(" with VoiceInk")
+                 Text(" 的输入时间")
                     .fontWeight(.bold)
                     .foregroundColor(.white.opacity(0.85))
                 )
@@ -197,35 +197,35 @@ struct MetricsContent: View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: 240), spacing: 16)], spacing: 16) {
             MetricCard(
                 icon: "mic.fill",
-                title: "Sessions Recorded",
+                title: "录音次数",
                 value: "\(totalCount)",
-                detail: "VoiceInk sessions completed",
+                detail: "已完成的录音转写",
                 color: .purple
             )
 
             MetricCard(
                 icon: "text.alignleft",
-                title: "Words Dictated",
+                title: "转写字数",
                 value: Formatters.formattedNumber(totalWords),
-                detail: "words generated",
+                detail: "累计生成的文字",
                 color: Color(nsColor: .controlAccentColor)
             )
             
             MetricCard(
                 icon: "speedometer",
-                title: "Words Per Minute",
+                title: "每分钟字数",
                 value: averageWordsPerMinute > 0
                     ? String(format: "%.1f", averageWordsPerMinute)
                     : "–",
-                detail: "VoiceInk vs. typing by hand",
+                detail: "语音输入的平均速度",
                 color: .yellow
             )
             
             MetricCard(
                 icon: "keyboard.fill",
-                title: "Keystrokes Saved",
+                title: "节省击键",
                 value: Formatters.formattedNumber(totalKeystrokesSaved),
-                detail: "fewer keystrokes",
+                detail: "估算减少的键盘输入",
                 color: .orange
             )
         }
@@ -236,19 +236,17 @@ struct MetricsContent: View {
     }
     
     private var formattedTimeSaved: String {
-        let formatted = Formatters.formattedDuration(timeSaved, style: .full, fallback: "Time savings coming soon")
+        let formatted = Formatters.formattedDuration(timeSaved, style: .full, fallback: "很快就会有数据")
         return formatted
     }
     
     private var heroSubtitle: String {
         guard totalCount > 0 else {
-            return "Your VoiceInk journey starts with your first recording."
+            return "从第一次录音开始，VoiceInk 会持续积累你的语音输入成果。"
         }
 
         let wordsText = Formatters.formattedNumber(totalWords)
-        let sessionText = totalCount == 1 ? "session" : "sessions"
-
-        return "Dictated \(wordsText) words across \(totalCount) \(sessionText)."
+        return "累计完成 \(totalCount) 次录音，生成 \(wordsText) 个字。"
     }
     
     private var heroGradient: LinearGradient {
@@ -329,7 +327,7 @@ private struct CopySystemInfoButton: View {
                     .rotationEffect(.degrees(isCopied ? 360 : 0))
                     .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isCopied)
 
-                Text(isCopied ? "Copied!" : "Copy System Info")
+                Text(isCopied ? "已复制" : "复制系统信息")
                     .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isCopied)
             }
             .font(.system(size: 13, weight: .medium))

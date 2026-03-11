@@ -29,8 +29,8 @@ struct AudioCleanupSettingsView: View {
                 HStack {
                     Toggle(isOn: $isTranscriptionCleanupEnabled) {
                         HStack(spacing: 4) {
-                            Text("Auto-delete Transcripts")
-                            InfoTip("Automatically delete transcript history based on the retention period you set.")
+                            Text("自动删除转写记录")
+                            InfoTip("按照你设定的保留时长，自动清理历史转写记录。")
                         }
                     }
 
@@ -52,17 +52,17 @@ struct AudioCleanupSettingsView: View {
                     }
                 }
 
-                if isTranscriptionCleanupEnabled && isTranscriptExpanded {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Picker("Delete After", selection: $transcriptionRetentionMinutes) {
-                            Text("Immediately").tag(0)
-                            Text("1 hour").tag(60)
-                            Text("1 day").tag(24 * 60)
-                            Text("3 days").tag(3 * 24 * 60)
-                            Text("7 days").tag(7 * 24 * 60)
+                    if isTranscriptionCleanupEnabled && isTranscriptExpanded {
+                        VStack(alignment: .leading, spacing: 8) {
+                        Picker("删除时间", selection: $transcriptionRetentionMinutes) {
+                            Text("立即").tag(0)
+                            Text("1 小时").tag(60)
+                            Text("1 天").tag(24 * 60)
+                            Text("3 天").tag(3 * 24 * 60)
+                            Text("7 天").tag(7 * 24 * 60)
                         }
 
-                        Button("Run Cleanup Now") {
+                        Button("立即清理") {
                             Task {
                                 await TranscriptionAutoCleanupService.shared.runManualCleanup(modelContext: modelContext)
                                 await MainActor.run {
@@ -77,10 +77,10 @@ struct AudioCleanupSettingsView: View {
                 }
             }
             .animation(.easeInOut(duration: 0.2), value: isTranscriptExpanded)
-            .alert("Transcript Cleanup", isPresented: $showTranscriptCleanupResult) {
-                Button("OK", role: .cancel) { }
+            .alert("转写记录清理", isPresented: $showTranscriptCleanupResult) {
+                Button("确定", role: .cancel) { }
             } message: {
-                Text("Cleanup complete.")
+                Text("清理完成。")
             }
             .onChange(of: isTranscriptionCleanupEnabled) { _, newValue in
                 isHandlingTranscriptToggle = true
@@ -106,8 +106,8 @@ struct AudioCleanupSettingsView: View {
                     HStack {
                         Toggle(isOn: $isAudioCleanupEnabled) {
                             HStack(spacing: 4) {
-                                Text("Auto-delete Audio Files")
-                                InfoTip("Automatically delete audio recordings while keeping text transcripts intact.")
+                                Text("自动删除音频文件")
+                                InfoTip("自动清理录音文件，同时保留对应的文字转写记录。")
                             }
                         }
 
@@ -131,15 +131,15 @@ struct AudioCleanupSettingsView: View {
 
                     if isAudioCleanupEnabled && isAudioExpanded {
                         VStack(alignment: .leading, spacing: 8) {
-                            Picker("Keep Audio For", selection: $audioRetentionPeriod) {
-                                Text("1 day").tag(1)
-                                Text("3 days").tag(3)
-                                Text("7 days").tag(7)
-                                Text("14 days").tag(14)
-                                Text("30 days").tag(30)
+                            Picker("音频保留时长", selection: $audioRetentionPeriod) {
+                                Text("1 天").tag(1)
+                                Text("3 天").tag(3)
+                                Text("7 天").tag(7)
+                                Text("14 天").tag(14)
+                                Text("30 天").tag(30)
                             }
 
-                            Button(isPerformingCleanup ? "Analyzing..." : "Run Cleanup Now") {
+                            Button(isPerformingCleanup ? "分析中..." : "立即清理") {
                                 Task {
                                     await MainActor.run { isPerformingCleanup = true }
                                     let info = await AudioCleanupManager.shared.getCleanupInfo(modelContext: modelContext)
@@ -158,11 +158,11 @@ struct AudioCleanupSettingsView: View {
                     }
                 }
                 .animation(.easeInOut(duration: 0.2), value: isAudioExpanded)
-                .alert("Audio Cleanup", isPresented: $isShowingConfirmation) {
-                    Button("Cancel", role: .cancel) { }
+                .alert("音频清理", isPresented: $isShowingConfirmation) {
+                    Button("取消", role: .cancel) { }
 
                     if cleanupInfo.fileCount > 0 {
-                        Button("Delete \(cleanupInfo.fileCount) Files", role: .destructive) {
+                        Button("删除 \(cleanupInfo.fileCount) 个文件", role: .destructive) {
                             Task {
                                 await MainActor.run { isPerformingCleanup = true }
                                 let result = await AudioCleanupManager.shared.runCleanupForTranscriptions(
@@ -179,18 +179,18 @@ struct AudioCleanupSettingsView: View {
                     }
                 } message: {
                     if cleanupInfo.fileCount > 0 {
-                        Text("This will delete \(cleanupInfo.fileCount) audio files (\(AudioCleanupManager.shared.formatFileSize(cleanupInfo.totalSize))).")
+                        Text("这将删除 \(cleanupInfo.fileCount) 个音频文件，共 \(AudioCleanupManager.shared.formatFileSize(cleanupInfo.totalSize))。")
                     } else {
-                        Text("No audio files found older than \(audioRetentionPeriod) day\(audioRetentionPeriod > 1 ? "s" : "").")
+                        Text("没有找到超过 \(audioRetentionPeriod) 天的音频文件。")
                     }
                 }
-                .alert("Cleanup Complete", isPresented: $showResultAlert) {
-                    Button("OK", role: .cancel) { }
+                .alert("清理完成", isPresented: $showResultAlert) {
+                    Button("确定", role: .cancel) { }
                 } message: {
                     if cleanupResult.errorCount > 0 {
-                        Text("Deleted \(cleanupResult.deletedCount) files. Failed: \(cleanupResult.errorCount).")
+                        Text("已删除 \(cleanupResult.deletedCount) 个文件，失败 \(cleanupResult.errorCount) 个。")
                     } else {
-                        Text("Deleted \(cleanupResult.deletedCount) audio files.")
+                        Text("已删除 \(cleanupResult.deletedCount) 个音频文件。")
                     }
                 }
                 .onChange(of: isAudioCleanupEnabled) { _, newValue in

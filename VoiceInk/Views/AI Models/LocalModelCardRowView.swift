@@ -51,14 +51,14 @@ struct LocalModelCardView: View {
     private var statusBadge: some View {
         Group {
             if isCurrent {
-                Text("Default")
+                Text("默认")
                     .font(.system(size: 11, weight: .medium))
                     .padding(.horizontal, 6)
                     .padding(.vertical, 2)
                     .background(Capsule().fill(Color.accentColor))
                     .foregroundColor(.white)
             } else if isDownloaded {
-                Text("Downloaded")
+                Text("已下载")
                     .font(.system(size: 11, weight: .medium))
                     .padding(.horizontal, 6)
                     .padding(.vertical, 2)
@@ -84,7 +84,7 @@ struct LocalModelCardView: View {
             
             // Speed
             HStack(spacing: 3) {
-                Text("Speed")
+                Text("速度")
                     .font(.system(size: 11, weight: .medium))
                     .foregroundColor(Color(.secondaryLabelColor))
                 progressDotsWithNumber(value: model.speed * 10)
@@ -94,7 +94,7 @@ struct LocalModelCardView: View {
             
             // Accuracy
             HStack(spacing: 3) {
-                Text("Accuracy")
+                Text("准确度")
                     .font(.system(size: 11, weight: .medium))
                     .foregroundColor(Color(.secondaryLabelColor))
                 progressDotsWithNumber(value: model.accuracy * 10)
@@ -130,7 +130,7 @@ struct LocalModelCardView: View {
     private var actionSection: some View {
         HStack(spacing: 8) {
             if isCurrent {
-                Text("Default Model")
+                Text("当前默认模型")
                     .font(.system(size: 12))
                     .foregroundColor(Color(.secondaryLabelColor))
             } else if isDownloaded {
@@ -138,13 +138,13 @@ struct LocalModelCardView: View {
                     HStack(spacing: 6) {
                         ProgressView()
                             .controlSize(.small)
-                        Text("Optimizing model for your device...")
+                        Text("正在为你的设备优化模型…")
                             .font(.system(size: 12))
                             .foregroundColor(Color(.secondaryLabelColor))
                     }
                 } else {
                     Button(action: setDefaultAction) {
-                        Text("Set as Default")
+                        Text("设为默认")
                             .font(.system(size: 12))
                     }
                     .buttonStyle(.bordered)
@@ -153,7 +153,7 @@ struct LocalModelCardView: View {
             } else {
                 Button(action: downloadAction) {
                     HStack(spacing: 4) {
-                        Text(isDownloading ? "Downloading..." : "Download")
+                        Text(isDownloading ? "下载中..." : "下载")
                             .font(.system(size: 12, weight: .medium))
                         Image(systemName: "arrow.down.circle")
                             .font(.system(size: 12, weight: .medium))
@@ -174,7 +174,7 @@ struct LocalModelCardView: View {
             if isDownloaded {
                 Menu {
                     Button(action: deleteAction) {
-                        Label("Delete Model", systemImage: "trash")
+                        Label("删除模型", systemImage: "trash")
                     }
                     
                     Button {
@@ -182,7 +182,7 @@ struct LocalModelCardView: View {
                             NSWorkspace.shared.selectFile(modelURL.path, inFileViewerRootedAtPath: "")
                         }
                     } label: {
-                        Label("Show in Finder", systemImage: "folder")
+                        Label("在 Finder 中显示", systemImage: "folder")
                     }
                 } label: {
                     Image(systemName: "ellipsis.circle")
@@ -214,14 +214,14 @@ struct ImportedLocalModelCardView: View {
                         .font(.system(size: 13, weight: .semibold))
                         .foregroundColor(Color(.labelColor))
                     if isCurrent {
-                        Text("Default")
+                        Text("默认")
                             .font(.system(size: 11, weight: .medium))
                             .padding(.horizontal, 6)
                             .padding(.vertical, 2)
                             .background(Capsule().fill(Color.accentColor))
                             .foregroundColor(.white)
                     } else if isDownloaded {
-                        Text("Imported")
+                        Text("已导入")
                             .font(.system(size: 11, weight: .medium))
                             .padding(.horizontal, 6)
                             .padding(.vertical, 2)
@@ -231,7 +231,7 @@ struct ImportedLocalModelCardView: View {
                     Spacer()
                 }
 
-                Text("Imported local model")
+                Text("已导入的本地模型")
                     .font(.system(size: 11))
                     .foregroundColor(Color(.secondaryLabelColor))
                     .lineLimit(2)
@@ -242,12 +242,12 @@ struct ImportedLocalModelCardView: View {
 
             HStack(spacing: 8) {
                 if isCurrent {
-                    Text("Default Model")
+                    Text("当前默认模型")
                         .font(.system(size: 12))
                         .foregroundColor(Color(.secondaryLabelColor))
                 } else if isDownloaded {
                     Button(action: setDefaultAction) {
-                        Text("Set as Default")
+                        Text("设为默认")
                             .font(.system(size: 12))
                     }
                     .buttonStyle(.bordered)
@@ -257,14 +257,14 @@ struct ImportedLocalModelCardView: View {
                 if isDownloaded {
                     Menu {
                         Button(action: deleteAction) {
-                            Label("Delete Model", systemImage: "trash")
+                            Label("删除模型", systemImage: "trash")
                         }
                         Button {
                             if let modelURL = modelURL {
                                 NSWorkspace.shared.selectFile(modelURL.path, inFileViewerRootedAtPath: "")
                             }
                         } label: {
-                            Label("Show in Finder", systemImage: "folder")
+                            Label("在 Finder 中显示", systemImage: "folder")
                         }
                     } label: {
                         Image(systemName: "ellipsis.circle")

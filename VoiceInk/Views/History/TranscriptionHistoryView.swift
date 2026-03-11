@@ -93,23 +93,23 @@ struct TranscriptionHistoryView: View {
         .toolbar {
             ToolbarItemGroup(placement: .navigation) {
                 Button(action: { withAnimation { isLeftSidebarVisible.toggle() } }) {
-                    Label("Toggle Sidebar", systemImage: "sidebar.left")
+                    Label("显示或隐藏侧栏", systemImage: "sidebar.left")
                 }
             }
 
             ToolbarItemGroup(placement: .automatic) {
                 Button(action: { withAnimation { isRightSidebarVisible.toggle() } }) {
-                    Label("Toggle Inspector", systemImage: "sidebar.right")
+                    Label("显示或隐藏详情", systemImage: "sidebar.right")
                 }
             }
         }
-        .alert("Delete Selected Items?", isPresented: $showDeleteConfirmation) {
-            Button("Delete", role: .destructive) {
+        .alert("删除已选记录？", isPresented: $showDeleteConfirmation) {
+            Button("删除", role: .destructive) {
                 deleteSelectedTranscriptions()
             }
-            Button("Cancel", role: .cancel) {}
+            Button("取消", role: .cancel) {}
         } message: {
-            Text("This action cannot be undone. Are you sure you want to delete \(selectedTranscriptions.count) item\(selectedTranscriptions.count == 1 ? "" : "s")?")
+            Text("此操作无法撤销。确定要删除 \(selectedTranscriptions.count) 条记录吗？")
         }
         .sheet(isPresented: $showAnalysisView) {
             if !selectedTranscriptions.isEmpty {
@@ -148,7 +148,7 @@ struct TranscriptionHistoryView: View {
                 Image(systemName: "magnifyingglass")
                     .foregroundColor(.secondary)
                     .font(.system(size: 13))
-                TextField("Search transcriptions", text: $searchText)
+                TextField("搜索转写内容", text: $searchText)
                     .textFieldStyle(PlainTextFieldStyle())
                     .font(.system(size: 13))
             }
@@ -167,7 +167,7 @@ struct TranscriptionHistoryView: View {
                         Image(systemName: "doc.text.magnifyingglass")
                             .font(.system(size: 40))
                             .foregroundColor(.secondary)
-                        Text("No transcriptions")
+                        Text("没有转写记录")
                             .font(.system(size: 14, weight: .medium))
                             .foregroundColor(.secondary)
                     }
@@ -193,7 +193,7 @@ struct TranscriptionHistoryView: View {
                                         if isLoading {
                                             ProgressView().controlSize(.small)
                                         }
-                                        Text(isLoading ? "Loading..." : "Load More")
+                                        Text(isLoading ? "加载中..." : "加载更多")
                                             .font(.system(size: 13, weight: .medium))
                                     }
                                     .frame(maxWidth: .infinity)
@@ -232,10 +232,10 @@ struct TranscriptionHistoryView: View {
                             Image(systemName: "doc.text")
                                 .font(.system(size: 50))
                                 .foregroundColor(.secondary)
-                            Text("No Selection")
+                            Text("未选择记录")
                                 .font(.system(size: 18, weight: .medium))
                                 .foregroundColor(.secondary)
-                            Text("Select a transcription to view details")
+                            Text("从左侧选择一条转写记录查看详情")
                                 .font(.system(size: 14))
                                 .foregroundColor(.secondary)
                         }
@@ -265,7 +265,7 @@ struct TranscriptionHistoryView: View {
                     Image(systemName: "info.circle")
                         .font(.system(size: 40))
                         .foregroundColor(.secondary)
-                    Text("No Metadata")
+                    Text("暂无详情信息")
                         .font(.system(size: 14, weight: .medium))
                         .foregroundColor(.secondary)
                 }
@@ -278,14 +278,14 @@ struct TranscriptionHistoryView: View {
     private var selectionToolbar: some View {
         HStack(spacing: 12) {
             if selectedTranscriptions.isEmpty {
-                Button("Select All") {
+                Button("全选") {
                     Task { await selectAllTranscriptions() }
                 }
                 .buttonStyle(.plain)
                 .font(.system(size: 13))
                 .foregroundColor(.secondary)
             } else {
-                Button("Deselect All") {
+                Button("取消全选") {
                     selectedTranscriptions.removeAll()
                 }
                 .buttonStyle(.plain)
@@ -301,7 +301,7 @@ struct TranscriptionHistoryView: View {
                         .foregroundColor(.secondary)
                 }
                 .buttonStyle(.plain)
-                .help("Analyze")
+                .help("分析")
 
                 Button(action: {
                     exportService.exportTranscriptionsToCSV(transcriptions: Array(selectedTranscriptions))
@@ -311,7 +311,7 @@ struct TranscriptionHistoryView: View {
                         .foregroundColor(.secondary)
                 }
                 .buttonStyle(.plain)
-                .help("Export")
+                .help("导出")
 
                 Button(action: { showDeleteConfirmation = true }) {
                     Image(systemName: "trash")
@@ -319,13 +319,13 @@ struct TranscriptionHistoryView: View {
                         .foregroundColor(.secondary)
                 }
                 .buttonStyle(.plain)
-                .help("Delete")
+                .help("删除")
             }
 
             Spacer()
 
             if !selectedTranscriptions.isEmpty {
-                Text("\(selectedTranscriptions.count) selected")
+                Text("已选择 \(selectedTranscriptions.count) 条")
                     .font(.system(size: 13, weight: .medium))
                     .foregroundColor(.secondary)
             }

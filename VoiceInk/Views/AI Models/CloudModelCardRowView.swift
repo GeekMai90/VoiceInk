@@ -89,21 +89,21 @@ struct CloudModelCardView: View {
     private var statusBadge: some View {
         Group {
             if isCurrent {
-                Text("Default")
+                Text("默认")
                     .font(.system(size: 11, weight: .medium))
                     .padding(.horizontal, 6)
                     .padding(.vertical, 2)
                     .background(Capsule().fill(Color.accentColor))
                     .foregroundColor(.white)
             } else if isConfiguredState {
-                Text("Configured")
+                Text("已配置")
                     .font(.system(size: 11, weight: .medium))
                     .padding(.horizontal, 6)
                     .padding(.vertical, 2)
                     .background(Capsule().fill(Color(.systemGreen).opacity(0.2)))
                     .foregroundColor(Color(.systemGreen))
             } else {
-                Text("Setup Required")
+                Text("待配置")
                     .font(.system(size: 11, weight: .medium))
                     .padding(.horizontal, 6)
                     .padding(.vertical, 2)
@@ -129,7 +129,7 @@ struct CloudModelCardView: View {
 
             // Speed
             HStack(spacing: 3) {
-                Text("Speed")
+                Text("速度")
                     .font(.system(size: 11, weight: .medium))
                     .foregroundColor(Color(.secondaryLabelColor))
                 progressDotsWithNumber(value: model.speed * 10)
@@ -139,7 +139,7 @@ struct CloudModelCardView: View {
 
             // Accuracy
             HStack(spacing: 3) {
-                Text("Accuracy")
+                Text("准确度")
                     .font(.system(size: 11, weight: .medium))
                     .foregroundColor(Color(.secondaryLabelColor))
                 progressDotsWithNumber(value: model.accuracy * 10)
@@ -162,12 +162,12 @@ struct CloudModelCardView: View {
     private var actionSection: some View {
         HStack(spacing: 8) {
             if isCurrent {
-                Text("Default Model")
+                Text("当前默认模型")
                     .font(.system(size: 12))
                     .foregroundColor(Color(.secondaryLabelColor))
             } else if isConfiguredState {
                 Button(action: setDefaultAction) {
-                    Text("Set as Default")
+                    Text("设为默认")
                         .font(.system(size: 12))
                 }
                 .buttonStyle(.bordered)
@@ -179,7 +179,7 @@ struct CloudModelCardView: View {
                     }
                 }) {
                     HStack(spacing: 4) {
-                        Text("Configure")
+                        Text("去配置")
                             .font(.system(size: 12, weight: .medium))
                         Image(systemName: "gear")
                             .font(.system(size: 12, weight: .medium))
@@ -201,7 +201,7 @@ struct CloudModelCardView: View {
                     Button {
                         clearAPIKey()
                     } label: {
-                        Label("Remove API Key", systemImage: "trash")
+                        Label("移除 API Key", systemImage: "trash")
                     }
                 } label: {
                     Image(systemName: "ellipsis.circle")
@@ -216,12 +216,12 @@ struct CloudModelCardView: View {
     
     private var configurationSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("API Key Configuration")
+            Text("API Key 配置")
                 .font(.system(size: 13, weight: .semibold))
                 .foregroundColor(Color(.labelColor))
             
             HStack(spacing: 8) {
-                SecureField("Enter your \(model.provider.rawValue) API key", text: $apiKey)
+                SecureField("输入 \(model.provider.rawValue) 的 API Key", text: $apiKey)
                     .textFieldStyle(.roundedBorder)
                     .disabled(isVerifying)
                 
@@ -235,7 +235,7 @@ struct CloudModelCardView: View {
                             Image(systemName: verificationStatus == .success ? "checkmark" : "checkmark.shield")
                                 .font(.system(size: 12, weight: .medium))
                         }
-                        Text(isVerifying ? "Verifying..." : "Verify")
+                        Text(isVerifying ? "验证中..." : "验证")
                             .font(.system(size: 12, weight: .medium))
                     }
                     .foregroundColor(.white)
@@ -256,12 +256,12 @@ struct CloudModelCardView: View {
                         .font(.caption)
                         .foregroundColor(Color(.systemRed))
                 } else {
-                    Text("Verification failed")
+                    Text("验证失败")
                         .font(.caption)
                         .foregroundColor(Color(.systemRed))
                 }
             } else if verificationStatus == .success {
-                Text("API key verified successfully!")
+                Text("API Key 验证成功")
                     .font(.caption)
                     .foregroundColor(Color(.systemGreen))
             }

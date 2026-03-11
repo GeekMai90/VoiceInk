@@ -7,15 +7,15 @@ struct DictionarySettingsView: View {
     let whisperPrompt: WhisperPrompt
     
     enum DictionarySection: String, CaseIterable {
-        case replacements = "Word Replacements"
-        case spellings = "Vocabulary"
+        case replacements = "词语替换"
+        case spellings = "词汇表"
         
         var description: String {
             switch self {
             case .spellings:
-                return "Add words to help VoiceInk recognize them properly"
+                return "添加专有词汇，帮助 VoiceInk 更准确地识别"
             case .replacements:
-                return "Automatically replace specific words/phrases with custom formatted text "
+                return "将指定词语自动替换成你设定好的文本"
             }
         }
         
@@ -43,8 +43,8 @@ struct DictionarySettingsView: View {
     private var heroSection: some View {
         CompactHeroSection(
             icon: "brain.filled.head.profile",
-            title: "Dictionary Settings",
-            description: "Enhance VoiceInk's transcription accuracy by teaching it your vocabulary",
+            title: "词典",
+            description: "通过自定义词汇和替换规则，提升 VoiceInk 的转写准确度",
             maxDescriptionWidth: 500
         )
     }
@@ -62,7 +62,7 @@ struct DictionarySettingsView: View {
     private var sectionSelector: some View {
         VStack(alignment: .leading, spacing: 20) {
             HStack {
-                Text("Select Section")
+                Text("选择功能")
                     .font(.title2)
                     .fontWeight(.semibold)
 
@@ -77,7 +77,7 @@ struct DictionarySettingsView: View {
                             .foregroundColor(.blue)
                     }
                     .buttonStyle(.plain)
-                    .help("Import vocabulary and word replacements")
+                    .help("导入词汇表和替换规则")
 
                     Button(action: {
                         DictionaryImportExportService.shared.exportDictionary(from: modelContext)
@@ -87,7 +87,7 @@ struct DictionarySettingsView: View {
                             .foregroundColor(.blue)
                     }
                     .buttonStyle(.plain)
-                    .help("Export vocabulary and word replacements")
+                    .help("导出词汇表和替换规则")
                 }
             }
 

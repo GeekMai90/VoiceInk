@@ -42,14 +42,14 @@ struct CustomModelCardView: View {
     private var statusBadge: some View {
         Group {
             if isCurrent {
-                Text("Default")
+                Text("默认")
                     .font(.system(size: 11, weight: .medium))
                     .padding(.horizontal, 6)
                     .padding(.vertical, 2)
                     .background(Capsule().fill(Color.accentColor))
                     .foregroundColor(.white)
             } else {
-                Text("Custom")
+                Text("自定义")
                     .font(.system(size: 11, weight: .medium))
                     .padding(.horizontal, 6)
                     .padding(.vertical, 2)
@@ -62,7 +62,7 @@ struct CustomModelCardView: View {
     private var metadataSection: some View {
         HStack(spacing: 12) {
             // Provider
-            Label("Custom Provider", systemImage: "cloud")
+            Label("自定义提供商", systemImage: "cloud")
                 .font(.system(size: 11))
                 .foregroundColor(Color(.secondaryLabelColor))
                 .lineLimit(1)
@@ -74,7 +74,7 @@ struct CustomModelCardView: View {
                 .lineLimit(1)
             
             // OpenAI Compatible
-            Label("OpenAI Compatible", systemImage: "checkmark.seal")
+            Label("兼容 OpenAI", systemImage: "checkmark.seal")
                 .font(.system(size: 11))
                 .foregroundColor(Color(.secondaryLabelColor))
                 .lineLimit(1)
@@ -94,12 +94,12 @@ struct CustomModelCardView: View {
     private var actionSection: some View {
         HStack(spacing: 8) {
             if isCurrent {
-                Text("Default Model")
+                Text("当前默认模型")
                     .font(.system(size: 12))
                     .foregroundColor(Color(.secondaryLabelColor))
             } else {
                 Button(action: setDefaultAction) {
-                    Text("Set as Default")
+                    Text("设为默认")
                         .font(.system(size: 12))
                 }
                 .buttonStyle(.bordered)
@@ -110,13 +110,13 @@ struct CustomModelCardView: View {
                 Button {
                     editAction(model)
                 } label: {
-                    Label("Edit Model", systemImage: "pencil")
+                    Label("编辑模型", systemImage: "pencil")
                 }
                 
                 Button(role: .destructive) {
                     deleteAction()
                 } label: {
-                    Label("Delete Model", systemImage: "trash")
+                    Label("删除模型", systemImage: "trash")
                 }
             } label: {
                 Image(systemName: "ellipsis.circle")

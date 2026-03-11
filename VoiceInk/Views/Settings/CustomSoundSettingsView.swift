@@ -9,16 +9,16 @@ struct CustomSoundSettingsView: View {
 
     var body: some View {
         Group {
-            LabeledContent("Start Sound") {
+            LabeledContent("开始提示音") {
                 soundControls(for: .start)
             }
 
-            LabeledContent("Stop Sound") {
+            LabeledContent("结束提示音") {
                 soundControls(for: .stop)
             }
         }
         .alert(alertTitle, isPresented: $showingAlert) {
-            Button("OK", role: .cancel) {}
+            Button("确定", role: .cancel) {}
         } message: {
             Text(alertMessage)
         }
@@ -30,7 +30,7 @@ struct CustomSoundSettingsView: View {
         let fileName = customSoundManager.getSoundDisplayName(for: type)
 
         HStack(spacing: 8) {
-            Text(isCustom ? (fileName ?? "Custom") : "Default")
+            Text(isCustom ? (fileName ?? "自定义") : "默认")
                 .foregroundColor(.secondary)
                 .frame(maxWidth: 100, alignment: .leading)
                 .lineLimit(1)
@@ -46,7 +46,7 @@ struct CustomSoundSettingsView: View {
                 Image(systemName: "play.fill")
             }
             .buttonStyle(.borderless)
-            .help("Test")
+            .help("试听")
 
             Button {
                 selectSound(for: type)
@@ -54,7 +54,7 @@ struct CustomSoundSettingsView: View {
                 Image(systemName: "folder")
             }
             .buttonStyle(.borderless)
-            .help("Choose")
+            .help("选择文件")
 
             if isCustom {
                 Button {
@@ -63,15 +63,15 @@ struct CustomSoundSettingsView: View {
                     Image(systemName: "arrow.uturn.backward")
                 }
                 .buttonStyle(.borderless)
-                .help("Reset")
+                .help("恢复默认")
             }
         }
     }
 
     private func selectSound(for type: CustomSoundManager.SoundType) {
         let panel = NSOpenPanel()
-        panel.title = "Choose \(type.rawValue.capitalized) Sound"
-        panel.message = "Select an audio file"
+        panel.title = "选择\(type == .start ? "开始" : "结束")提示音"
+        panel.message = "请选择一个音频文件"
         panel.allowedContentTypes = [
             UTType.audio,
             UTType.mp3,
@@ -86,7 +86,7 @@ struct CustomSoundSettingsView: View {
 
             let result = customSoundManager.setCustomSound(url: url, for: type)
             if case .failure(let error) = result {
-                alertTitle = "Invalid Audio File"
+                alertTitle = "无效的音频文件"
                 alertMessage = error.localizedDescription
                 showingAlert = true
             }

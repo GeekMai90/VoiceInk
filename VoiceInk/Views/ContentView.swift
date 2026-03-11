@@ -19,6 +19,23 @@ enum ViewType: String, CaseIterable, Identifiable {
 
     var id: String { rawValue }
 
+    var displayName: String {
+        switch self {
+        case .metrics: return "概览"
+        case .transcribeAudio: return "音频转写"
+        case .history: return "历史记录"
+        case .models: return "AI 模型"
+        case .enhancement: return "AI 增强"
+        case .voiceCommand: return "语音命令"
+        case .powerMode: return "场景模式"
+        case .permissions: return "权限"
+        case .audioInput: return "音频输入"
+        case .dictionary: return "词典"
+        case .settings: return "设置"
+        case .license: return "Ultra 权益"
+        }
+    }
+
     var icon: String {
         switch self {
         case .metrics: return "gauge.medium"
@@ -133,9 +150,9 @@ struct ContentView: View {
             if let selectedView = selectedView {
                 detailView(for: selectedView)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .navigationTitle(selectedView.rawValue)
+                    .navigationTitle(selectedView.displayName)
             } else {
-                Text("Select a view")
+                Text("请选择一个页面")
                     .foregroundColor(.secondary)
             }
         }
@@ -187,7 +204,7 @@ struct ContentView: View {
         case .transcribeAudio:
             AudioTranscribeView()
         case .history:
-            Text("History")
+            Text("历史记录")
                 .foregroundColor(.secondary)
         case .audioInput:
             AudioInputSettingsView()
@@ -214,7 +231,7 @@ private struct SidebarItemView: View {
                 .font(.system(size: 18, weight: .medium))
                 .frame(width: 24, height: 24)
 
-            Text(viewType.rawValue)
+            Text(viewType.displayName)
                 .font(.system(size: 14, weight: .medium))
 
             Spacer()

@@ -24,9 +24,9 @@ struct EnhancementSettingsView: View {
                 Section {
                     Toggle(isOn: $enhancementService.isEnhancementEnabled) {
                         HStack(spacing: 4) {
-                            Text("Enable Enhancement")
+                            Text("启用 AI 增强")
                             InfoTip(
-                                "AI enhancement lets you pass the transcribed audio through LLMs to post-process using different prompts suitable for different use cases like e-mails, summary, writing, etc.",
+                                "AI 增强会把转写结果交给大模型做二次处理，并结合不同提示词适配邮件、总结、写作等场景。",
                                 learnMoreURL: "https://tryvoiceink.com/docs/enhancements-configuring-models"
                             )
                         }
@@ -36,23 +36,23 @@ struct EnhancementSettingsView: View {
                     HStack(spacing: 24) {
                         Toggle(isOn: $enhancementService.useClipboardContext) {
                             HStack(spacing: 4) {
-                                Text("Clipboard Context")
-                                InfoTip("Use clipboard text to understand context for better enhancement.")
+                                Text("剪贴板上下文")
+                                InfoTip("使用剪贴板中的文本帮助 AI 理解上下文，提升增强效果。")
                             }
                         }
                         .toggleStyle(.switch)
 
                         Toggle(isOn: $enhancementService.useScreenCaptureContext) {
                             HStack(spacing: 4) {
-                                Text("Screen Context")
-                                InfoTip("Capture on-screen text to understand context for better enhancement.")
+                                Text("屏幕上下文")
+                                InfoTip("读取屏幕上的文字内容帮助 AI 理解上下文，提升增强效果。")
                             }
                         }
                         .toggleStyle(.switch)
                     }
                     .opacity(enhancementService.isEnhancementEnabled ? 1.0 : 0.8)
                 } header: {
-                    Text("General")
+                    Text("通用")
                 }
                 
                 APIKeyManagementView()
@@ -76,7 +76,7 @@ struct EnhancementSettingsView: View {
                     .padding(.vertical, 8)
                 } header: {
                     HStack {
-                        Text("Enhancement Prompts")
+                        Text("增强提示词")
                         Spacer()
                         Button {
                             withAnimation(.spring(response: 0.4, dampingFraction: 0.9)) {
@@ -89,7 +89,7 @@ struct EnhancementSettingsView: View {
                                 .foregroundStyle(.secondary)
                         }
                         .buttonStyle(.plain)
-                        .help("Add new prompt")
+                        .help("新增提示词")
                     }
                 }
                 .opacity(enhancementService.isEnhancementEnabled ? 1.0 : 0.8)
@@ -100,7 +100,7 @@ struct EnhancementSettingsView: View {
                             .padding(.vertical, 8)
                     } label: {
                         HStack {
-                            Text("Shortcuts")
+                            Text("快捷键")
                             .font(.headline)
                             .foregroundColor(.primary)
                             Spacer()
@@ -180,7 +180,7 @@ private struct ReorderablePromptGrid: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             if enhancementService.customPrompts.isEmpty {
-                Text("No prompts available")
+                Text("暂无提示词")
                     .foregroundColor(.secondary)
                     .font(.caption)
             } else {
@@ -234,7 +234,7 @@ private struct ReorderablePromptGrid: View {
                     .font(.caption)
                     .foregroundColor(.secondary)
                     
-                    Text("Double-click to edit • Right-click for more options")
+                    Text("双击可编辑，右键可查看更多操作")
                     .font(.caption)
                     .foregroundColor(.secondary)
                 }

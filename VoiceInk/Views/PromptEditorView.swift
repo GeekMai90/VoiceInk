@@ -60,7 +60,7 @@ struct PromptEditorView: View {
     var body: some View {
         VStack(spacing: 0) {
             HStack(spacing: 12) {
-                Text(isEditingPredefinedPrompt ? "Edit Trigger Words" : (mode == .add ? "New Prompt" : "Edit Prompt"))
+                Text(isEditingPredefinedPrompt ? "编辑触发词" : (mode == .add ? "新建提示词" : "编辑提示词"))
                     .font(.headline)
                     .fontWeight(.semibold)
                     .foregroundColor(.primary)
@@ -82,7 +82,7 @@ struct PromptEditorView: View {
                         .clipShape(Circle())
                 }
                 .buttonStyle(.plain)
-                .help("Close")
+                .help("关闭")
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 16)
@@ -95,12 +95,12 @@ struct PromptEditorView: View {
                 VStack(spacing: 24) {
                     if isEditingPredefinedPrompt {
                         VStack(alignment: .leading, spacing: 16) {
-                            Text("Editing: \(title)")
+                            Text("正在编辑：\(title)")
                                 .font(.title3)
                                 .fontWeight(.medium)
                                 .foregroundColor(.primary)
                             
-                            Text("You can only customize the trigger words for system prompts.")
+                            Text("系统内置提示词只允许修改触发词。")
                                 .font(.subheadline)
                                 .foregroundColor(.secondary)
                             
@@ -130,11 +130,11 @@ struct PromptEditorView: View {
                                 }
                                 
                                 VStack(alignment: .leading, spacing: 6) {
-                                    Text("Title")
+                                    Text("标题")
                                         .font(.subheadline)
                                         .foregroundColor(.secondary)
                                     
-                                    TextField("Prompt Name", text: $title)
+                                    TextField("提示词名称", text: $title)
                                         .textFieldStyle(.plain)
                                         .font(.system(size: 14))
                                         .padding(8)
@@ -147,11 +147,11 @@ struct PromptEditorView: View {
                             }
                             
                             VStack(alignment: .leading, spacing: 6) {
-                                Text("Description")
+                                Text("描述")
                                     .font(.subheadline)
                                     .foregroundColor(.secondary)
                                 
-                                TextField("Brief description of what this prompt does", text: $description)
+                                TextField("简要说明这个提示词的用途", text: $description)
                                     .textFieldStyle(.plain)
                                     .font(.system(size: 13))
                                     .padding(8)
@@ -165,7 +165,7 @@ struct PromptEditorView: View {
                             Divider().padding(.vertical, 4)
                             
                             VStack(alignment: .leading, spacing: 8) {
-                                Text("Instructions")
+                                Text("指令内容")
                                     .font(.headline)
                                     .foregroundColor(.primary)
                                 
@@ -182,7 +182,7 @@ struct PromptEditorView: View {
                                         )
                                     
                                     if promptText.isEmpty {
-                                        Text("Enter your custom prompt instructions here...")
+                                        Text("在这里输入你的自定义提示词内容...")
                                             .font(.system(.body, design: .monospaced))
                                             .foregroundColor(.secondary.opacity(0.5))
                                             .padding(.horizontal, 12)
@@ -193,11 +193,11 @@ struct PromptEditorView: View {
                                 
                                 if !isEditingPredefinedPrompt {
                                     HStack(spacing: 8) {
-                                        Toggle("Use System Template", isOn: $useSystemInstructions)
+                                        Toggle("使用系统模板", isOn: $useSystemInstructions)
                                             .toggleStyle(.switch)
                                             .controlSize(.small)
                                         
-                                        InfoTip("If enabled, your instructions are combined with a general-purpose template to improve transcription quality.\n\nDisable for full control over the AI's system prompt (for advanced users).")
+                                        InfoTip("开启后，你的指令会和一个通用系统模板组合使用，以提升增强质量。\n\n关闭后你将完全控制 AI 的系统提示词，适合高级用户。")
                                     }
                                     .padding(.top, 4)
                                 }
@@ -228,7 +228,7 @@ struct PromptEditorView: View {
                                         HStack(spacing: 6) {
                                             Image(systemName: "sparkles")
                                                 .foregroundColor(.accentColor)
-                                            Text("Start with Template")
+                                            Text("从模板开始")
                                                 .foregroundColor(.primary)
                                             Image(systemName: "chevron.down")
                                                 .font(.caption)
@@ -259,7 +259,7 @@ struct PromptEditorView: View {
             VStack(spacing: 0) {
                 Divider()
                 HStack {
-                    Button("Cancel") {
+                    Button("取消") {
                         if let onDismiss = onDismiss {
                             onDismiss()
                         } else {
@@ -280,7 +280,7 @@ struct PromptEditorView: View {
                             dismiss()
                         }
                     } label: {
-                        Text("Save Changes")
+                        Text("保存修改")
                             .frame(minWidth: 100)
                     }
                     .buttonStyle(.borderedProminent)
@@ -332,15 +332,15 @@ struct TriggerWordsEditor: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 6) {
-                Text("Trigger Words")
+                Text("触发词")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
                 
-                InfoTip("Add multiple words that can activate this prompt.")
+                InfoTip("可以添加多个词，用来触发这个提示词。")
             }
             
             HStack {
-                TextField("Add trigger word (e.g. 'summarize')", text: $newTriggerWord)
+                TextField("添加触发词，例如“总结”", text: $newTriggerWord)
                     .textFieldStyle(.plain)
                     .font(.system(size: 13))
                     .padding(6)
@@ -375,7 +375,7 @@ struct TriggerWordsEditor: View {
                 }
                 .padding(.top, 4)
             } else {
-                Text("No trigger words added")
+                Text("还没有添加触发词")
                     .font(.caption)
                     .foregroundColor(.secondary.opacity(0.7))
                     .italic()

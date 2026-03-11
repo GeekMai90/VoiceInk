@@ -359,7 +359,7 @@ struct VoiceInkApp: App {
 
         #if DEBUG
         WindowGroup("Debug") {
-            Button("Toggle Menu Bar Only") {
+            Button("切换仅菜单栏模式") {
                 menuBarManager.isMenuBarOnly.toggle()
             }
         }
@@ -404,7 +404,7 @@ struct CheckForUpdatesView: View {
     @ObservedObject var updaterViewModel: UpdaterViewModel
 
     var body: some View {
-        Button("Check for Updates…", action: updaterViewModel.checkForUpdates)
+        Button("检查更新…", action: updaterViewModel.checkForUpdates)
             .disabled(!updaterViewModel.canCheckForUpdates)
     }
 }

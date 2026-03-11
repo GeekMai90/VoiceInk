@@ -44,7 +44,7 @@ struct AddCustomModelCardView: View {
                     HStack(spacing: 8) {
                         Image(systemName: "plus")
                             .font(.system(size: 14, weight: .medium))
-                        Text(editingModel != nil ? "Edit Model" : "Add Model")
+                        Text(editingModel != nil ? "编辑模型" : "新增模型")
                             .font(.system(size: 14, weight: .semibold))
                     }
                     .foregroundColor(.white)
@@ -62,7 +62,7 @@ struct AddCustomModelCardView: View {
                 VStack(alignment: .leading, spacing: 20) {
                     // Header
                     HStack {
-                        Text(editingModel != nil ? "Edit Custom Model" : "Add Custom Model")
+                        Text(editingModel != nil ? "编辑自定义模型" : "新增自定义模型")
                             .font(.headline)
                             .foregroundColor(.primary)
                         
@@ -86,7 +86,7 @@ struct AddCustomModelCardView: View {
                         Image(systemName: "exclamationmark.triangle.fill")
                             .foregroundColor(.orange)
                             .font(.caption)
-                        Text("Only OpenAI-compatible transcription APIs are supported")
+                        Text("目前仅支持兼容 OpenAI 的转写 API")
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
@@ -97,12 +97,12 @@ struct AddCustomModelCardView: View {
                     
                     // Form fields
                     VStack(alignment: .leading, spacing: 16) {
-                        FormField(title: "Display Name", text: $displayName, placeholder: "My Custom Model")
-                        FormField(title: "API Endpoint", text: $apiEndpoint, placeholder: "https://api.example.com/v1/audio/transcriptions")
-                        FormField(title: "API Key", text: $apiKey, placeholder: "your-api-key", isSecure: true)
-                        FormField(title: "Model Name", text: $modelName, placeholder: "whisper-1")
+                        FormField(title: "显示名称", text: $displayName, placeholder: "我的自定义模型")
+                        FormField(title: "API 地址", text: $apiEndpoint, placeholder: "https://api.example.com/v1/audio/transcriptions")
+                        FormField(title: "API Key", text: $apiKey, placeholder: "输入你的 API Key", isSecure: true)
+                        FormField(title: "模型名称", text: $modelName, placeholder: "whisper-1")
                         
-                        Toggle("Multilingual Model", isOn: $isMultilingual)
+                        Toggle("多语言模型", isOn: $isMultilingual)
                     }
                     
                     // Action buttons
@@ -113,7 +113,7 @@ struct AddCustomModelCardView: View {
                                 clearForm()
                             }
                         }) {
-                            Text("Cancel")
+                            Text("取消")
                                 .font(.system(size: 13, weight: .medium))
                                 .foregroundColor(.secondary)
                                 .frame(maxWidth: .infinity)
@@ -135,7 +135,7 @@ struct AddCustomModelCardView: View {
                                     Image(systemName: editingModel != nil ? "checkmark.circle.fill" : "plus.circle.fill")
                                         .font(.system(size: 14))
                                 }
-                                Text(editingModel != nil ? "Update Model" : "Add Model")
+                                Text(editingModel != nil ? "更新模型" : "新增模型")
                                     .font(.system(size: 13, weight: .medium))
                             }
                             .foregroundColor(.white)
@@ -162,8 +162,8 @@ struct AddCustomModelCardView: View {
                 )
             }
         }
-        .alert("Validation Errors", isPresented: $showingAlert) {
-            Button("OK") { }
+        .alert("校验失败", isPresented: $showingAlert) {
+            Button("确定") { }
         } message: {
             Text(validationErrors.joined(separator: "\n"))
         }
@@ -239,7 +239,7 @@ struct AddCustomModelCardView: View {
                 if APIKeyManager.shared.saveCustomModelAPIKey(trimmedApiKey, forModelId: editing.id) {
                     customModelManager.updateCustomModel(updatedModel)
                 } else {
-                    validationErrors = ["Failed to securely save API Key to Keychain. Please check your system settings or try again."]
+                    validationErrors = ["无法安全地将 API Key 保存到钥匙串，请检查系统设置后重试。"]
                     showingAlert = true
                     isSaving = false
                     return
@@ -257,7 +257,7 @@ struct AddCustomModelCardView: View {
                 if APIKeyManager.shared.saveCustomModelAPIKey(trimmedApiKey, forModelId: customModel.id) {
                     customModelManager.addCustomModel(customModel)
                 } else {
-                    validationErrors = ["Failed to securely save API Key to Keychain. Please check your system settings or try again."]
+                    validationErrors = ["无法安全地将 API Key 保存到钥匙串，请检查系统设置后重试。"]
                     showingAlert = true
                     isSaving = false
                     return

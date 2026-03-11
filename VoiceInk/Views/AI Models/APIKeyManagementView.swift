@@ -14,9 +14,9 @@ struct APIKeyManagementView: View {
     @State private var isEditingURL = false
     
     var body: some View {
-        Section("AI Provider Integration") {
+        Section("AI 提供商接入") {
             HStack {
-                Picker("Provider", selection: $aiService.selectedProvider) {
+                Picker("提供商", selection: $aiService.selectedProvider) {
                     ForEach(AIProvider.allCases.filter { $0 != .elevenLabs && $0 != .deepgram && $0 != .soniox }, id: \.self) { provider in
                         Text(provider.rawValue).tag(provider)
                     }
@@ -29,7 +29,7 @@ struct APIKeyManagementView: View {
                     Circle()
                         .fill(Color.green)
                         .frame(width: 8, height: 8)
-                    Text("Connected")
+                    Text("已连接")
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                 } else if aiService.selectedProvider == .ollama {
@@ -41,14 +41,14 @@ struct APIKeyManagementView: View {
                         Circle()
                             .fill(Color.green)
                             .frame(width: 8, height: 8)
-                        Text("Connected")
+                        Text("已连接")
                             .font(.subheadline)
                             .foregroundColor(.secondary)
                     } else {
                         Circle()
                             .fill(Color.red)
                             .frame(width: 8, height: 8)
-                        Text("Disconnected")
+                        Text("未连接")
                             .font(.subheadline)
                             .foregroundColor(.secondary)
                     }
@@ -65,7 +65,7 @@ struct APIKeyManagementView: View {
                 if aiService.selectedProvider == .openRouter {
                     if aiService.availableModels.isEmpty {
                         HStack {
-                            Text("No models loaded")
+                            Text("暂无已加载模型")
                                 .foregroundColor(.secondary)
                             Spacer()
                             Button(action: {
@@ -73,7 +73,7 @@ struct APIKeyManagementView: View {
                                     await aiService.fetchOpenRouterModels()
                                 }
                             }) {
-                                Label("Refresh", systemImage: "arrow.clockwise")
+                                Label("刷新", systemImage: "arrow.clockwise")
                             }
                         }
                     } else {
@@ -94,7 +94,7 @@ struct APIKeyManagementView: View {
                                     await aiService.fetchOpenRouterModels()
                                 }
                             }) {
-                                Label("Refresh", systemImage: "arrow.clockwise")
+                                Label("刷新", systemImage: "arrow.clockwise")
                             }
                         }
                     }
@@ -117,10 +117,10 @@ struct APIKeyManagementView: View {
                 if aiService.selectedProvider == .ollama {
                     if isEditingURL {
                         HStack {
-                            TextField("Base URL", text: $ollamaBaseURL)
+                            TextField("基础地址", text: $ollamaBaseURL)
                                 .textFieldStyle(.roundedBorder)
                             
-                            Button("Save") {
+                            Button("保存") {
                                 aiService.updateOllamaBaseURL(ollamaBaseURL)
                                 checkOllamaConnection()
                                 isEditingURL = false
@@ -128,9 +128,9 @@ struct APIKeyManagementView: View {
                         }
                     } else {
                         HStack {
-                            Text("Server: \(ollamaBaseURL)")
+                            Text("服务地址：\(ollamaBaseURL)")
                             Spacer()
-                            Button("Edit") { isEditingURL = true }
+                            Button("编辑") { isEditingURL = true }
                             Button(action: {
                                 ollamaBaseURL = "http://localhost:11434"
                                 aiService.updateOllamaBaseURL(ollamaBaseURL)
@@ -138,14 +138,14 @@ struct APIKeyManagementView: View {
                             }) {
                                 Image(systemName: "arrow.counterclockwise")
                             }
-                            .help("Reset to default")
+                            .help("恢复默认地址")
                         }
                     }
 
                     if !ollamaModels.isEmpty {
                         Divider()
 
-                        Picker("Model", selection: $selectedOllamaModel) {
+                        Picker("模型", selection: $selectedOllamaModel) {
                             ForEach(ollamaModels) { model in
                                 Text(model.name).tag(model.name)
                             }
@@ -156,34 +156,34 @@ struct APIKeyManagementView: View {
                     }
 
                 } else if aiService.selectedProvider == .custom {
-                    TextField("API Endpoint URL", text: $aiService.customBaseURL)
+                    TextField("API 地址", text: $aiService.customBaseURL)
                         .textFieldStyle(.roundedBorder)
 
                     Divider()
 
-                    TextField("Model Name", text: $aiService.customModel)
+                    TextField("模型名称", text: $aiService.customModel)
                         .textFieldStyle(.roundedBorder)
 
                     Divider()
 
                     if aiService.isAPIKeyValid {
                         HStack {
-                            Text("API Key Set")
+                            Text("已设置 API Key")
                             Spacer()
-                            Button("Remove Key", role: .destructive) {
+                            Button("移除 Key", role: .destructive) {
                                 aiService.clearAPIKey()
                             }
                         }
                     } else {
-                        SecureField("API Key", text: $apiKey)
+                        SecureField("输入 API Key", text: $apiKey)
                             .textFieldStyle(.roundedBorder)
 
-                        Button("Verify and Save") {
+                        Button("验证并保存") {
                             isVerifying = true
                             aiService.saveAPIKey(apiKey) { success, errorMessage in
                                 isVerifying = false
                                 if !success {
-                                    alertMessage = errorMessage ?? "Verification failed"
+                                    alertMessage = errorMessage ?? "验证失败"
                                     showAlert = true
                                 }
                                 apiKey = ""
@@ -199,12 +199,12 @@ struct APIKeyManagementView: View {
                             Spacer()
                             Text("••••••••")
                                 .foregroundColor(.secondary)
-                            Button("Remove", role: .destructive) {
+                            Button("移除", role: .destructive) {
                                 aiService.clearAPIKey()
                             }
                         }
                     } else {
-                        SecureField("API Key", text: $apiKey)
+                        SecureField("输入 API Key", text: $apiKey)
                             .textFieldStyle(.roundedBorder)
 
                         HStack {
@@ -212,7 +212,7 @@ struct APIKeyManagementView: View {
                                 Link(destination: url) {
                                     HStack {
                                         Image(systemName: "key.fill")
-                                        Text("Get API Key")
+                                        Text("获取 API Key")
                                     }
                                     .font(.caption)
                                     .foregroundColor(.blue)
@@ -231,7 +231,7 @@ struct APIKeyManagementView: View {
                                 aiService.saveAPIKey(apiKey) { success, errorMessage in
                                     isVerifying = false
                                     if !success {
-                                        alertMessage = errorMessage ?? "Verification failed"
+                                        alertMessage = errorMessage ?? "验证失败"
                                         showAlert = true
                                     }
                                     apiKey = ""
@@ -241,7 +241,7 @@ struct APIKeyManagementView: View {
                                     if isVerifying {
                                         ProgressView().controlSize(.small)
                                     }
-                                    Text("Verify and Save")
+                                    Text("验证并保存")
                                 }
                             }
                             .disabled(apiKey.isEmpty)
@@ -250,8 +250,8 @@ struct APIKeyManagementView: View {
                 }
             }
         }
-        .alert("Error", isPresented: $showAlert) {
-            Button("OK", role: .cancel) { }
+        .alert("错误", isPresented: $showAlert) {
+            Button("确定", role: .cancel) { }
         } message: {
             Text(alertMessage)
         }
@@ -273,7 +273,7 @@ struct APIKeyManagementView: View {
             } else {
                 ollamaModels = []
                 isCheckingOllama = false
-                alertMessage = "Could not connect to Ollama. Please check if Ollama is running and the base URL is correct."
+                alertMessage = "无法连接到 Ollama，请确认 Ollama 已启动且基础地址填写正确。"
                 showAlert = true
             }
         }

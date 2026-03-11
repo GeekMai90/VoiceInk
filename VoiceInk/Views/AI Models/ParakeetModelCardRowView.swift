@@ -49,14 +49,14 @@ struct ParakeetModelCardRowView: View {
     private var statusBadge: some View {
         Group {
             if isCurrent {
-                Text("Default")
+                Text("默认")
                     .font(.system(size: 11, weight: .medium))
                     .padding(.horizontal, 6)
                     .padding(.vertical, 2)
                     .background(Capsule().fill(Color.accentColor))
                     .foregroundColor(.white)
             } else if isDownloaded {
-                Text("Downloaded")
+                Text("已下载")
                     .font(.system(size: 11, weight: .medium))
                     .padding(.horizontal, 6)
                     .padding(.vertical, 2)
@@ -71,12 +71,12 @@ struct ParakeetModelCardRowView: View {
             Label(model.language, systemImage: "globe")
             Label(model.size, systemImage: "internaldrive")
             HStack(spacing: 3) {
-                Text("Speed")
+                Text("速度")
                 progressDotsWithNumber(value: model.speed * 10)
             }
             .fixedSize(horizontal: true, vertical: false)
             HStack(spacing: 3) {
-                Text("Accuracy")
+                Text("准确度")
                 progressDotsWithNumber(value: model.accuracy * 10)
             }
             .fixedSize(horizontal: true, vertical: false)
@@ -110,7 +110,7 @@ struct ParakeetModelCardRowView: View {
     private var actionSection: some View {
         HStack(spacing: 8) {
             if isCurrent {
-                Text("Default Model")
+                Text("当前默认模型")
                     .font(.system(size: 12))
                     .foregroundColor(Color(.secondaryLabelColor))
             } else if isDownloaded {
@@ -119,7 +119,7 @@ struct ParakeetModelCardRowView: View {
                         transcriptionModelManager.setDefaultTranscriptionModel(model)
                     }
                 }) {
-                    Text("Set as Default")
+                    Text("设为默认")
                         .font(.system(size: 12))
                 }
                 .buttonStyle(.bordered)
@@ -131,7 +131,7 @@ struct ParakeetModelCardRowView: View {
                     }
                 }) {
                     HStack(spacing: 4) {
-                        Text(isDownloading ? "Downloading..." : "Download")
+                        Text(isDownloading ? "下载中..." : "下载")
                         Image(systemName: "arrow.down.circle")
                     }
                     .font(.system(size: 12, weight: .medium))
@@ -149,13 +149,13 @@ struct ParakeetModelCardRowView: View {
                     Button(action: {
                         parakeetModelManager.deleteParakeetModel(model)
                     }) {
-                        Label("Delete Model", systemImage: "trash")
+                        Label("删除模型", systemImage: "trash")
                     }
 
                     Button {
                         parakeetModelManager.showParakeetModelInFinder(model)
                     } label: {
-                        Label("Show in Finder", systemImage: "folder")
+                        Label("在 Finder 中显示", systemImage: "folder")
                     }
                 } label: {
                     Image(systemName: "ellipsis.circle")

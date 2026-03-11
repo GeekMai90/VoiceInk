@@ -1,8 +1,8 @@
 import SwiftUI
 
 enum TranscriptionTab: String, CaseIterable {
-    case original = "Original"
-    case enhanced = "Enhanced"
+    case original = "原文"
+    case enhanced = "增强"
 }
 
 struct TranscriptionResultView: View {
@@ -29,7 +29,7 @@ struct TranscriptionResultView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Transcription Result")
+            Text("转写结果")
                 .font(.headline)
             
             if availableTabs.count > 1 {
@@ -62,7 +62,7 @@ struct TranscriptionResultView: View {
             }
             
             HStack {
-                Text("Duration: \(formatDuration(transcription.duration))")
+                Text("时长：\(formatDuration(transcription.duration))")
                     .font(.caption)
                     .foregroundColor(.secondary)
                 Spacer()

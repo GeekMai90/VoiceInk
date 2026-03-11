@@ -37,7 +37,7 @@ struct SettingsView: View {
         Form {
             // MARK: - Shortcuts
             Section {
-                LabeledContent("Hotkey 1") {
+                LabeledContent("快捷键 1") {
                     HStack(spacing: 8) {
                         hotkeyPicker(binding: $hotkeyManager.selectedHotkey1)
                         if hotkeyManager.selectedHotkey1 == .custom {
@@ -48,7 +48,7 @@ struct SettingsView: View {
                 }
 
                 if hotkeyManager.selectedHotkey2 != .none {
-                    LabeledContent("Hotkey 2") {
+                    LabeledContent("快捷键 2") {
                         HStack(spacing: 8) {
                             hotkeyPicker(binding: $hotkeyManager.selectedHotkey2)
                             if hotkeyManager.selectedHotkey2 == .custom {
@@ -67,34 +67,34 @@ struct SettingsView: View {
                 }
 
                 if hotkeyManager.selectedHotkey1 != .none && hotkeyManager.selectedHotkey2 == .none {
-                    Button("Add Second Hotkey") {
+                    Button("添加第二组快捷键") {
                         withAnimation { hotkeyManager.selectedHotkey2 = .rightOption }
                     }
                 }
             } header: {
-                Text("Shortcuts")
+                Text("快捷键")
             } footer: {
-                Text("Quick tap for hands-free recording, hold for push-to-talk.")
+                Text("轻按可免手持开始录音，按住则进入按住说话模式。")
             }
 
             // MARK: - Additional Shortcuts
-            Section("Additional Shortcuts") {
-                LabeledContent("Translation Mode") {
+            Section("附加快捷键") {
+                LabeledContent("翻译模式") {
                     KeyboardShortcuts.Recorder(for: .toggleTranslationRecorder)
                         .controlSize(.small)
                 }
 
-                LabeledContent("Paste Last Transcription (Original)") {
+                LabeledContent("粘贴上一条原始转写") {
                     KeyboardShortcuts.Recorder(for: .pasteLastTranscription)
                         .controlSize(.small)
                 }
 
-                LabeledContent("Paste Last Transcription (Enhanced)") {
+                LabeledContent("粘贴上一条增强结果") {
                     KeyboardShortcuts.Recorder(for: .pasteLastEnhancement)
                         .controlSize(.small)
                 }
 
-                LabeledContent("Retry Last Transcription") {
+                LabeledContent("重试上一条转写") {
                     KeyboardShortcuts.Recorder(for: .retryLastTranscription)
                         .controlSize(.small)
                 }
@@ -103,9 +103,9 @@ struct SettingsView: View {
                 ExpandableSettingsRow(
                     isExpanded: $isCustomCancelExpanded,
                     isEnabled: $isCustomCancelEnabled,
-                    label: "Custom Cancel Shortcut"
+                    label: "自定义取消快捷键"
                 ) {
-                    LabeledContent("Shortcut") {
+                    LabeledContent("快捷键") {
                         KeyboardShortcuts.Recorder(for: .cancelRecorder)
                             .controlSize(.small)
                     }
@@ -121,9 +121,9 @@ struct SettingsView: View {
                 ExpandableSettingsRow(
                     isExpanded: $isMiddleClickExpanded,
                     isEnabled: $hotkeyManager.isMiddleClickToggleEnabled,
-                    label: "Middle-Click Recording"
+                    label: "中键录音"
                 ) {
-                    LabeledContent("Activation Delay") {
+                    LabeledContent("触发延迟") {
                         HStack {
                             TextField("", value: $hotkeyManager.middleClickActivationDelay, formatter: {
                                 let formatter = NumberFormatter()
@@ -132,7 +132,7 @@ struct SettingsView: View {
                             }())
                                 .textFieldStyle(.roundedBorder)
                                 .frame(width: 60)
-                            Text("ms")
+                            Text("毫秒")
                                 .foregroundColor(.secondary)
                         }
                     }
@@ -140,12 +140,12 @@ struct SettingsView: View {
             }
 
             // MARK: - Recording Feedback
-            Section("Recording Feedback") {
+            Section("录音反馈") {
                 // Sound Feedback
                 ExpandableSettingsRow(
                     isExpanded: $isSoundFeedbackExpanded,
                     isEnabled: $soundManager.isEnabled,
-                    label: "Sound Feedback"
+                    label: "声音反馈"
                 ) {
                     CustomSoundSettingsView()
                 }
@@ -154,15 +154,15 @@ struct SettingsView: View {
                 ExpandableSettingsRow(
                     isExpanded: $isMuteSystemExpanded,
                     isEnabled: $mediaController.isSystemMuteEnabled,
-                    label: "Mute Audio While Recording"
+                    label: "录音时静音系统音频"
                 ) {
-                    Picker("Resume Delay", selection: $mediaController.audioResumptionDelay) {
-                        Text("0s").tag(0.0)
-                        Text("1s").tag(1.0)
-                        Text("2s").tag(2.0)
-                        Text("3s").tag(3.0)
-                        Text("4s").tag(4.0)
-                        Text("5s").tag(5.0)
+                    Picker("恢复延迟", selection: $mediaController.audioResumptionDelay) {
+                        Text("0 秒").tag(0.0)
+                        Text("1 秒").tag(1.0)
+                        Text("2 秒").tag(2.0)
+                        Text("3 秒").tag(3.0)
+                        Text("4 秒").tag(4.0)
+                        Text("5 秒").tag(5.0)
                     }
                 }
 
@@ -170,24 +170,24 @@ struct SettingsView: View {
                 ExpandableSettingsRow(
                     isExpanded: $isRestoreClipboardExpanded,
                     isEnabled: $restoreClipboardAfterPaste,
-                    label: "Restore Clipboard After Paste"
+                    label: "粘贴后恢复剪贴板"
                 ) {
-                    Picker("Restore Delay", selection: $clipboardRestoreDelay) {
-                        Text("250ms").tag(0.25)
-                        Text("500ms").tag(0.5)
-                        Text("1s").tag(1.0)
-                        Text("2s").tag(2.0)
-                        Text("3s").tag(3.0)
-                        Text("4s").tag(4.0)
-                        Text("5s").tag(5.0)
+                    Picker("恢复延迟", selection: $clipboardRestoreDelay) {
+                        Text("250 毫秒").tag(0.25)
+                        Text("500 毫秒").tag(0.5)
+                        Text("1 秒").tag(1.0)
+                        Text("2 秒").tag(2.0)
+                        Text("3 秒").tag(3.0)
+                        Text("4 秒").tag(4.0)
+                        Text("5 秒").tag(5.0)
                     }
                 }
 
                 // AppleScript Paste
                 Toggle(isOn: $useAppleScriptPaste) {
                     HStack(spacing: 4) {
-                        Text("Use AppleScript Paste")
-                        InfoTip("Enable this if pasting doesn't work with your keyboard layout (e.g. Neo2). Uses AppleScript instead of simulated key events.")
+                        Text("使用 AppleScript 粘贴")
+                        InfoTip("如果当前键盘布局下普通粘贴不稳定，例如 Neo2，可开启此项。开启后会使用 AppleScript，而不是模拟按键事件。")
                     }
                 }
             }
@@ -196,10 +196,10 @@ struct SettingsView: View {
             PowerModeSection()
 
             // MARK: - Interface
-            Section("Interface") {
-                Picker("Recorder Style", selection: $recorderUIManager.recorderType) {
-                    Text("Notch").tag("notch")
-                    Text("Mini").tag("mini")
+            Section("界面") {
+                Picker("录音器样式", selection: $recorderUIManager.recorderType) {
+                    Text("刘海").tag("notch")
+                    Text("迷你").tag("mini")
                 }
                 .pickerStyle(.segmented)
 
@@ -208,17 +208,17 @@ struct SettingsView: View {
             ExperimentalSection()
 
             // MARK: - General
-            Section("General") {
-                Toggle("Hide Dock Icon", isOn: $menuBarManager.isMenuBarOnly)
+            Section("通用") {
+                Toggle("隐藏 Dock 图标", isOn: $menuBarManager.isMenuBarOnly)
 
-                LaunchAtLogin.Toggle("Launch at Login")
+                LaunchAtLogin.Toggle("登录时启动")
 
-                Toggle("Auto-check Updates", isOn: $autoUpdateCheck)
+                Toggle("自动检查更新", isOn: $autoUpdateCheck)
                     .onChange(of: autoUpdateCheck) { _, newValue in
                         updaterViewModel.toggleAutoUpdates(newValue)
                     }
 
-                Toggle("Show Announcements", isOn: $enableAnnouncements)
+                Toggle("显示公告", isOn: $enableAnnouncements)
                     .onChange(of: enableAnnouncements) { _, newValue in
                         if newValue {
                             AnnouncementsService.shared.start()
@@ -228,12 +228,12 @@ struct SettingsView: View {
                     }
 
                 HStack {
-                    Button("Check for Updates") {
+                    Button("检查更新") {
                         updaterViewModel.checkForUpdates()
                     }
                     .disabled(!updaterViewModel.canCheckForUpdates)
 
-                    Button("Reset Onboarding") {
+                    Button("重置引导") {
                         showResetOnboardingAlert = true
                     }
                 }
@@ -243,15 +243,15 @@ struct SettingsView: View {
             Section {
                 AudioCleanupSettingsView()
             } header: {
-                Text("Privacy")
+                Text("隐私")
             } footer: {
-                Text("Control how VoiceInk handles your transcription data and audio recordings.")
+                Text("控制 VoiceInk 如何处理你的转写记录和音频文件。")
             }
 
             // MARK: - Backup
             Section {
-                LabeledContent("Export Settings") {
-                    Button("Export") {
+                LabeledContent("导出设置") {
+                    Button("导出") {
                         ImportExportService.shared.exportSettings(
                             enhancementService: enhancementService,
                             whisperPrompt: WhisperPrompt(),
@@ -266,8 +266,8 @@ struct SettingsView: View {
                     }
                 }
 
-                LabeledContent("Import Settings") {
-                    Button("Import") {
+                LabeledContent("导入设置") {
+                    Button("导入") {
                         ImportExportService.shared.importSettings(
                             enhancementService: enhancementService,
                             whisperPrompt: WhisperPrompt(),
@@ -283,28 +283,28 @@ struct SettingsView: View {
                     }
                 }
             } header: {
-                Text("Backup")
+                Text("备份")
             } footer: {
-                Text("Export or import all your settings, prompts, power modes, dictionary, and custom models.")
+                Text("导出或导入全部设置，包括提示词、场景模式、词典和自定义模型。")
             }
 
             // MARK: - Diagnostics
-            Section("Diagnostics") {
+            Section("诊断") {
                 DiagnosticsSettingsView()
             }
         }
         .formStyle(.grouped)
         .scrollContentBackground(.hidden)
         .background(Color(NSColor.controlBackgroundColor))
-        .alert("Reset Onboarding", isPresented: $showResetOnboardingAlert) {
-            Button("Cancel", role: .cancel) { }
-            Button("Reset", role: .destructive) {
+        .alert("重置引导", isPresented: $showResetOnboardingAlert) {
+            Button("取消", role: .cancel) { }
+            Button("重置", role: .destructive) {
                 DispatchQueue.main.async {
                     hasCompletedOnboarding = false
                 }
             }
         } message: {
-            Text("You'll see the introduction screens again the next time you launch the app.")
+            Text("下次启动应用时，你会再次看到首次引导流程。")
         }
     }
 
@@ -408,24 +408,24 @@ struct PowerModeSection: View {
             ExpandableSettingsRow(
                 isExpanded: $isExpanded,
                 isEnabled: toggleBinding,
-                label: "Power Mode",
-                infoMessage: "Apply custom settings based on active app or website.",
+                label: "场景模式",
+                infoMessage: "根据当前使用的应用或网站自动套用对应设置。",
                 infoURL: "https://tryvoiceink.com/docs/power-mode"
             ) {
                 Toggle(isOn: $powerModeAutoRestoreEnabled) {
                     HStack(spacing: 4) {
-                        Text("Auto-Restore Preferences")
-                        InfoTip("After each recording session, revert preferences to what was configured before Power Mode was activated.")
+                        Text("自动恢复偏好")
+                        InfoTip("每次录音结束后，把被场景模式改动过的设置恢复到激活前的状态。")
                     }
                 }
             }
         } header: {
-            Text("Power Mode")
+            Text("场景模式")
         }
-        .alert("Power Mode Still Active", isPresented: $showDisableAlert) {
-            Button("Got it", role: .cancel) { }
+        .alert("场景模式仍在启用", isPresented: $showDisableAlert) {
+            Button("知道了", role: .cancel) { }
         } message: {
-            Text("Disable or remove your Power Modes first.")
+            Text("请先停用或删除现有场景模式。")
         }
     }
 
@@ -457,20 +457,20 @@ struct ExperimentalSection: View {
             ExpandableSettingsRow(
                 isExpanded: $isPauseMediaExpanded,
                 isEnabled: $playbackController.isPauseMediaEnabled,
-                label: "Pause Media While Recording",
-                infoMessage: "Pauses playing media when recording starts and resumes when done."
+                label: "录音时暂停媒体播放",
+                infoMessage: "开始录音时暂停正在播放的媒体，录音结束后再恢复。"
             ) {
-                Picker("Resume Delay", selection: $mediaController.audioResumptionDelay) {
-                    Text("0s").tag(0.0)
-                    Text("1s").tag(1.0)
-                    Text("2s").tag(2.0)
-                    Text("3s").tag(3.0)
-                    Text("4s").tag(4.0)
-                    Text("5s").tag(5.0)
+                Picker("恢复延迟", selection: $mediaController.audioResumptionDelay) {
+                    Text("0 秒").tag(0.0)
+                    Text("1 秒").tag(1.0)
+                    Text("2 秒").tag(2.0)
+                    Text("3 秒").tag(3.0)
+                    Text("4 秒").tag(4.0)
+                    Text("5 秒").tag(5.0)
                 }
             }
         } header: {
-            Text("Experimental")
+            Text("实验功能")
         }
     }
 }

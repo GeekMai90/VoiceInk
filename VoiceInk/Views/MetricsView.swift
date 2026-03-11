@@ -13,7 +13,7 @@ struct MetricsView: View {
             // Trial Message
             if case .trial(let daysRemaining) = licenseViewModel.licenseState {
                 TrialMessageView(
-                    message: "You have \(daysRemaining) days left in your trial",
+                    message: "试用还剩 \(daysRemaining) 天",
                     type: daysRemaining <= 2 ? .warning : .info,
                     onAddLicenseKey: {
                         // Post notification to navigate to VoiceInk Pro tab
@@ -27,7 +27,7 @@ struct MetricsView: View {
                 .padding()
             } else if case .trialExpired = licenseViewModel.licenseState {
                 TrialMessageView(
-                    message: "Your trial has expired. Upgrade to continue using VoiceInk",
+                    message: "试用已结束，升级后可继续使用 VoiceInk",
                     type: .expired,
                     onAddLicenseKey: {
                         // Also allow navigation from expired state

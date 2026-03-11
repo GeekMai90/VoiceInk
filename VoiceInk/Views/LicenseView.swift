@@ -5,22 +5,22 @@ struct LicenseView: View {
     
     var body: some View {
         VStack(spacing: 15) {
-            Text("License Management")
+            Text("许可证管理")
                 .font(.headline)
             
             if case .licensed = licenseViewModel.licenseState {
                 VStack(spacing: 10) {
-                    Text("Premium Features Activated")
+                    Text("Ultra 权益已激活")
                         .foregroundColor(.green)
                     
                     Button(role: .destructive, action: {
                         licenseViewModel.removeLicense()
                     }) {
-                        Text("Remove License")
+                        Text("移除许可证")
                     }
                 }
             } else {
-                TextField("Enter License Key", text: $licenseViewModel.licenseKey)
+                TextField("输入许可证密钥", text: $licenseViewModel.licenseKey)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .frame(maxWidth: 300)
                 
@@ -32,7 +32,7 @@ struct LicenseView: View {
                     if licenseViewModel.isValidating {
                         ProgressView()
                     } else {
-                        Text("Activate License")
+                        Text("激活许可证")
                     }
                 }
                 .disabled(licenseViewModel.isValidating)

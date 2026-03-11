@@ -66,7 +66,7 @@ struct WordReplacementView: View {
         VStack(alignment: .leading, spacing: 20) {
             GroupBox {
                 Label {
-                    Text("Define word replacements to automatically replace specific words or phrases")
+                    Text("定义替换规则，让指定词语或短语自动替换成目标文本")
                         .font(.system(size: 12))
                         .foregroundColor(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
@@ -83,7 +83,7 @@ struct WordReplacementView: View {
             }
 
             HStack(spacing: 8) {
-                TextField("Original text (use commas for multiple)", text: $originalWord)
+                TextField("原始词语（多个请用英文逗号分隔）", text: $originalWord)
                     .textFieldStyle(.roundedBorder)
                     .font(.system(size: 13))
 
@@ -92,7 +92,7 @@ struct WordReplacementView: View {
                     .font(.system(size: 10))
                     .frame(width: 10)
 
-                TextField("Replacement text", text: $replacementWord)
+                TextField("替换后的文本", text: $replacementWord)
                     .textFieldStyle(.roundedBorder)
                     .font(.system(size: 13))
                     .onSubmit { addReplacement() }
@@ -106,7 +106,7 @@ struct WordReplacementView: View {
                     }
                     .buttonStyle(.borderless)
                     .disabled(originalWord.isEmpty || replacementWord.isEmpty)
-                    .help("Add word replacement")
+                    .help("添加替换规则")
                 }
             }
             .animation(.easeInOut(duration: 0.2), value: shouldShowAddButton)
@@ -116,7 +116,7 @@ struct WordReplacementView: View {
                     HStack(spacing: 8) {
                         Button(action: { toggleSort(for: .original) }) {
                             HStack(spacing: 4) {
-                                Text("Original")
+                                Text("原始词语")
                                     .font(.system(size: 12, weight: .medium))
                                     .foregroundColor(.secondary)
 
@@ -129,7 +129,7 @@ struct WordReplacementView: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                         }
                         .buttonStyle(.plain)
-                        .help("Sort by original")
+                        .help("按原始词语排序")
 
                         Image(systemName: "arrow.right")
                             .foregroundColor(.secondary)
@@ -138,7 +138,7 @@ struct WordReplacementView: View {
 
                         Button(action: { toggleSort(for: .replacement) }) {
                             HStack(spacing: 4) {
-                                Text("Replacement")
+                                Text("替换文本")
                                     .font(.system(size: 12, weight: .medium))
                                     .foregroundColor(.secondary)
 
@@ -151,7 +151,7 @@ struct WordReplacementView: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                         }
                         .buttonStyle(.plain)
-                        .help("Sort by replacement")
+                        .help("按替换文本排序")
                     }
                     .padding(.horizontal, 4)
                     .padding(.vertical, 8)
@@ -183,8 +183,8 @@ struct WordReplacementView: View {
         .sheet(item: $editingReplacement) { replacement in
             EditReplacementSheet(replacement: replacement, modelContext: modelContext)
         }
-        .alert("Word Replacement", isPresented: $showAlert) {
-            Button("OK", role: .cancel) {}
+        .alert("词语替换", isPresented: $showAlert) {
+            Button("确定", role: .cancel) {}
         } message: {
             Text(alertMessage)
         }
@@ -211,7 +211,7 @@ struct WordReplacementView: View {
 
             for tokenPair in newTokensPairs {
                 if existingTokens.contains(tokenPair.lowercased) {
-                    alertMessage = "'\(tokenPair.original)' already exists in word replacements"
+                    alertMessage = "“\(tokenPair.original)”已经存在于替换规则中"
                     showAlert = true
                     return
                 }
@@ -229,7 +229,7 @@ struct WordReplacementView: View {
         } catch {
             // Rollback the insert to maintain UI consistency
             modelContext.delete(newReplacement)
-            alertMessage = "Failed to add replacement: \(error.localizedDescription)"
+            alertMessage = "添加替换规则失败：\(error.localizedDescription)"
             showAlert = true
         }
     }
@@ -242,7 +242,7 @@ struct WordReplacementView: View {
         } catch {
             // Rollback the delete to restore UI consistency
             modelContext.rollback()
-            alertMessage = "Failed to remove replacement: \(error.localizedDescription)"
+            alertMessage = "删除替换规则失败：\(error.localizedDescription)"
             showAlert = true
         }
     }
@@ -251,11 +251,11 @@ struct WordReplacementView: View {
 struct WordReplacementInfoPopover: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("How to use Word Replacements")
+            Text("词语替换使用说明")
                 .font(.headline)
 
             VStack(alignment: .leading, spacing: 8) {
-                Text("Separate multiple originals with commas:")
+                Text("多个原始词语请用英文逗号分隔：")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
 
@@ -269,14 +269,14 @@ struct WordReplacementInfoPopover: View {
 
             Divider()
 
-            Text("Examples")
+            Text("示例")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
 
             VStack(spacing: 12) {
                 HStack(spacing: 8) {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Original:")
+                        Text("原始词语：")
                             .font(.caption)
                             .foregroundColor(.secondary)
                         Text("my website link")
@@ -288,7 +288,7 @@ struct WordReplacementInfoPopover: View {
                         .foregroundColor(.secondary)
 
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Replacement:")
+                        Text("替换文本：")
                             .font(.caption)
                             .foregroundColor(.secondary)
                         Text("https://tryvoiceink.com")
@@ -302,7 +302,7 @@ struct WordReplacementInfoPopover: View {
 
                 HStack(spacing: 8) {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Original:")
+                        Text("原始词语：")
                             .font(.caption)
                             .foregroundColor(.secondary)
                         Text("Voicing, Voice ink")
@@ -314,7 +314,7 @@ struct WordReplacementInfoPopover: View {
                         .foregroundColor(.secondary)
 
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Replacement:")
+                        Text("替换文本：")
                             .font(.caption)
                             .foregroundColor(.secondary)
                         Text("VoiceInk")
@@ -367,7 +367,7 @@ struct ReplacementRow: View {
                             .contentTransition(.symbolEffect(.replace))
                     }
                     .buttonStyle(.borderless)
-                    .help("Edit replacement")
+                    .help("编辑替换规则")
                     .onHover { hover in
                         withAnimation(.easeInOut(duration: 0.2)) {
                             isEditHovered = hover
@@ -381,7 +381,7 @@ struct ReplacementRow: View {
                             .contentTransition(.symbolEffect(.replace))
                     }
                     .buttonStyle(.borderless)
-                    .help("Remove replacement")
+                    .help("删除替换规则")
                     .onHover { hover in
                         withAnimation(.easeInOut(duration: 0.2)) {
                             isDeleteHovered = hover

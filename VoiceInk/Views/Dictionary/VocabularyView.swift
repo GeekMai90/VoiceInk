@@ -46,7 +46,7 @@ struct VocabularyView: View {
         VStack(alignment: .leading, spacing: 20) {
             GroupBox {
                 Label {
-                    Text("Add words to help VoiceInk recognize them properly. (Requires AI enhancement)")
+                    Text("添加专有词汇，帮助 VoiceInk 更准确地识别这些内容。（需启用 AI 增强）")
                         .font(.system(size: 12))
                         .foregroundColor(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
@@ -57,7 +57,7 @@ struct VocabularyView: View {
             }
 
             HStack(spacing: 8) {
-                TextField("Add word to vocabulary", text: $newWord)
+                TextField("添加词汇，多个词请用英文逗号分隔", text: $newWord)
                     .textFieldStyle(.roundedBorder)
                     .font(.system(size: 13))
                     .onSubmit { addWords() }
@@ -71,7 +71,7 @@ struct VocabularyView: View {
                     }
                     .buttonStyle(.borderless)
                     .disabled(newWord.isEmpty)
-                    .help("Add word")
+                    .help("添加词汇")
                 }
             }
             .animation(.easeInOut(duration: 0.2), value: shouldShowAddButton)
@@ -80,7 +80,7 @@ struct VocabularyView: View {
                 VStack(alignment: .leading, spacing: 12) {
                     Button(action: toggleSort) {
                         HStack(spacing: 4) {
-                            Text("Vocabulary Words (\(vocabularyWords.count))")
+                            Text("词汇表（\(vocabularyWords.count)）")
                                 .font(.system(size: 12, weight: .medium))
                                 .foregroundColor(.secondary)
 
@@ -90,7 +90,7 @@ struct VocabularyView: View {
                         }
                     }
                     .buttonStyle(.plain)
-                    .help("Sort alphabetically")
+                    .help("按字母顺序排序")
 
                     ScrollView {
                         FlowLayout(spacing: 8) {
@@ -108,8 +108,8 @@ struct VocabularyView: View {
             }
         }
         .padding()
-        .alert("Vocabulary", isPresented: $showAlert) {
-            Button("OK", role: .cancel) {}
+        .alert("词汇表", isPresented: $showAlert) {
+            Button("确定", role: .cancel) {}
         } message: {
             Text(alertMessage)
         }
@@ -128,7 +128,7 @@ struct VocabularyView: View {
 
         if parts.count == 1, let word = parts.first {
             if vocabularyWords.contains(where: { $0.word.lowercased() == word.lowercased() }) {
-                alertMessage = "'\(word)' is already in the vocabulary"
+                alertMessage = "“\(word)”已经在词汇表中了"
                 showAlert = true
                 return
             }
@@ -160,7 +160,7 @@ struct VocabularyView: View {
         } catch {
             // Rollback the insert to maintain UI consistency
             modelContext.delete(newWord)
-            alertMessage = "Failed to add word: \(error.localizedDescription)"
+            alertMessage = "添加词汇失败：\(error.localizedDescription)"
             showAlert = true
         }
     }
@@ -173,7 +173,7 @@ struct VocabularyView: View {
         } catch {
             // Rollback the delete to restore UI consistency
             modelContext.rollback()
-            alertMessage = "Failed to remove word: \(error.localizedDescription)"
+            alertMessage = "删除词汇失败：\(error.localizedDescription)"
             showAlert = true
         }
     }
@@ -198,7 +198,7 @@ struct VocabularyWordView: View {
                     .contentTransition(.symbolEffect(.replace))
             }
             .buttonStyle(.borderless)
-            .help("Remove word")
+            .help("删除词汇")
             .onHover { hover in
                 withAnimation(.easeInOut(duration: 0.2)) {
                     isDeleteHovered = hover

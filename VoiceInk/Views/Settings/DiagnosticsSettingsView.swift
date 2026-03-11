@@ -10,7 +10,7 @@ struct DiagnosticsSettingsView: View {
         LabeledContent {
             HStack(spacing: 8) {
                 if let url = exportedLogURL {
-                    Button("Show in Finder") {
+                    Button("在 Finder 中显示") {
                         NSWorkspace.shared.activateFileViewerSelecting([url])
                     }
 
@@ -18,7 +18,7 @@ struct DiagnosticsSettingsView: View {
                         .foregroundColor(.green)
                 }
 
-                Button("Export") {
+                Button("导出") {
                     exportDiagnosticLogs()
                 }
                 .disabled(isExportingLogs)
@@ -29,11 +29,11 @@ struct DiagnosticsSettingsView: View {
                     ProgressView()
                         .controlSize(.small)
                 }
-                Text("Export Logs")
+                Text("导出日志")
             }
         }
-        .alert("Export Failed", isPresented: $showLogExportError) {
-            Button("OK", role: .cancel) { }
+        .alert("导出失败", isPresented: $showLogExportError) {
+            Button("确定", role: .cancel) { }
         } message: {
             Text(logExportError)
         }

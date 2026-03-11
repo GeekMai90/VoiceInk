@@ -9,11 +9,11 @@ struct EnhancementShortcutsView: View {
             // Toggle AI Enhancement
             HStack(alignment: .center, spacing: 12) {
                 HStack(spacing: 4) {
-                    Text("Toggle AI Enhancement")
+                    Text("切换 AI 增强")
                         .font(.system(size: 13))
 
                     InfoTip(
-                        "Quickly enable or disable AI enhancement while recording. Available only when VoiceInk is running and the recorder is visible.",
+                        "录音时快速开启或关闭 AI 增强。仅在 VoiceInk 正在运行且录音器可见时生效。",
                         learnMoreURL: "https://tryvoiceink.com/docs/enhancement-shortcuts"
                     )
                 }
@@ -35,11 +35,11 @@ struct EnhancementShortcutsView: View {
             // Switch Enhancement Prompt
             HStack(alignment: .center, spacing: 12) {
                 HStack(spacing: 4) {
-                    Text("Switch Enhancement Prompt")
+                    Text("切换增强提示词")
                         .font(.system(size: 13))
 
                     InfoTip(
-                        "Switch between your saved prompts using ⌘1 through ⌘0 to activate the corresponding prompt in the order they are saved. Available only when VoiceInk is running and the recorder is visible.",
+                        "使用 ⌘1 到 ⌘0 在已保存的提示词之间切换，按保存顺序激活对应提示词。仅在 VoiceInk 正在运行且录音器可见时生效。",
                         learnMoreURL: "https://tryvoiceink.com/docs/enhancement-shortcuts"
                     )
                 }
